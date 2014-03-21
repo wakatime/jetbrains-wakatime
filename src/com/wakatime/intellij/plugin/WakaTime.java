@@ -14,6 +14,7 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
@@ -31,6 +32,7 @@ public class WakaTime implements ApplicationComponent {
     public static final String VERSION = "1.0.0";
     public static final String CONFIG = ".wakatime.cfg";
     public static final long FREQUENCY = 2; // minutes between pings
+    private static final Logger log = Logger.getInstance("WakaTime");
 
     public static String IDE_NAME;
     public static String IDE_VERSION;
@@ -44,7 +46,7 @@ public class WakaTime implements ApplicationComponent {
     }
 
     public void initComponent() {
-        System.out.printf("Initializing WakaTime plugin v%s (https://wakatime.com/)%n", VERSION);
+        log.info("Initializing WakaTime plugin v"+VERSION+" (https://wakatime.com/)");
 
         // Set runtime constants
         IDE_NAME = PlatformUtils.getPlatformPrefix();
