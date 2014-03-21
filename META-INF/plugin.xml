@@ -5,12 +5,18 @@
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
-      Fully automatic time tracking for programmers.
+      Fully automatic time tracking for programmers.<br />
+      <br />
+      Visit <a href="https://github.com/wakatime/jetbrains-wakatime">https://github.com/wakatime/jetbrains-wakatime</a> for more info.
     ]]></description>
 
     <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
+1.0.0 (2014-03-21)<br />
+++++++++++++++++++<br />
+<br />
+- Birth<br />
+<br />
+<a href="https://github.com/wakatime/jetbrains-wakatime">See more changes...</a>
     ]]>
     </change-notes>
 
