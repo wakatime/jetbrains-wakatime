@@ -1,3 +1,11 @@
+/* ==========================================================
+File:        WakaTime.java
+Description: Automatic time tracking for JetBrains IDEs.
+Maintainer:  WakaTime <support@wakatime.com>
+License:     BSD, see LICENSE for more details.
+Website:     https://wakatime.com/
+===========================================================*/
+
 package com.wakatime.intellij.plugin;
 
 import com.intellij.AppTopics;
@@ -17,10 +25,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-/**
- * Created by alanhamlett on 3/20/14.
- */
 
 public class WakaTime implements ApplicationComponent {
 

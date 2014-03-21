@@ -1,12 +1,17 @@
+/* ==========================================================
+File:        CustomDocumentListener.java
+Description: Logs time from document change events.
+Maintainer:  WakaTime <support@wakatime.com>
+License:     BSD, see LICENSE for more details.
+Website:     https://wakatime.com/
+===========================================================*/
+
 package com.wakatime.intellij.plugin;
 
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 
-/**
- * Created by alanhamlett on 3/20/14.
- */
 public class CustomDocumentListener implements DocumentListener {
     @Override
     public void beforeDocumentChange(DocumentEvent documentEvent) {

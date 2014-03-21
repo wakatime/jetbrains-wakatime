@@ -1,3 +1,11 @@
+/* ==========================================================
+File:        ApiKey.java
+Description: Prompts user for api key if it does not exist.
+Maintainer:  WakaTime <support@wakatime.com>
+License:     BSD, see LICENSE for more details.
+Website:     https://wakatime.com/
+===========================================================*/
+
 package com.wakatime.intellij.plugin;
 
 import com.intellij.diagnostic.errordialog.LabeledTextComponent;

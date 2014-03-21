@@ -1,3 +1,11 @@
+/* ==========================================================
+File:        CustomSaveListener.java
+Description: Logs time from document save events.
+Maintainer:  WakaTime <support@wakatime.com>
+License:     BSD, see LICENSE for more details.
+Website:     https://wakatime.com/
+===========================================================*/
+
 package com.wakatime.intellij.plugin;
 
 import com.intellij.openapi.editor.Document;
@@ -5,9 +13,6 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileDocumentManagerAdapter;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by alanhamlett on 3/20/14.
- */
 public class CustomSaveListener extends FileDocumentManagerAdapter {
 
     @Override
