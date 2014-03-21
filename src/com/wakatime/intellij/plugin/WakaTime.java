@@ -35,6 +35,7 @@ public class WakaTime implements ApplicationComponent {
     public static String IDE_NAME;
     public static String IDE_VERSION;
     public static MessageBusConnection connection;
+    public static String cliPath;
 
     public static String lastFile = null;
     public static long lastTime = 0;
@@ -106,6 +107,8 @@ public class WakaTime implements ApplicationComponent {
     }
 
     public static String findWakaTimeCLI() {
+        if (WakaTime.cliPath != null)
+            return WakaTime.cliPath;
         String cli = null;
         String []paths = new String[]{
             "wakatime",
@@ -116,6 +119,7 @@ public class WakaTime implements ApplicationComponent {
             try {
                 Runtime.getRuntime().exec(paths[i]);
                 cli = paths[i];
+                WakaTime.cliPath = cli;
                 break;
             } catch (IOException e) { }
         }
