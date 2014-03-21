@@ -1,0 +1,12 @@
+.DS_Store
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# IntelliJ workspace files
+.idea/
+.metadata
+bin/

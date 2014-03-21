@@ -1,0 +1,46 @@
+<idea-plugin version="2">
+    <id>com.wakatime.intellij.plugin</id>
+    <name>WakaTime</name>
+    <version>1.0.0</version>
+    <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
+
+    <description><![CDATA[
+      Fully automatic time tracking for programmers.
+    ]]></description>
+
+    <change-notes><![CDATA[
+      Add change notes here.<br>
+      <em>most HTML tags may be used</em>
+    ]]>
+    </change-notes>
+
+    <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
+    <idea-version since-build="131"/>
+
+    <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <application-components>
+        <!-- Add your application components here -->
+        <component>
+            <implementation-class>com.wakatime.intellij.plugin.WakaTime</implementation-class>
+        </component>
+    </application-components>
+
+    <project-components>
+        <!-- Add your project components here -->
+    </project-components>
+
+    <actions>
+        <!-- Add your actions here -->
+        <action id="pluginMenu" class="com.wakatime.intellij.plugin.PluginMenu" text="WakaTime"/>
+    </actions>
+
+</idea-plugin>
