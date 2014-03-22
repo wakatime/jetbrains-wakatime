@@ -1,26 +1,26 @@
 jetbrains-wakatime
 ==================
 
-Fully automatic time tracking for JetBrains IDEs (IntelliJ Idea, PyCharm, RubyMine, etc.)
+Fully automatic time tracking for JetBrains IDEs (IntelliJ IDEA, PyCharm, RubyMine, PhpStorm, AppCode, WebStorm).
 
 Installation
 ------------
 
-1. Install the [wakatime python interface](https://pypi.python.org/pypi/wakatime) with `sudo pip install wakatime`
+Heads Up! WakaTime depends on [Python](http://www.python.org/getit/) being installed to work correctly.
 
-2. Install the WakaTime plugin for your editor:
+1. Inside your IDE, select `Preferences` -> `Plugins` -> `Browse Repositories...`.
 
-   a. Inside your IDE, select `Preferences` -> `Plugins` -> `Browse Repositories...`
+2. Search for `WakaTime`.
    
-   b. Search for `WakaTime`
-   
-   c. Click the green `Install Plugin` button
+3. Click the green `Install Plugin` button.
 
-3. You will see a prompt asking for your [api key](https://wakatime.com/#apikey). Enter your api key, then click `Save`.
+4. Click `Close` and `OK`, then Re-launch your IDE.
 
-4. Use your IDE like you normally do and your time will automatically be tracked for you.
+5. You will see a prompt asking for your [api key](https://wakatime.com/#apikey). Enter your api key, then click `Save`.
 
-5. Visit https://wakatime.com to see your logged time.
+6. Use your IDE like you normally do and your time will automatically be tracked for you.
+
+7. Visit https://wakatime.com to see your logged time.
 
 Screen Shots
 ------------
