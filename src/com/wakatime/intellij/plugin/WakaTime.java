@@ -10,11 +10,13 @@ package com.wakatime.intellij.plugin;
 
 import com.intellij.AppTopics;
 import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
@@ -24,12 +26,16 @@ import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 public class WakaTime implements ApplicationComponent {
 
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.1.0";
     public static final String CONFIG = ".wakatime.cfg";
     public static final long FREQUENCY = 2; // minutes between pings
     private static final Logger log = Logger.getInstance("WakaTime");
@@ -37,7 +43,6 @@ public class WakaTime implements ApplicationComponent {
     public static String IDE_NAME;
     public static String IDE_VERSION;
     public static MessageBusConnection connection;
-    public static String cliPath;
 
     public static String lastFile = null;
     public static long lastTime = 0;
@@ -46,13 +51,18 @@ public class WakaTime implements ApplicationComponent {
     }
 
     public void initComponent() {
-        log.info("Initializing WakaTime plugin v"+VERSION+" (https://wakatime.com/)");
+        log.info("Initializing WakaTime plugin v" + VERSION + " (https://wakatime.com/)");
 
         // Set runtime constants
         IDE_NAME = PlatformUtils.getPlatformPrefix();
         IDE_VERSION = ApplicationInfo.getInstance().getFullVersion();
 
-        if (WakaTime.isWakaTimeCLIInstalled()) {
+        if (!Dependencies.isCLIInstalled()) {
+            log.info("Downloading and installing wakatime-cli ...");
+            Dependencies.installCLI();
+        }
+
+        if (Dependencies.isPythonInstalled()) {
 
             // prompt for apiKey if it does not already exist
             if (ApiKey.getApiKey().equals("")) {
@@ -76,7 +86,7 @@ public class WakaTime implements ApplicationComponent {
             EditorFactory.getInstance().getEventMulticaster().addDocumentListener(new CustomDocumentListener());
 
         } else {
-            Messages.showErrorDialog("WakaTime requires the wakatime python package to be installed.\nYou can install it from https://pypi.python.org/pypi/wakatime\nAfter installing, restart your IDE.", "Error");
+            Messages.showErrorDialog("WakaTime requires Python to be installed.\nYou can install it from https://www.python.org/downloads/\nAfter installing Python, restart your IDE.", "Error");
         }
     }
 
@@ -86,7 +96,8 @@ public class WakaTime implements ApplicationComponent {
 
     public static void logFile(String file, boolean isWrite) {
         ArrayList<String> cmds = new ArrayList<String>();
-        cmds.add(WakaTime.findWakaTimeCLI());
+        cmds.add(Dependencies.getPythonLocation());
+        cmds.add(Dependencies.getCLILocation());
         cmds.add("--file");
         cmds.add(file);
         cmds.add("--plugin");
@@ -102,30 +113,6 @@ public class WakaTime implements ApplicationComponent {
 
     public static boolean enoughTimePassed(long currentTime) {
         return WakaTime.lastTime + FREQUENCY * 60 < currentTime;
-    }
-
-    public static boolean isWakaTimeCLIInstalled() {
-        return WakaTime.findWakaTimeCLI() != null;
-    }
-
-    public static String findWakaTimeCLI() {
-        if (WakaTime.cliPath != null)
-            return WakaTime.cliPath;
-        String cli = null;
-        String []paths = new String[]{
-            "wakatime",
-            "/usr/bin/wakatime",
-            "/usr/local/bin/wakatime",
-        };
-        for (int i=0; i<paths.length; i++) {
-            try {
-                Runtime.getRuntime().exec(paths[i]);
-                cli = paths[i];
-                WakaTime.cliPath = cli;
-                break;
-            } catch (IOException e) { }
-        }
-        return cli;
     }
 
     @NotNull

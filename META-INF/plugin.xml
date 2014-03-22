@@ -1,7 +1,7 @@
-<idea-plugin version="2">
+<idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -11,6 +11,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+1.1.0 (2014-03-21)<br />
+++++++++++++++++++<br />
+<br />
+- Support Windows operating system<br />
+- Download and unzip wakatime-cli first time plugin is run<br />
+<br />
 1.0.0 (2014-03-21)<br />
 ++++++++++++++++++<br />
 <br />
