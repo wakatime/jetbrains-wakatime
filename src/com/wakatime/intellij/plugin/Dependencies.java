@@ -24,12 +24,14 @@ public class Dependencies {
     }
 
     public static String getResourcesLocation() {
-        if (Dependencies.resourcesLocation == null)
+        if (Dependencies.resourcesLocation == null) {
+            String separator = "[\\\\/]";
             resourcesLocation = WakaTime.class.getResource("WakaTime.class").getPath()
                     .replaceFirst("file:", "")
                     .replaceAll("%20", " ")
-                    .replaceFirst("com"+File.separator+"wakatime"+File.separator+"intellij"+File.separator+"plugin"+File.separator+"WakaTime.class", "")
-                    .replaceFirst("WakaTime.jar!"+File.separator, "")+"WakaTime-resources";
+                    .replaceFirst("com" + separator + "wakatime" + separator + "intellij" + separator + "plugin" + separator + "WakaTime.class", "")
+                    .replaceFirst("WakaTime.jar!" + separator, "") + "WakaTime-resources";
+        }
         return Dependencies.resourcesLocation;
     }
 
