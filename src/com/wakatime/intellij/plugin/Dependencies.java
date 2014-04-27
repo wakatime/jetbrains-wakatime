@@ -31,6 +31,9 @@ public class Dependencies {
                     .replaceAll("%20", " ")
                     .replaceFirst("com" + separator + "wakatime" + separator + "intellij" + separator + "plugin" + separator + "WakaTime.class", "")
                     .replaceFirst("WakaTime.jar!" + separator, "") + "WakaTime-resources";
+            if (System.getProperty("os.name").startsWith("Windows") && resourcesLocation.startsWith("/")) {
+                resourcesLocation = resourcesLocation.substring(1);
+            }
         }
         return Dependencies.resourcesLocation;
     }

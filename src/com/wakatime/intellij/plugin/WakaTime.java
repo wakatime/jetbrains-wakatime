@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -63,6 +64,8 @@ public class WakaTime implements ApplicationComponent {
         }
 
         if (Dependencies.isPythonInstalled()) {
+            log.debug("Python location: " + Dependencies.getPythonLocation());
+            log.debug("CLI location: " + Dependencies.getCLILocation());
 
             // prompt for apiKey if it does not already exist
             if (ApiKey.getApiKey().equals("")) {
@@ -105,9 +108,10 @@ public class WakaTime implements ApplicationComponent {
         if (isWrite)
             cmds.add("--write");
         try {
+            log.debug("Executing CLI: " + Arrays.toString(cmds.toArray()));
             Runtime.getRuntime().exec(cmds.toArray(new String[cmds.size()]));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
     }
 
