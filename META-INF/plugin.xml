@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>1.3.1</version>
+    <version>2.0.0</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -11,6 +11,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+2.0.0 (2014-05-06)<br />
+++++++++++++++++++<br />
+<br />
+- Set project name using IDE's project<br />
+<br />
 1.3.1 (2014-04-28)<br />
 ++++++++++++++++++<br />
 <br />
