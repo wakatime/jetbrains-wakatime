@@ -22,12 +22,16 @@ public class CustomSaveListener extends FileDocumentManagerAdapter {
     public void beforeDocumentSaving(Document document) {
         String currentFile = FileDocumentManager.getInstance().getFile(document).getPath();
         long currentTime = System.currentTimeMillis() / 1000;
-        DataContext dataContext = DataManager.getInstance().getDataContext();
-        Project project = DataKeys.PROJECT.getData(dataContext);
         String currentProject = null;
-        if (project != null) {
-            currentProject = project.getName();
-        }
+        try {
+            DataContext dataContext = DataManager.getInstance().getDataContext();
+            if (dataContext != null) {
+                Project project = DataKeys.PROJECT.getData(dataContext);
+                if (project != null) {
+                    currentProject = project.getName();
+                }
+            }
+        } catch (Exception e) { }
         WakaTime.logFile(currentFile, currentProject, true);
         WakaTime.lastFile = currentFile;
         WakaTime.lastTime = currentTime;

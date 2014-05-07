@@ -28,13 +28,17 @@ public class CustomDocumentListener implements DocumentListener {
         final VirtualFile file = instance.getFile(documentEvent.getDocument());
         if (file != null) {
             final String currentFile = file.getPath();
-            DataContext dataContext = DataManager.getInstance().getDataContext();
-            Project project = DataKeys.PROJECT.getData(dataContext);
-            String currentProject = null;
-            if (project != null) {
-                currentProject = project.getName();
-            }
             final long currentTime = System.currentTimeMillis() / 1000;
+            String currentProject = null;
+            try {
+                DataContext dataContext = DataManager.getInstance().getDataContext();
+                if (dataContext != null) {
+                    Project project = DataKeys.PROJECT.getData(dataContext);
+                    if (project != null) {
+                        currentProject = project.getName();
+                    }
+                }
+            } catch (Exception e) { }
             if ((!currentFile.equals(WakaTime.lastFile) || WakaTime.enoughTimePassed(currentTime)) && !currentFile.contains("/.idea/workspace.xml")) {
                 WakaTime.logFile(currentFile, currentProject, false);
                 WakaTime.lastFile = currentFile;
