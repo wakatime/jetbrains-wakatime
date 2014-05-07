@@ -10,13 +10,11 @@ package com.wakatime.intellij.plugin;
 
 import com.intellij.AppTopics;
 import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
@@ -26,20 +24,15 @@ import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.ResourceBundle;
 
 public class WakaTime implements ApplicationComponent {
 
     public static final String VERSION = "1.3.1";
     public static final String CONFIG = ".wakatime.cfg";
     public static final long FREQUENCY = 2; // minutes between pings
-    private static final Logger log = Logger.getInstance("WakaTime");
+    public static final Logger log = Logger.getInstance("WakaTime");
 
     public static String IDE_NAME;
     public static String IDE_VERSION;
@@ -61,6 +54,9 @@ public class WakaTime implements ApplicationComponent {
         if (!Dependencies.isCLIInstalled()) {
             log.info("Downloading and installing wakatime-cli ...");
             Dependencies.installCLI();
+        } else if (Dependencies.isCLIOld()) {
+            log.info("Upgrading wakatime-cli ...");
+            Dependencies.upgradeCLI();
         }
 
         if (Dependencies.isPythonInstalled()) {
@@ -97,12 +93,16 @@ public class WakaTime implements ApplicationComponent {
         connection.disconnect();
     }
 
-    public static void logFile(String file, boolean isWrite) {
+    public static void logFile(String file, String project, boolean isWrite) {
         ArrayList<String> cmds = new ArrayList<String>();
         cmds.add(Dependencies.getPythonLocation());
         cmds.add(Dependencies.getCLILocation());
         cmds.add("--file");
         cmds.add(file);
+        if (project != null) {
+            cmds.add("--project");
+            cmds.add(project);
+        }
         cmds.add("--plugin");
         cmds.add(IDE_NAME+"/"+IDE_VERSION+" "+IDE_NAME+"-wakatime/"+VERSION);
         if (isWrite)

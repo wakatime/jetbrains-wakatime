@@ -1,12 +1,13 @@
 package com.wakatime.intellij.plugin;
 
-import com.sun.deploy.net.HttpResponse;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -19,7 +20,7 @@ public class Dependencies {
     private static String resourcesLocation = null;
     private static String cliLocation = null;
 
-    public static boolean isPythonInstalled() {
+     public static boolean isPythonInstalled() {
         return Dependencies.getPythonLocation() != null;
     }
 
@@ -81,6 +82,25 @@ public class Dependencies {
         return (cli.exists() && !cli.isDirectory());
     }
 
+    public static boolean isCLIOld() {
+        if (!Dependencies.isCLIInstalled()) {
+            return false;
+        }
+        ArrayList<String> cmds = new ArrayList<String>();
+        cmds.add(Dependencies.getPythonLocation());
+        cmds.add(Dependencies.getCLILocation());
+        cmds.add("--version");
+        try {
+            Process p = Runtime.getRuntime().exec(cmds.toArray(new String[cmds.size()]));
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            String currentVersion = "1.0.2";
+            if (currentVersion.equals(stdError.readLine())) {
+                return false;
+            }
+        } catch (Exception e) { }
+        return true;
+    }
+
     public static String getCLILocation() {
         return Dependencies.getResourcesLocation()+File.separator+"wakatime-master"+File.separator+"wakatime-cli.py";
     }
@@ -108,8 +128,14 @@ public class Dependencies {
             File oldZipFile = new File(zipFile);
             oldZipFile.delete();
         } catch (IOException e) {
-            e.printStackTrace();
+            WakaTime.log.error(e);
         }
+    }
+
+    public static void upgradeCLI() {
+        File cliDir = new File(new File(Dependencies.getCLILocation()).getParent());
+        cliDir.delete();
+        Dependencies.installCLI();
     }
 
     private static void unzip(String zipFile, File outputDir) throws IOException {
@@ -125,10 +151,8 @@ public class Dependencies {
             File newFile = new File(outputDir, fileName);
 
             if (ze.isDirectory()) {
-                // System.out.println("Creating directory: "+newFile.getParentFile().getAbsolutePath());
                 newFile.mkdirs();
             } else {
-                // System.out.println("Extracting File: "+newFile.getAbsolutePath());
                 FileOutputStream fos = new FileOutputStream(newFile.getAbsolutePath());
                 int len;
                 while ((len = zis.read(buffer)) > 0) {
