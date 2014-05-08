@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -11,6 +11,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+2.0.2 (2014-05-08)<br />
+++++++++++++++++++<br />
+<br />
+- Catch only NoClassDefFoundError instead of all exceptions<br />
+<br />
 2.0.1 (2014-05-07)<br />
 ++++++++++++++++++<br />
 <br />
