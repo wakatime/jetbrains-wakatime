@@ -38,7 +38,7 @@ public class CustomDocumentListener implements DocumentListener {
                         currentProject = project.getName();
                     }
                 }
-            } catch (Exception e) { }
+            } catch (NoClassDefFoundError e) { }
             if ((!currentFile.equals(WakaTime.lastFile) || WakaTime.enoughTimePassed(currentTime)) && !currentFile.contains("/.idea/workspace.xml")) {
                 WakaTime.logFile(currentFile, currentProject, false);
                 WakaTime.lastFile = currentFile;

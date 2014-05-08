@@ -31,7 +31,7 @@ public class CustomSaveListener extends FileDocumentManagerAdapter {
                     currentProject = project.getName();
                 }
             }
-        } catch (Exception e) { }
+        } catch (NoClassDefFoundError e) { }
         WakaTime.logFile(currentFile, currentProject, true);
         WakaTime.lastFile = currentFile;
         WakaTime.lastTime = currentTime;
