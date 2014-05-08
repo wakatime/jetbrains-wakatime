@@ -9,7 +9,10 @@ Website:     https://wakatime.com/
 package com.wakatime.intellij.plugin;
 
 import com.intellij.AppTopics;
+import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
@@ -93,12 +96,13 @@ public class WakaTime implements ApplicationComponent {
         connection.disconnect();
     }
 
-    public static void logFile(String file, String project, boolean isWrite) {
+    public static void logFile(String file, boolean isWrite) {
         ArrayList<String> cmds = new ArrayList<String>();
         cmds.add(Dependencies.getPythonLocation());
         cmds.add(Dependencies.getCLILocation());
         cmds.add("--file");
         cmds.add(file);
+        String project = WakaTime.getProjectName();
         if (project != null) {
             cmds.add("--project");
             cmds.add(project);
@@ -113,6 +117,17 @@ public class WakaTime implements ApplicationComponent {
         } catch (Exception e) {
             log.error(e);
         }
+    }
+
+    public static String getProjectName() {
+        DataContext dataContext = DataManager.getInstance().getDataContext();
+        if (dataContext != null) {
+            Project project = CommonDataKeys.PROJECT.getData(dataContext);
+            if (project != null) {
+                return project.getName();
+            }
+        }
+        return null;
     }
 
     public static boolean enoughTimePassed(long currentTime) {

@@ -14,7 +14,7 @@
 2.0.2 (2014-05-08)<br />
 ++++++++++++++++++<br />
 <br />
-- Catch only NoClassDefFoundError instead of all exceptions<br />
+- Fix NoClassDefFoundError bug<br />
 <br />
 2.0.1 (2014-05-07)<br />
 ++++++++++++++++++<br />
