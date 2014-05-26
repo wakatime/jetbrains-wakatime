@@ -16,41 +16,49 @@
 <br />
 - Support for offline time logging<br />
 <br />
+<br />
 2.0.2 (2014-05-08)<br />
 ++++++++++++++++++<br />
 <br />
 - Fix NoClassDefFoundError bug<br />
+<br />
 <br />
 2.0.1 (2014-05-07)<br />
 ++++++++++++++++++<br />
 <br />
 - Prevent NoClassDefFoundError when looking up IDE's project<br />
 <br />
+<br />
 2.0.0 (2014-05-06)<br />
 ++++++++++++++++++<br />
 <br />
 - Set project name using IDE's project<br />
+<br />
 <br />
 1.3.1 (2014-04-28)<br />
 ++++++++++++++++++<br />
 <br />
 - Use correct path to wakatime-cli on Windows platform<br />
 <br />
+<br />
 1.3.0 (2014-04-18)<br />
 ++++++++++++++++++<br />
 <br />
 - Fix Illegal/unsupported escape sequence bug with Windows paths<br />
+<br />
 <br />
 1.2.0 (2014-04-16)<br />
 ++++++++++++++++++<br />
 <br />
 - Fix NullPointerException bug<br />
 <br />
+<br />
 1.1.0 (2014-03-21)<br />
 ++++++++++++++++++<br />
 <br />
 - Support Windows operating system<br />
 - Download and unzip wakatime-cli first time plugin is run<br />
+<br />
 <br />
 1.0.0 (2014-03-21)<br />
 ++++++++++++++++++<br />
