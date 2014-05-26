@@ -93,7 +93,7 @@ public class Dependencies {
         try {
             Process p = Runtime.getRuntime().exec(cmds.toArray(new String[cmds.size()]));
             BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            String currentVersion = "1.0.2";
+            String currentVersion = "2.0.0";
             if (currentVersion.equals(stdError.readLine())) {
                 return false;
             }
