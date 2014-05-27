@@ -12,6 +12,7 @@ import com.intellij.AppTopics;
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.application.ApplicationInfo;
@@ -49,6 +50,7 @@ public class WakaTime implements ApplicationComponent {
 
     public void initComponent() {
         log.info("Initializing WakaTime plugin v" + VERSION + " (https://wakatime.com/)");
+        System.out.println("Initializing WakaTime plugin v" + VERSION + " (https://wakatime.com/)");
 
         // Set runtime constants
         IDE_NAME = PlatformUtils.getPlatformPrefix();
@@ -122,7 +124,15 @@ public class WakaTime implements ApplicationComponent {
     public static String getProjectName() {
         DataContext dataContext = DataManager.getInstance().getDataContext();
         if (dataContext != null) {
-            Project project = CommonDataKeys.PROJECT.getData(dataContext);
+            Project project = null;
+
+            try {
+                project = CommonDataKeys.PROJECT.getData(dataContext);
+            } catch (NoClassDefFoundError e) {
+                try {
+                    project = DataKeys.PROJECT.getData(dataContext);
+                } catch (NoClassDefFoundError ex) { }
+            }
             if (project != null) {
                 return project.getName();
             }

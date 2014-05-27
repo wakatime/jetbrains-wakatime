@@ -8,7 +8,6 @@ Website:     https://wakatime.com/
 
 package com.wakatime.intellij.plugin;
 
-import com.intellij.diagnostic.errordialog.LabeledTextComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.ValidationInfo;
@@ -20,17 +19,15 @@ import java.util.UUID;
 
 public class ApiKey extends DialogWrapper {
     private final JPanel panel;
-    private final LabeledTextComponent input;
+    private final JTextField input;
 
     public ApiKey(@Nullable Project project) {
         super(project, true);
         setTitle("WakaTime API Key");
         setOKButtonText("Save");
         panel = new JPanel();
-        input = new LabeledTextComponent();
-        input.setTitle("Enter your api key from wakatime.com");
-        input.getTextComponent().setColumns(36);
-        panel.add(input.getContentPane());
+        input = new JTextField(36);
+        panel.add(input);
 
         init();
     }
@@ -43,7 +40,7 @@ public class ApiKey extends DialogWrapper {
 
     @Override
     protected ValidationInfo doValidate() {
-        String apiKey = input.getTextComponent().getText();
+        String apiKey = input.getText();
         try {
             UUID.fromString(apiKey);
         } catch (Exception e) {
@@ -54,14 +51,14 @@ public class ApiKey extends DialogWrapper {
 
     @Override
     public void doOKAction() {
-        ApiKey.setApiKey(input.getTextComponent().getText());
+        ApiKey.setApiKey(input.getText());
         super.doOKAction();
     }
 
     public String promptForApiKey() {
-        input.getTextComponent().setText(ApiKey.getApiKey());
+        input.setText(ApiKey.getApiKey());
         this.show();
-        return input.getTextComponent().getText();
+        return input.getText();
     }
 
     public static String getApiKey() {
