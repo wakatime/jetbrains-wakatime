@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>3.0.2</version>
+    <version>3.0.3</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -11,6 +11,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+3.0.3 (2014-06-05)<br />
+++++++++++++++++++<br />
+<br />
+- print debug messages to idea.log when ~/.wakatime.cfg has debug=true<br />
+<br />
+<br />
 3.0.2 (2014-05-27)<br />
 ++++++++++++++++++<br />
 <br />
