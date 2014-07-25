@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>3.0.4</version>
+    <version>3.0.5</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -11,10 +11,18 @@
     ]]></description>
 
     <change-notes><![CDATA[
-3.0.4 (2014-06-18)<br />
+3.0.5 (2014-07-25)<br />
 ++++++++++++++++++<br />
 <br />
 - upgrade external wakatime package to v2.0.5<br />
+- use unique logger namespace to prevent collisions in shared plugin environments<br />
+- option in .wakatime.cfg to obfuscate file names<br />
+<br />
+<br />
+3.0.4 (2014-06-18)<br />
+++++++++++++++++++<br />
+<br />
+- upgrade external wakatime package to v2.0.4<br />
 <br />
 <br />
 3.0.3 (2014-06-05)<br />
