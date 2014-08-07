@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>3.0.5</version>
+    <version>3.0.6</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -11,6 +11,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+3.0.6 (2014-08-07)<br />
+++++++++++++++++++<br />
+<br />
+- upgrade external wakatime package to v2.0.6<br />
+- fix unicode bug by encoding json POST data<br />
+<br />
+<br />
 3.0.5 (2014-07-25)<br />
 ++++++++++++++++++<br />
 <br />
