@@ -112,6 +112,10 @@ public class WakaTime implements ApplicationComponent {
     }
 
     public static void logFile(String file, boolean isWrite) {
+        WakaTime.executeCLI(file, isWrite, 0);
+    }
+
+    public static void executeCLI(String file, boolean isWrite, int tries) {
         ArrayList<String> cmds = new ArrayList<String>();
         cmds.add(Dependencies.getPythonLocation());
         cmds.add(Dependencies.getCLILocation());
@@ -144,8 +148,19 @@ public class WakaTime implements ApplicationComponent {
                 }
                 log.debug("Command finished with return value: "+proc.exitValue());
             }
+            throw new Exception();
         } catch (Exception e) {
-            log.error(e);
+            if (tries < 3) {
+                log.debug(e);
+                try {
+                    Thread.sleep(30);
+                } catch (InterruptedException e1) {
+                    log.error(e1);
+                }
+                WakaTime.executeCLI(file, isWrite, tries+1);
+            } else {
+                log.error(e);
+            }
         }
     }
 

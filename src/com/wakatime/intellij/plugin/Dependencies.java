@@ -1,7 +1,5 @@
 package com.wakatime.intellij.plugin;
 
-import com.intellij.openapi.diagnostic.Logger;
-
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -27,13 +25,13 @@ public class Dependencies {
     public static String getResourcesLocation() {
         if (Dependencies.resourcesLocation == null) {
             String separator = "[\\\\/]";
-            resourcesLocation = WakaTime.class.getResource("WakaTime.class").getPath()
+            Dependencies.resourcesLocation = WakaTime.class.getResource("WakaTime.class").getPath()
                     .replaceFirst("file:", "")
                     .replaceAll("%20", " ")
                     .replaceFirst("com" + separator + "wakatime" + separator + "intellij" + separator + "plugin" + separator + "WakaTime.class", "")
                     .replaceFirst("WakaTime.jar!" + separator, "") + "WakaTime-resources";
-            if (System.getProperty("os.name").startsWith("Windows") && resourcesLocation.startsWith("/")) {
-                resourcesLocation = resourcesLocation.substring(1);
+            if (System.getProperty("os.name").startsWith("Windows") && Dependencies.resourcesLocation.startsWith("/")) {
+                Dependencies.resourcesLocation = Dependencies.resourcesLocation.substring(1);
             }
         }
         return Dependencies.resourcesLocation;
