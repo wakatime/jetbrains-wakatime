@@ -10,11 +10,7 @@ package com.wakatime.intellij.plugin;
 
 import com.intellij.AppTopics;
 import com.intellij.ide.DataManager;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.DataKeys;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
@@ -35,7 +31,7 @@ import org.apache.log4j.Level;
 
 public class WakaTime implements ApplicationComponent {
 
-    public static final String VERSION = "3.0.9";
+    public static final String VERSION = "3.0.10";
     public static final String CONFIG = ".wakatime.cfg";
     public static final long FREQUENCY = 2; // minutes between pings
     public static final Logger log = Logger.getInstance("WakaTime");
@@ -169,7 +165,7 @@ public class WakaTime implements ApplicationComponent {
             Project project = null;
 
             try {
-                project = CommonDataKeys.PROJECT.getData(dataContext);
+                project = PlatformDataKeys.PROJECT.getData(dataContext);
             } catch (NoClassDefFoundError e) {
                 try {
                     project = DataKeys.PROJECT.getData(dataContext);
