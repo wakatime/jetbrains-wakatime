@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>3.0.10</version>
+    <version>3.1.0</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -11,6 +11,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+3.1.0 (2014-08-31)<br />
+++++++++++++++++++<br />
+<br />
+- prevent logging mock:// files on every keystroke<br />
+<br />
+<br />
 3.0.10 (2014-08-29)<br />
 ++++++++++++++++++<br />
 <br />
