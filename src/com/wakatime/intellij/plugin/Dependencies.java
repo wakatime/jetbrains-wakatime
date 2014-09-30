@@ -18,7 +18,7 @@ public class Dependencies {
     private static String resourcesLocation = null;
     private static String cliLocation = null;
 
-     public static boolean isPythonInstalled() {
+    public static boolean isPythonInstalled() {
         return Dependencies.getPythonLocation() != null;
     }
 
@@ -91,7 +91,7 @@ public class Dependencies {
         try {
             Process p = Runtime.getRuntime().exec(cmds.toArray(new String[cmds.size()]));
             BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            String currentVersion = "2.0.8";
+            String currentVersion = "2.1.0";
             if (currentVersion.equals(stdError.readLine())) {
                 return false;
             }
