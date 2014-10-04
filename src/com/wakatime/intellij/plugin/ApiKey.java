@@ -20,6 +20,7 @@ import java.util.UUID;
 public class ApiKey extends DialogWrapper {
     private final JPanel panel;
     private final JTextField input;
+    public static String _api_key = "";
 
     public ApiKey(@Nullable Project project) {
         super(project, true);
@@ -62,6 +63,9 @@ public class ApiKey extends DialogWrapper {
     }
 
     public static String getApiKey() {
+        if (ApiKey._api_key != "") {
+            return ApiKey._api_key;
+        }
         String apiKey = "";
         File userHome = new File(System.getProperty("user.home"));
         File configFile = new File(userHome, WakaTime.CONFIG);
@@ -89,6 +93,7 @@ public class ApiKey extends DialogWrapper {
                 }
             }
         }
+        ApiKey._api_key = apiKey;
         return apiKey;
     }
 
@@ -143,6 +148,7 @@ public class ApiKey extends DialogWrapper {
             writer.print(sb.toString());
             writer.close();
         }
+        ApiKey._api_key = apiKey;
     }
 
 }
