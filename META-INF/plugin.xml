@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>3.1.3</version>
+    <version>3.1.4</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -11,6 +11,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+3.1.4 (2014-10-29)<br />
+++++++++++++++++++<br />
+<br />
+- download wakatime-cli without blocking UI thread<br />
+<br />
+<br />
 3.1.3 (2014-10-04)<br />
 ++++++++++++++++++<br />
 <br />
