@@ -41,6 +41,7 @@ public class WakaTime implements ApplicationComponent {
     public static MessageBusConnection connection;
     public static Boolean DEBUG = false;
 
+    public static Boolean READY = false;
     public static String lastFile = null;
     public static long lastTime = 0;
 
@@ -55,13 +56,28 @@ public class WakaTime implements ApplicationComponent {
         IDE_NAME = PlatformUtils.getPlatformPrefix();
         IDE_VERSION = ApplicationInfo.getInstance().getFullVersion();
 
-        if (!Dependencies.isCLIInstalled()) {
-            log.info("Downloading and installing wakatime-cli ...");
-            Dependencies.installCLI();
-        } else if (Dependencies.isCLIOld()) {
-            log.info("Upgrading wakatime-cli ...");
-            Dependencies.upgradeCLI();
-        }
+        ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
+            public void run() {
+                ApplicationManager.getApplication().runReadAction(new Runnable() {
+                    public void run() {
+                        if (!Dependencies.isCLIInstalled()) {
+                            log.info("Downloading and installing wakatime-cli ...");
+                            Dependencies.installCLI();
+                            WakaTime.READY = true;
+                            log.info("Finished downloading and installing wakatime-cli.");
+                        } else if (Dependencies.isCLIOld()) {
+                            log.info("Upgrading wakatime-cli ...");
+                            Dependencies.upgradeCLI();
+                            WakaTime.READY = true;
+                            log.info("Finished upgrading wakatime-cli.");
+                        } else {
+                            WakaTime.READY = true;
+                            log.info("wakatime-cli is up to date.");
+                        }
+                    }
+                });
+            }
+        });
 
         if (Dependencies.isPythonInstalled()) {
 
@@ -104,11 +120,15 @@ public class WakaTime implements ApplicationComponent {
     }
 
     public void disposeComponent() {
-        connection.disconnect();
+        try {
+            connection.disconnect();
+        } catch(Exception e) { }
     }
 
     public static void logFile(String file, boolean isWrite) {
-        WakaTime.executeCLI(file, isWrite, 0);
+        if (WakaTime.READY) {
+            WakaTime.executeCLI(file, isWrite, 0);
+        }
     }
 
     public static void executeCLI(String file, boolean isWrite, int tries) {
