@@ -16,14 +16,13 @@ Heads Up! WakaTime depends on [Python](http://www.python.org/getit/) being insta
 
 4. Click `Close` and `OK`, then Re-launch your IDE.
 
-5. You will see a prompt asking for your [api key](https://wakatime.com/#apikey). Enter your api key, then click `Save`.
+5. Enter your [api key](https://wakatime.com/settings#apikey) from [https://wakatime.com/settings#apikey](https://wakatime.com/settings#apikey), then click `Save`.
 
-6. Use your IDE like you normally do and your time will automatically be tracked for you.
+6. Use your IDE like you normally do and your time will be tracked for you automatically.
 
 7. Visit https://wakatime.com to see your logged time.
 
 Screen Shots
 ------------
 
-![Project Overview](https://wakatime.com/static/img/ScreenShots/ScreenShot_2014-09-15.png)
-
+![Project Overview](https://wakatime.com/static/img/ScreenShots/ScreenShot-2014-10-29.png)
