@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>3.1.5</version>
+    <version>3.1.6</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -11,6 +11,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+3.1.6 (2014-11-12)<br />
+++++++++++++++++++<br />
+<br />
+- upgrade external wakatime package to v2.1.4<br />
+- when Python was not compiled with https support, log an error to the log file<br />
+<br />
+<br />
 3.1.5 (2014-11-10)<br />
 ++++++++++++++++++<br />
 <br />
