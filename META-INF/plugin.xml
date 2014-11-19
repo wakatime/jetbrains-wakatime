@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>3.1.6</version>
+    <version>3.1.7</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -11,6 +11,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+3.1.7 (2014-11-18)<br />
+++++++++++++++++++<br />
+<br />
+- upgrade external wakatime package to v2.1.6<br />
+- fix list index error when detecting subversion project<br />
+<br />
+<br />
 3.1.6 (2014-11-12)<br />
 ++++++++++++++++++<br />
 <br />
