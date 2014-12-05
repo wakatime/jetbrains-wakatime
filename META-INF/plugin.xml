@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>3.1.7</version>
+    <version>3.1.8</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -11,6 +11,17 @@
     ]]></description>
 
     <change-notes><![CDATA[
+3.1.8 (2014-12-05)<br />
+++++++++++++++++++<br />
+<br />
+- upgrade external wakatime package to v2.1.9<br />
+- fix bug preventing offline heartbeats from being purged after uploaded<br />
+- fix UnicodeDecodeError when building user agent string<br />
+- handle case where response is None<br />
+- upgrade pygments to v2.0.1<br />
+- always log an error when api key is incorrect<br />
+<br />
+<br />
 3.1.7 (2014-11-18)<br />
 ++++++++++++++++++<br />
 <br />
