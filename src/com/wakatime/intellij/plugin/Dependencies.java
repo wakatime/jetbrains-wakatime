@@ -22,6 +22,8 @@ import java.util.zip.ZipInputStream;
  */
 public class Dependencies {
 
+    private static final String cliVersion = "2.1.9";
+    
     private static String pythonLocation = null;
     private static String resourcesLocation = null;
     private static String cliLocation = null;
@@ -99,8 +101,7 @@ public class Dependencies {
         try {
             Process p = Runtime.getRuntime().exec(cmds.toArray(new String[cmds.size()]));
             BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            String currentVersion = "2.1.6";
-            if (currentVersion.equals(stdError.readLine())) {
+            if (cliVersion.equals(stdError.readLine())) {
                 return false;
             }
         } catch (Exception e) { }

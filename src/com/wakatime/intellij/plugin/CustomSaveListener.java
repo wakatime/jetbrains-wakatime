@@ -1,6 +1,6 @@
 /* ==========================================================
 File:        CustomSaveListener.java
-Description: Logs time from document save events.
+Description: Sends a heartbeat when a file is saved.
 Maintainer:  WakaTime <support@wakatime.com>
 License:     BSD, see LICENSE for more details.
 Website:     https://wakatime.com/
