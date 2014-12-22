@@ -17,12 +17,9 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-/**
- * Created by alanhamlett on 3/21/14.
- */
 public class Dependencies {
 
-    private static final String cliVersion = "2.1.9";
+    private static final String cliVersion = "2.1.11";
 
     private static String pythonLocation = null;
     private static String resourcesLocation = null;
