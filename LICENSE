@@ -1,4 +1,6 @@
-Copyright (c) 2014 Alan Hamlett https://wakatime.com
+BSD 3-Clause License
+
+Copyright (c) 2014 by the respective authors (see AUTHORS file).
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -12,7 +14,7 @@ modification, are permitted provided that the following conditions are met:
   in the documentation and/or other materials provided
   with the distribution.
 
-* Neither the names of Wakatime or WakaTime, nor the names of its
+* Neither the names of WakaTime, nor the names of its
   contributors may be used to endorse or promote products derived
   from this software without specific prior written permission.
 
