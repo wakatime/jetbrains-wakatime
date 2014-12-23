@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>3.1.9</version>
+    <version>4.0.0</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -11,6 +11,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+4.0.0 (2014-12-23)<br />
+++++++++++++++++++<br />
+<br />
+- upgrade external wakatime package to v3.0.1<br />
+- detect libraries and frameworks for C++, Java, .NET, PHP, and Python files<br />
+<br />
+<br />
 3.1.9 (2014-12-22)<br />
 ++++++++++++++++++<br />
 <br />
