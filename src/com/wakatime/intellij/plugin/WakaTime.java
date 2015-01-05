@@ -115,7 +115,22 @@ public class WakaTime implements ApplicationComponent {
             log.debug("Finished initializing WakaTime plugin");
 
         } else {
-            Messages.showErrorDialog("WakaTime requires Python to be installed.\nYou can install it from https://www.python.org/downloads/\nAfter installing Python, restart your IDE.", "Error");
+
+            ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
+                public void run() {
+                    ApplicationManager.getApplication().runReadAction(new Runnable() {
+                        public void run() {
+
+                            // download and install python
+                            Dependencies.installPython();
+
+                            if (Dependencies.isPythonInstalled()) {
+                                Messages.showErrorDialog("WakaTime requires Python to be installed.\nYou can install it from https://www.python.org/downloads/\nAfter installing Python, restart your IDE.", "Error");
+                            }
+                        }
+                    });
+                }
+            });
         }
     }
 

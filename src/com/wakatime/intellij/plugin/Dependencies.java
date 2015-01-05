@@ -142,6 +142,61 @@ public class Dependencies {
         Dependencies.installCLI();
     }
 
+    public void installPython() {
+        if (System.getProperty("os.name").contains("Windows")) {
+            String url = "https://www.python.org/ftp/python/3.4.2/python-3.4.2.msi";
+            if (System.getenv("ProgramFiles(x86)") != null) {
+                url = "https://www.python.org/ftp/python/3.4.2/python-3.4.2.amd64.msi";
+            }
+
+            File cli = new File(WakaTime.getWakaTimeCLI());
+            String outFile = cli.getParentFile().getParentFile().getAbsolutePath()+File.separator+"python.msi";
+            if (downloadFile(url, outFile)) {
+
+                // execute python msi installer
+                ArrayList<String> cmds = new ArrayList<String>();
+                cmds.add("msiexec");
+                cmds.add("/i");
+                cmds.add(outFile);
+                cmds.add("/norestart");
+                cmds.add("/qb!");
+                try {
+                    Runtime.getRuntime().exec(cmds.toArray(new String[cmds.size()]));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public boolean downloadFile(String url, String saveAs) {
+        File outFile = new File(saveAs);
+
+        // create output directory if does not exist
+        File outDir = outFile.getParentFile();
+        if (!outDir.exists())
+            outDir.mkdirs();
+
+        URL downloadUrl = null;
+        try {
+            downloadUrl = new URL(url);
+        } catch (MalformedURLException e) { }
+
+        ReadableByteChannel rbc = null;
+        FileOutputStream fos = null;
+        try {
+            rbc = Channels.newChannel(downloadUrl.openStream());
+            fos = new FileOutputStream(saveAs);
+            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+
+            return true;
+        } catch (IOException e) {
+            WakaTime.log.error(e);
+        }
+
+        return false;
+    }
+
     private static void unzip(String zipFile, File outputDir) throws IOException {
         if(!outputDir.exists())
             outputDir.mkdirs();
