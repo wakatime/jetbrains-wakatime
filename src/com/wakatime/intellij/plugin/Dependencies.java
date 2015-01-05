@@ -142,14 +142,14 @@ public class Dependencies {
         Dependencies.installCLI();
     }
 
-    public void installPython() {
+    public static void installPython() {
         if (System.getProperty("os.name").contains("Windows")) {
             String url = "https://www.python.org/ftp/python/3.4.2/python-3.4.2.msi";
             if (System.getenv("ProgramFiles(x86)") != null) {
                 url = "https://www.python.org/ftp/python/3.4.2/python-3.4.2.amd64.msi";
             }
 
-            File cli = new File(WakaTime.getWakaTimeCLI());
+            File cli = new File(Dependencies.getCLILocation());
             String outFile = cli.getParentFile().getParentFile().getAbsolutePath()+File.separator+"python.msi";
             if (downloadFile(url, outFile)) {
 
@@ -169,7 +169,7 @@ public class Dependencies {
         }
     }
 
-    public boolean downloadFile(String url, String saveAs) {
+    public static boolean downloadFile(String url, String saveAs) {
         File outFile = new File(saveAs);
 
         // create output directory if does not exist

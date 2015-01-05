@@ -11,6 +11,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+4.0.2 (2015-01-04)<br />
+++++++++++++++++++<br />
+<br />
+- upgrade external wakatime package to v3.0.3<br />
+- install python if not already installed<br />
+<br />
+<br />
 4.0.1 (2014-12-25)<br />
 ++++++++++++++++++<br />
 <br />
