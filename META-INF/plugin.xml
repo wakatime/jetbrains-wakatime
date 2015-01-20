@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>4.0.2</version>
+    <version>4.0.3</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -11,6 +11,14 @@
     ]]></description>
 
     <change-notes><![CDATA[
+4.0.3 (2015-01-19)<br />
+++++++++++++++++++<br />
+<br />
+- upgrade external wakatime package to v3.0.5<br />
+- fix crashing caused by error dialog being displayed in non-gui background thread<br />
+- only warn about python if not found after installing<br />
+<br />
+<br />
 4.0.2 (2015-01-04)<br />
 ++++++++++++++++++<br />
 <br />
