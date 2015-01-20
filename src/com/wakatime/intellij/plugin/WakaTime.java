@@ -129,7 +129,11 @@ public class WakaTime implements ApplicationComponent {
                             if (Dependencies.isPythonInstalled()) {
                                 log.info("Finished installing python...");
                             } else {
-                                Messages.showErrorDialog("WakaTime requires Python to be installed.\nYou can install it from https://www.python.org/downloads/\nAfter installing Python, restart your IDE.", "Error");
+                                ApplicationManager.getApplication().invokeLater(new Runnable(){
+                                    public void run(){
+                                        Messages.showErrorDialog("WakaTime requires Python to be installed.\nYou can install it from https://www.python.org/downloads/\nAfter installing Python, restart your IDE.", "Error");
+                                    }
+                                });
                             }
                         }
                     });
