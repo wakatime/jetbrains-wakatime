@@ -112,7 +112,7 @@ public class WakaTime implements ApplicationComponent {
             connection.subscribe(AppTopics.FILE_DOCUMENT_SYNC, new CustomSaveListener());
             EditorFactory.getInstance().getEventMulticaster().addDocumentListener(new CustomDocumentListener());
 
-            log.debug("Finished initializing WakaTime plugin");
+            log.info("Finished initializing WakaTime plugin");
 
         } else {
 
@@ -121,10 +121,14 @@ public class WakaTime implements ApplicationComponent {
                     ApplicationManager.getApplication().runReadAction(new Runnable() {
                         public void run() {
 
+                            log.info("Python not found, downloading python...");
+
                             // download and install python
                             Dependencies.installPython();
 
                             if (Dependencies.isPythonInstalled()) {
+                                log.info("Finished installing python...");
+                            } else {
                                 Messages.showErrorDialog("WakaTime requires Python to be installed.\nYou can install it from https://www.python.org/downloads/\nAfter installing Python, restart your IDE.", "Error");
                             }
                         }
