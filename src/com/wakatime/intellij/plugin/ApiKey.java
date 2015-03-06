@@ -20,7 +20,7 @@ import java.util.UUID;
 public class ApiKey extends DialogWrapper {
     private final JPanel panel;
     private final JTextField input;
-    public static String _api_key = "";
+    private static String _api_key = "";
 
     public ApiKey(@Nullable Project project) {
         super(project, true);

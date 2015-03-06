@@ -17,9 +17,11 @@ public class CustomSaveListener extends FileDocumentManagerAdapter {
     @Override
     public void beforeDocumentSaving(Document document) {
         String currentFile = FileDocumentManager.getInstance().getFile(document).getPath();
-        long currentTime = System.currentTimeMillis() / 1000;
-        WakaTime.logFile(currentFile, true);
-        WakaTime.lastFile = currentFile;
-        WakaTime.lastTime = currentTime;
+        if (WakaTime.shouldLogFile(currentFile)) {
+            long currentTime = System.currentTimeMillis() / 1000;
+            WakaTime.logFile(currentFile, true);
+            WakaTime.lastFile = currentFile;
+            WakaTime.lastTime = currentTime;
+        }
     }
 }

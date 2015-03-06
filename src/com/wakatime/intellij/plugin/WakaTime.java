@@ -227,6 +227,13 @@ public class WakaTime implements ApplicationComponent {
         return WakaTime.lastTime + FREQUENCY * 60 < currentTime;
     }
 
+    public static boolean shouldLogFile(String file) {
+        if (file.equals("atlassian-ide-plugin.xml") || file.contains("/.idea/workspace.xml")) {
+            return false;
+        }
+        return true;
+    }
+
     public static Boolean isDebugEnabled() {
         Boolean debug = false;
         File userHome = new File(System.getProperty("user.home"));

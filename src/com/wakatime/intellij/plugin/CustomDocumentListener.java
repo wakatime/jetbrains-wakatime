@@ -24,11 +24,13 @@ public class CustomDocumentListener implements DocumentListener {
         final VirtualFile file = instance.getFile(documentEvent.getDocument());
         if (file != null && !file.getUrl().startsWith("mock://")) {
             final String currentFile = file.getPath();
-            final long currentTime = System.currentTimeMillis() / 1000;
-            if ((!currentFile.equals(WakaTime.lastFile) || WakaTime.enoughTimePassed(currentTime)) && !currentFile.contains("/.idea/workspace.xml")) {
-                WakaTime.logFile(currentFile, false);
-                WakaTime.lastFile = currentFile;
-                WakaTime.lastTime = currentTime;
+            if (WakaTime.shouldLogFile(currentFile)) {
+                final long currentTime = System.currentTimeMillis() / 1000;
+                if (!currentFile.equals(WakaTime.lastFile) || WakaTime.enoughTimePassed(currentTime)) {
+                    WakaTime.logFile(currentFile, false);
+                    WakaTime.lastFile = currentFile;
+                    WakaTime.lastTime = currentTime;
+                }
             }
         }
     }
