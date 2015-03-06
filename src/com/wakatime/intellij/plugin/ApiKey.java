@@ -63,7 +63,7 @@ public class ApiKey extends DialogWrapper {
     }
 
     public static String getApiKey() {
-        if (ApiKey._api_key != "") {
+        if (!ApiKey._api_key.equals("")) {
             return ApiKey._api_key;
         }
         String apiKey = "";

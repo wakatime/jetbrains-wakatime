@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>4.0.3</version>
+    <version>4.0.4</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -11,6 +11,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+4.0.4 (2015-01-19)<br />
+++++++++++++++++++<br />
+<br />
+- upgrade external wakatime package to v4.0.1<br />
+- don't log time against atlassian-ide-plugin.xml file<br />
+<br />
+<br />
 4.0.3 (2015-01-19)<br />
 ++++++++++++++++++<br />
 <br />
