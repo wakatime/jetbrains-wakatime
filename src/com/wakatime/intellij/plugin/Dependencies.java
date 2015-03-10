@@ -132,15 +132,22 @@ public class Dependencies {
 
     public static void installCLI() {
         File cli = new File(Dependencies.getCLILocation());
-        if (!cli.getParentFile().getParentFile().exists())
-            cli.getParentFile().getParentFile().mkdirs();
+        if (!cli.getParentFile().getParentFile().getParentFile().exists())
+            cli.getParentFile().getParentFile().getParentFile().mkdirs();
 
         URL url = null;
         try {
             url = new URL("https://codeload.github.com/wakatime/wakatime/zip/master");
-        } catch (MalformedURLException e) { }
-        String zipFile = cli.getParentFile().getParentFile().getAbsolutePath()+File.separator+"wakatime"+File.separator+"cli.zip";
-        File outputDir = cli.getParentFile().getParentFile();
+        } catch (MalformedURLException e) {
+        }
+        String zipFile = cli.getParentFile().getParentFile().getParentFile().getAbsolutePath() + File.separator + "wakatime-cli.zip";
+        File outputDir = cli.getParentFile().getParentFile().getParentFile();
+
+        // Delete old wakatime-master directory if it exists
+        File dir = cli.getParentFile().getParentFile();
+        if (dir.exists()) {
+            deleteDirectory(dir);
+        }
 
         // download wakatime-master.zip file
         ReadableByteChannel rbc = null;
@@ -246,5 +253,20 @@ public class Dependencies {
 
         zis.closeEntry();
         zis.close();
+    }
+
+    private static void deleteDirectory(File path) {
+        if( path.exists() ) {
+            File[] files = path.listFiles();
+            for(int i=0; i<files.length; i++) {
+                if(files[i].isDirectory()) {
+                    deleteDirectory(files[i]);
+                }
+                else {
+                    files[i].delete();
+                }
+            }
+        }
+        path.delete();
     }
 }
