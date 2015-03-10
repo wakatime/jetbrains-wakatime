@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>4.0.5</version>
+    <version>4.0.6</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -11,6 +11,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+4.0.6 (2015-03-10)<br />
+++++++++++++++++++<br />
+<br />
+- fix paths to wakatime cli<br />
+- delete old wakatime cli folder before updating<br />
+<br />
+<br />
 4.0.5 (2015-03-10)<br />
 ++++++++++++++++++<br />
 <br />
