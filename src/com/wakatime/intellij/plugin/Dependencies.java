@@ -19,7 +19,7 @@ import java.util.zip.ZipInputStream;
 
 public class Dependencies {
 
-    private static final String cliVersion = "4.0.1";
+    private static final String cliVersion = "4.0.4";
 
     private static String pythonLocation = null;
     private static String resourcesLocation = null;
@@ -127,7 +127,7 @@ public class Dependencies {
     }
 
     public static String getCLILocation() {
-        return Dependencies.getResourcesLocation()+File.separator+"wakatime-master"+File.separator+"wakatime-cli.py";
+        return Dependencies.getResourcesLocation()+File.separator+"wakatime-master"+File.separator+"wakatime"+File.separator+"cli.py";
     }
 
     public static void installCLI() {
@@ -139,7 +139,7 @@ public class Dependencies {
         try {
             url = new URL("https://codeload.github.com/wakatime/wakatime/zip/master");
         } catch (MalformedURLException e) { }
-        String zipFile = cli.getParentFile().getParentFile().getAbsolutePath()+File.separator+"wakatime-cli.zip";
+        String zipFile = cli.getParentFile().getParentFile().getAbsolutePath()+File.separator+"wakatime"+File.separator+"cli.zip";
         File outputDir = cli.getParentFile().getParentFile();
 
         // download wakatime-master.zip file
