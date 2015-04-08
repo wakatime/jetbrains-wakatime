@@ -35,4 +35,4 @@ WakaTime plugins share a common config file `.wakatime.cfg` located in your user
 Uninstalling
 ------------
 
-Remove `Bundle 'wakatime/vim-wakatime'` from your `.vimrc` file, then delete your `~/.wakatime.cfg` config file.
+Inside your IDE, select `Preferences` -> `Plugins`, then find the `WakaTime` plugin. Click `Uninstall`. Then delete your `~/.wakatime.cfg` config file.
