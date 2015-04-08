@@ -22,6 +22,13 @@ Heads Up! WakaTime depends on [Python](http://www.python.org/getit/) being insta
 
 7. Visit https://wakatime.com to see your logged time.
 
+Change API Key
+--------------
+
+Should you need to change the API key used by this plugin, simply edit the `.wakatime.cfg` file in your user home directory.
+
+Uninstalling the plugin will not remove this config file.
+
 Screen Shots
 ------------
 
