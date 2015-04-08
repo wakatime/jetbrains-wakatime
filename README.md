@@ -22,14 +22,17 @@ Heads Up! WakaTime depends on [Python](http://www.python.org/getit/) being insta
 
 7. Visit https://wakatime.com to see your logged time.
 
-Change API Key
---------------
-
-Should you need to change the API key used by this plugin, simply edit the `.wakatime.cfg` file in your user home directory.
-
-Uninstalling the plugin will not remove this config file.
-
 Screen Shots
 ------------
 
 ![Project Overview](https://wakatime.com/static/img/ScreenShots/ScreenShot-2014-10-29.png)
+
+Configuring
+-----------
+
+WakaTime plugins share a common config file `.wakatime.cfg` located in your user home directory with [these options](https://github.com/wakatime/wakatime#configuring) available.
+
+Uninstalling
+------------
+
+Remove `Bundle 'wakatime/vim-wakatime'` from your `.vimrc` file, then delete your `~/.wakatime.cfg` config file.
