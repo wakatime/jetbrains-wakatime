@@ -1,7 +1,7 @@
 jetbrains-wakatime
 ==================
 
-Fully automatic time tracking for JetBrains IDEs (IntelliJ IDEA, PyCharm, RubyMine, PhpStorm, AppCode, WebStorm).
+Fully automatic time tracking for JetBrains IDEs (IntelliJ IDEA, PyCharm, RubyMine, PhpStorm, AppCode, AndroidStudio, WebStorm).
 
 Installation
 ------------
