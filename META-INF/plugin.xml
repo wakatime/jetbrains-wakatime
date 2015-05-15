@@ -5,9 +5,25 @@
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
-      Fully automatic time tracking for programmers.<br />
+      WakaTime is a productivity & time tracking tool for programmers. Once the WakaTime plugin is installed, you get a dashboard with reports about your programming by time, language, project, commit, and branch.<br />
       <br />
-      Visit <a href="https://github.com/wakatime/jetbrains-wakatime">https://github.com/wakatime/jetbrains-wakatime</a> for more info.
+      Installation<br />
+      <br />
+      Inside your IDE, select Preferences -> Plugins -> Browse Repositories....<br />
+      <br />
+      Search for WakaTime.<br />
+      <br />
+      Click the green Install Plugin button.<br />
+      <br />
+      Click Close and OK, then Re-launch your IDE.<br />
+      <br />
+      Enter your api key, then click Save.<br />
+      <br />
+      Use your IDE like you normally do and your time will be tracked for you automatically.<br />
+      <br />
+      Visit https://wakatime.com to see your logged time.<br />
+      <br />
+      Source Code:  <a href="https://github.com/wakatime/jetbrains-wakatime">https://github.com/wakatime/jetbrains-wakatime</a>
     ]]></description>
 
     <change-notes><![CDATA[

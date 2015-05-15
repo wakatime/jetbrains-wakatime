@@ -1,12 +1,10 @@
 jetbrains-wakatime
 ==================
 
-Fully automatic time tracking for JetBrains IDEs (IntelliJ IDEA, PyCharm, RubyMine, PhpStorm, AppCode, AndroidStudio, WebStorm).
+WakaTime is a productivity & time tracking tool for programmers. Once the WakaTime plugin is installed, you get a dashboard with reports about your programming by time, language, project, commit, and branch..
 
 Installation
 ------------
-
-Heads Up! WakaTime depends on [Python](http://www.python.org/getit/) being installed to work correctly.
 
 1. Inside your IDE, select `Preferences` -> `Plugins` -> `Browse Repositories...`.
 
