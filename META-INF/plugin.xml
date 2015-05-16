@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>4.0.7</version>
+    <version>4.0.8</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,16 @@
     ]]></description>
 
     <change-notes><![CDATA[
+4.0.8 (2015-05-16)<br />
+++++++++++++++++++<br />
+<br />
+- fix bug with auto detecting project name<br />
+- correctly display caller and lineno in log file when debug is true<br />
+- project passed with --project argument will always be used<br />
+- new --alternate-project argument<br />
+- upgrade wakatime cli to v4.0.13<br />
+<br />
+<br />
 4.0.7 (2015-03-10)<br />
 ++++++++++++++++++<br />
 <br />
