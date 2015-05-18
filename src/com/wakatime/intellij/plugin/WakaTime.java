@@ -148,9 +148,17 @@ public class WakaTime implements ApplicationComponent {
         } catch(Exception e) { }
     }
 
-    public static void logFile(String file, boolean isWrite) {
+    public static void logFile(final String file, final boolean isWrite) {
         if (WakaTime.READY) {
-            WakaTime.executeCLI(file, isWrite, 0);
+            ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
+                public void run() {
+                    ApplicationManager.getApplication().runReadAction(new Runnable() {
+                        public void run() {
+                            WakaTime.executeCLI(file, isWrite, 0);
+                        }
+                    });
+                }
+            });
         }
     }
 
