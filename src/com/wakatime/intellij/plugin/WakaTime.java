@@ -31,7 +31,7 @@ import org.apache.log4j.Level;
 
 public class WakaTime implements ApplicationComponent {
 
-    public static final String VERSION = "4.0.8";
+    public static final String VERSION = "4.0.9";
     public static final String CONFIG = ".wakatime.cfg";
     public static final long FREQUENCY = 2; // minutes between pings
     public static final Logger log = Logger.getInstance("WakaTime");
