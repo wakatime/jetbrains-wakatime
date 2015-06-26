@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>4.0.10</version>
+    <version>4.0.11</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,17 @@
     ]]></description>
 
     <change-notes><![CDATA[
+4.0.11 (2015-06-26)<br />
+++++++++++++++++++<br />
+<br />
+- correctly log message from py.warnings module<br />
+- guess language using multiple methods, then use most accurate guess<br />
+- use entity and type for new heartbeats api resource schema<br />
+- fix offline logging<br />
+- limit language detection to known file extensions, unless file contents has a vim modeline<br />
+- upgrade wakatime cli to v4.0.16<br />
+<br />
+<br />
 4.0.10 (2015-05-18)<br />
 ++++++++++++++++++<br />
 <br />
