@@ -162,8 +162,6 @@ public class WakaTime implements ApplicationComponent {
         ArrayList<String> cmds = new ArrayList<String>();
         cmds.add(Dependencies.getPythonLocation());
         cmds.add(Dependencies.getCLILocation());
-        cmds.add("--key");
-        cmds.add(ApiKey.getApiKey());
         cmds.add("--file");
         cmds.add(file);
         String project = WakaTime.getProjectName();
