@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>4.0.12</version>
+    <version>4.0.13</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+4.0.13 (2015-07-31)<br />
+++++++++++++++++++<br />
+<br />
+- if Java missing cacerts, download dependencies without verifying ssl cert<br />
+<br />
+<br />
 4.0.12 (2015-06-29)<br />
 ++++++++++++++++++<br />
 <br />
