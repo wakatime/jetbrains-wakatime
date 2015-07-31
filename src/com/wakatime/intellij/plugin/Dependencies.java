@@ -8,11 +8,16 @@ Website:     https://wakatime.com/
 
 package com.wakatime.intellij.plugin;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -119,7 +124,7 @@ public class Dependencies {
         try {
             Process p = Runtime.getRuntime().exec(cmds.toArray(new String[cmds.size()]));
             BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            if (cliVersion.equals(stdError.readLine())) {
+            if (stdError.readLine().contains(cliVersion)) {
                 return false;
             }
         } catch (Exception e) { }
@@ -135,11 +140,7 @@ public class Dependencies {
         if (!cli.getParentFile().getParentFile().getParentFile().exists())
             cli.getParentFile().getParentFile().getParentFile().mkdirs();
 
-        URL url = null;
-        try {
-            url = new URL("https://codeload.github.com/wakatime/wakatime/zip/master");
-        } catch (MalformedURLException e) {
-        }
+        String url = "https://codeload.github.com/wakatime/wakatime/zip/master";
         String zipFile = cli.getParentFile().getParentFile().getParentFile().getAbsolutePath() + File.separator + "wakatime-cli.zip";
         File outputDir = cli.getParentFile().getParentFile().getParentFile();
 
@@ -150,17 +151,14 @@ public class Dependencies {
         }
 
         // download wakatime-master.zip file
-        ReadableByteChannel rbc = null;
-        FileOutputStream fos = null;
-        try {
-            rbc = Channels.newChannel(url.openStream());
-            fos = new FileOutputStream(zipFile);
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-            Dependencies.unzip(zipFile, outputDir);
-            File oldZipFile = new File(zipFile);
-            oldZipFile.delete();
-        } catch (IOException e) {
-            WakaTime.log.error(e);
+        if (downloadFile(url, zipFile)) {
+            try {
+                Dependencies.unzip(zipFile, outputDir);
+                File oldZipFile = new File(zipFile);
+                oldZipFile.delete();
+            } catch (IOException e) {
+                WakaTime.log.error(e);
+            }
         }
     }
 
@@ -216,8 +214,31 @@ public class Dependencies {
             rbc = Channels.newChannel(downloadUrl.openStream());
             fos = new FileOutputStream(saveAs);
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-
             return true;
+        } catch (RuntimeException e) {
+            WakaTime.log.error(e);
+            try {
+                // try downloading without verifying SSL cert (https://github.com/wakatime/jetbrains-wakatime/issues/46)
+                SSLContext SSL_CONTEXT = SSLContext.getInstance("SSL");
+                SSL_CONTEXT.init(null, new TrustManager[] { new LocalSSLTrustManager() }, null);
+                HttpsURLConnection.setDefaultSSLSocketFactory(SSL_CONTEXT.getSocketFactory());
+                HttpsURLConnection conn = (HttpsURLConnection)downloadUrl.openConnection();
+                InputStream inputStream = conn.getInputStream();
+                fos = new FileOutputStream(saveAs);
+                int bytesRead = -1;
+                byte[] buffer = new byte[4096];
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    fos.write(buffer, 0, bytesRead);
+                }
+                inputStream.close();
+                return true;
+            } catch (NoSuchAlgorithmException e1) {
+                WakaTime.log.error(e1);
+            } catch (KeyManagementException e1) {
+                WakaTime.log.error(e1);
+            } catch (IOException e1) {
+                WakaTime.log.error(e1);
+            }
         } catch (IOException e) {
             WakaTime.log.error(e);
         }
