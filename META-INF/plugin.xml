@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>4.0.13</version>
+    <version>4.0.14</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+4.0.14 (2015-07-31)<br />
+++++++++++++++++++<br />
+<br />
+- more verbose debug logging when checking current wakatime cli version<br />
+<br />
+<br />
 4.0.13 (2015-07-31)<br />
 ++++++++++++++++++<br />
 <br />
