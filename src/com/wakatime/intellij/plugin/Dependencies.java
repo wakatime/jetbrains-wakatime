@@ -123,8 +123,14 @@ public class Dependencies {
         cmds.add("--version");
         try {
             Process p = Runtime.getRuntime().exec(cmds.toArray(new String[cmds.size()]));
-            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            if (stdError.readLine().contains(cliVersion)) {
+            BufferedReader stdOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            BufferedReader stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            String usingVersion = stdErr.readLine();
+            WakaTime.log.debug("*** STDOUT ***");
+            WakaTime.log.debug(stdOut.readLine());
+            WakaTime.log.debug("*** STDERR ***");
+            WakaTime.log.debug(usingVersion);
+            if (usingVersion.contains(cliVersion)) {
                 return false;
             }
         } catch (Exception e) { }
