@@ -127,9 +127,9 @@ public class Dependencies {
             BufferedReader stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             String usingVersion = stdErr.readLine();
             WakaTime.log.debug("*** STDOUT ***");
-            WakaTime.log.debug(stdOut.readLine());
+            WakaTime.log.debug("\"" + stdOut.readLine() + "\"");
             WakaTime.log.debug("*** STDERR ***");
-            WakaTime.log.debug(usingVersion);
+            WakaTime.log.debug("\"" + usingVersion + "\"");
             if (usingVersion.contains(cliVersion)) {
                 return false;
             }
