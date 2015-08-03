@@ -138,7 +138,7 @@ public class Dependencies {
     }
 
     public static String getCLILocation() {
-        return Dependencies.getResourcesLocation()+File.separator+"wakatime-master"+File.separator+"wakatime"+File.separator+"cli.py";
+        return combinePaths(Dependencies.getResourcesLocation(), "wakatime-master", "wakatime", "cli.py");
     }
 
     public static void installCLI() {
@@ -295,5 +295,18 @@ public class Dependencies {
             }
         }
         path.delete();
+    }
+
+    private static String combinePaths(String... args) {
+        File path = null;
+        for (String arg : args) {
+            if (path == null)
+                path = new File(arg);
+            else
+                path = new File(path, arg);
+        }
+        if (path == null)
+            return null;
+        return path.toString();
     }
 }
