@@ -100,7 +100,8 @@ public class Dependencies {
         };
         for (int i=0; i<paths.length; i++) {
             try {
-                Runtime.getRuntime().exec(paths[i]);
+                String[] cmds = { paths[i], "--version" };
+                Runtime.getRuntime().exec(cmds);
                 Dependencies.pythonLocation = paths[i];
                 break;
             } catch (Exception e) { }
@@ -123,14 +124,22 @@ public class Dependencies {
         cmds.add("--version");
         try {
             Process p = Runtime.getRuntime().exec(cmds.toArray(new String[cmds.size()]));
-            BufferedReader stdOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            BufferedReader stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            String usingVersion = stdErr.readLine();
-            WakaTime.log.debug("*** STDOUT ***");
-            WakaTime.log.debug("\"" + stdOut.readLine() + "\"");
-            WakaTime.log.debug("*** STDERR ***");
-            WakaTime.log.debug("\"" + usingVersion + "\"");
-            if (usingVersion.contains(cliVersion)) {
+            BufferedReader stdInput = new BufferedReader(new
+                    InputStreamReader(p.getInputStream()));
+            BufferedReader stdError = new BufferedReader(new
+                    InputStreamReader(p.getErrorStream()));
+            p.waitFor();
+            String output = "";
+            String s;
+            while ((s = stdInput.readLine()) != null) {
+                output += s;
+            }
+            while ((s = stdError.readLine()) != null) {
+                output += s;
+            }
+            WakaTime.log.debug("wakatime cli version check output: \"" + output + "\"");
+            WakaTime.log.debug("wakatime cli version check exit code: " + p.exitValue());
+            if (p.exitValue() == 0 && output.contains(cliVersion)) {
                 return false;
             }
         } catch (Exception e) { }
@@ -147,7 +156,7 @@ public class Dependencies {
             cli.getParentFile().getParentFile().getParentFile().mkdirs();
 
         String url = "https://codeload.github.com/wakatime/wakatime/zip/master";
-        String zipFile = cli.getParentFile().getParentFile().getParentFile().getAbsolutePath() + File.separator + "wakatime-cli.zip";
+        String zipFile = combinePaths(cli.getParentFile().getParentFile().getParentFile().getAbsolutePath(), "wakatime-cli.zip");
         File outputDir = cli.getParentFile().getParentFile().getParentFile();
 
         // Delete old wakatime-master directory if it exists
@@ -182,7 +191,7 @@ public class Dependencies {
             }
 
             File cli = new File(Dependencies.getCLILocation());
-            String outFile = cli.getParentFile().getParentFile().getAbsolutePath()+File.separator+"python.msi";
+            String outFile = combinePaths(cli.getParentFile().getParentFile().getAbsolutePath(), "python.msi");
             if (downloadFile(url, outFile)) {
 
                 // execute python msi installer

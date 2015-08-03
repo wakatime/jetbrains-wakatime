@@ -96,7 +96,7 @@ public class WakaTime implements ApplicationComponent {
             if (apiKey.getApiKey().equals("")) {
                 apiKey.promptForApiKey();
             }
-            log.debug("Api Key: "+ApiKey.getApiKey());
+            log.debug("Api Key: " + obfuscateKey(ApiKey.getApiKey()));
 
             // add WakaTime item to File menu
             ActionManager am = ActionManager.getInstance();
@@ -265,6 +265,16 @@ public class WakaTime implements ApplicationComponent {
             }
         }
         return debug;
+    }
+
+    private static String obfuscateKey(String key) {
+        String newKey = null;
+        if (key != null) {
+            newKey = key;
+            if (key.length() > 4)
+                newKey = "********-****-****-****-********" + key.substring(key.length() - 4);
+        }
+        return newKey;
     }
 
     @NotNull
