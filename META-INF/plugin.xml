@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>4.0.16</version>
+    <version>4.0.17</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+4.0.17 (2015-08-03)<br />
+++++++++++++++++++<br />
+<br />
+- wait for wakatime cli to finish executing before reading version number<br />
+- obfuscate api key in debug log<br />
+<br />
+<br />
 4.0.16 (2015-08-03)<br />
 ++++++++++++++++++<br />
 <br />
