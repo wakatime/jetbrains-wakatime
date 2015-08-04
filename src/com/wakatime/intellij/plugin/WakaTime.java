@@ -151,17 +151,51 @@ public class WakaTime implements ApplicationComponent {
         } catch(Exception e) { }
     }
 
-    public static void logFile(final String file, final boolean isWrite) {
-        if (WakaTime.READY) {
-            ApplicationManager.getApplication().invokeLater(new Runnable() {
-                public void run() {
-                    WakaTime.executeCLI(file, isWrite, 0);
-                }
-            });
-        }
+    public static void sendHeartbeat(final String file, final boolean isWrite) {
+        if (WakaTime.READY)
+            WakaTime._sendHeartbeat(file, isWrite, 0);
     }
 
-    public static void executeCLI(String file, boolean isWrite, int tries) {
+    public static void _sendHeartbeat(final String file, final boolean isWrite, final int tries) {
+        final String[] cmds = buildCliCommand(file, isWrite);
+        ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
+            public void run() {
+                try {
+                    log.debug("Executing CLI: " + Arrays.toString(cmds));
+                    Process proc = Runtime.getRuntime().exec(cmds);
+                    if (WakaTime.DEBUG) {
+                        BufferedReader stdInput = new BufferedReader(new
+                                InputStreamReader(proc.getInputStream()));
+                        BufferedReader stdError = new BufferedReader(new
+                                InputStreamReader(proc.getErrorStream()));
+                        proc.waitFor();
+                        String s;
+                        while ((s = stdInput.readLine()) != null) {
+                            log.debug(s);
+                        }
+                        while ((s = stdError.readLine()) != null) {
+                            log.debug(s);
+                        }
+                        log.debug("Command finished with return value: " + proc.exitValue());
+                    }
+                } catch (Exception e) {
+                    if (tries < 3) {
+                        log.debug(e);
+                        try {
+                            Thread.sleep(30);
+                        } catch (InterruptedException e1) {
+                            log.error(e1);
+                        }
+                        WakaTime._sendHeartbeat(file, isWrite, tries + 1);
+                    } else {
+                        log.error(e);
+                    }
+                }
+            }
+        });
+    }
+
+    public static String[] buildCliCommand(String file, boolean isWrite) {
         ArrayList<String> cmds = new ArrayList<String>();
         cmds.add(Dependencies.getPythonLocation());
         cmds.add(Dependencies.getCLILocation());
@@ -176,37 +210,7 @@ public class WakaTime implements ApplicationComponent {
         cmds.add(IDE_NAME+"/"+IDE_VERSION+" "+IDE_NAME+"-wakatime/"+VERSION);
         if (isWrite)
             cmds.add("--write");
-        try {
-            log.debug("Executing CLI: " + Arrays.toString(cmds.toArray()));
-            Process proc = Runtime.getRuntime().exec(cmds.toArray(new String[cmds.size()]));
-            if (WakaTime.DEBUG) {
-                BufferedReader stdInput = new BufferedReader(new
-                        InputStreamReader(proc.getInputStream()));
-                BufferedReader stdError = new BufferedReader(new
-                        InputStreamReader(proc.getErrorStream()));
-                proc.waitFor();
-                String s;
-                while ((s = stdInput.readLine()) != null) {
-                    log.debug(s);
-                }
-                while ((s = stdError.readLine()) != null) {
-                    log.debug(s);
-                }
-                log.debug("Command finished with return value: "+proc.exitValue());
-            }
-        } catch (Exception e) {
-            if (tries < 3) {
-                log.debug(e);
-                try {
-                    Thread.sleep(30);
-                } catch (InterruptedException e1) {
-                    log.error(e1);
-                }
-                WakaTime.executeCLI(file, isWrite, tries+1);
-            } else {
-                log.error(e);
-            }
-        }
+        return cmds.toArray(new String[cmds.size()]);
     }
 
     public static String getProjectName() {

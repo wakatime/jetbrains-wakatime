@@ -27,7 +27,7 @@ public class CustomDocumentListener implements DocumentListener {
             if (WakaTime.shouldLogFile(currentFile)) {
                 final long currentTime = System.currentTimeMillis() / 1000;
                 if (!currentFile.equals(WakaTime.lastFile) || WakaTime.enoughTimePassed(currentTime)) {
-                    WakaTime.logFile(currentFile, false);
+                    WakaTime.sendHeartbeat(currentFile, false);
                     WakaTime.lastFile = currentFile;
                     WakaTime.lastTime = currentTime;
                 }

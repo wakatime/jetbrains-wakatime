@@ -19,7 +19,7 @@ public class CustomSaveListener extends FileDocumentManagerAdapter {
         String currentFile = FileDocumentManager.getInstance().getFile(document).getPath();
         if (WakaTime.shouldLogFile(currentFile)) {
             long currentTime = System.currentTimeMillis() / 1000;
-            WakaTime.logFile(currentFile, true);
+            WakaTime.sendHeartbeat(currentFile, true);
             WakaTime.lastFile = currentFile;
             WakaTime.lastTime = currentTime;
         }
