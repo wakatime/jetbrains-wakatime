@@ -112,6 +112,9 @@ public class WakaTime implements ApplicationComponent {
             connection.subscribe(AppTopics.FILE_DOCUMENT_SYNC, new CustomSaveListener());
             EditorFactory.getInstance().getEventMulticaster().addDocumentListener(new CustomDocumentListener());
 
+            if (WakaTime.DEBUG)
+                Messages.showWarningDialog("Running WakaTime in DEBUG mode. Your IDE may be slow when saving or editing files.", "Debug");
+
             log.info("Finished initializing WakaTime plugin");
 
         } else {
