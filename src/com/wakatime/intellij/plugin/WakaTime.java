@@ -58,24 +58,20 @@ public class WakaTime implements ApplicationComponent {
 
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             public void run() {
-                ApplicationManager.getApplication().runReadAction(new Runnable() {
-                    public void run() {
-                        if (!Dependencies.isCLIInstalled()) {
-                            log.info("Downloading and installing wakatime-cli ...");
-                            Dependencies.installCLI();
-                            WakaTime.READY = true;
-                            log.info("Finished downloading and installing wakatime-cli.");
-                        } else if (Dependencies.isCLIOld()) {
-                            log.info("Upgrading wakatime-cli ...");
-                            Dependencies.upgradeCLI();
-                            WakaTime.READY = true;
-                            log.info("Finished upgrading wakatime-cli.");
-                        } else {
-                            WakaTime.READY = true;
-                            log.info("wakatime-cli is up to date.");
-                        }
-                    }
-                });
+                if (!Dependencies.isCLIInstalled()) {
+                    log.info("Downloading and installing wakatime-cli ...");
+                    Dependencies.installCLI();
+                    WakaTime.READY = true;
+                    log.info("Finished downloading and installing wakatime-cli.");
+                } else if (Dependencies.isCLIOld()) {
+                    log.info("Upgrading wakatime-cli ...");
+                    Dependencies.upgradeCLI();
+                    WakaTime.READY = true;
+                    log.info("Finished upgrading wakatime-cli.");
+                } else {
+                    WakaTime.READY = true;
+                    log.info("wakatime-cli is up to date.");
+                }
             }
         });
 
@@ -121,25 +117,20 @@ public class WakaTime implements ApplicationComponent {
 
             ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
                 public void run() {
-                    ApplicationManager.getApplication().runReadAction(new Runnable() {
-                        public void run() {
+                    log.info("Python not found, downloading python...");
 
-                            log.info("Python not found, downloading python...");
+                    // download and install python
+                    Dependencies.installPython();
 
-                            // download and install python
-                            Dependencies.installPython();
-
-                            if (Dependencies.isPythonInstalled()) {
-                                log.info("Finished installing python...");
-                            } else {
-                                ApplicationManager.getApplication().invokeLater(new Runnable(){
-                                    public void run(){
-                                        Messages.showErrorDialog("WakaTime requires Python to be installed.\nYou can install it from https://www.python.org/downloads/\nAfter installing Python, restart your IDE.", "Error");
-                                    }
-                                });
+                    if (Dependencies.isPythonInstalled()) {
+                        log.info("Finished installing python...");
+                    } else {
+                        ApplicationManager.getApplication().invokeLater(new Runnable(){
+                            public void run(){
+                                Messages.showErrorDialog("WakaTime requires Python to be installed.\nYou can install it from https://www.python.org/downloads/\nAfter installing Python, restart your IDE.", "Error");
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             });
         }
