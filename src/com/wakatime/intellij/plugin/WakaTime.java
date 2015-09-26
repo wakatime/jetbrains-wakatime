@@ -192,6 +192,8 @@ public class WakaTime implements ApplicationComponent {
         cmds.add(Dependencies.getCLILocation());
         cmds.add("--file");
         cmds.add(file);
+        cmds.add("--key");
+        cmds.add(ApiKey.getApiKey());
         String project = WakaTime.getProjectName();
         if (project != null) {
             cmds.add("--project");
