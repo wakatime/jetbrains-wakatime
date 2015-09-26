@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>4.0.20</version>
+    <version>4.0.21</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,14 @@
     ]]></description>
 
     <change-notes><![CDATA[
+4.0.21 (2015-08-30)<br />
+++++++++++++++++++<br />
+<br />
+- pass api key to wakatime cli in case python unable to read config file<br />
+- upgrade wakatime cli to v4.1.7<br />
+- default request timeout of 30 seconds<br />
+<br />
+<br />
 4.0.20 (2015-08-30)<br />
 ++++++++++++++++++<br />
 <br />
