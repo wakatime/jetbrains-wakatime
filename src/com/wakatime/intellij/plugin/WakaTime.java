@@ -270,7 +270,7 @@ public class WakaTime implements ApplicationComponent {
         if (key != null) {
             newKey = key;
             if (key.length() > 4)
-                newKey = "********-****-****-****-********" + key.substring(key.length() - 4);
+                newKey = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXX" + key.substring(key.length() - 4);
         }
         return newKey;
     }
