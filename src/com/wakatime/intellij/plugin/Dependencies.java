@@ -24,7 +24,7 @@ import java.util.zip.ZipInputStream;
 
 public class Dependencies {
 
-    private static final String cliVersion = "4.1.4";
+    private static final String cliVersion = "4.1.7";
 
     private static String pythonLocation = null;
     private static String resourcesLocation = null;
