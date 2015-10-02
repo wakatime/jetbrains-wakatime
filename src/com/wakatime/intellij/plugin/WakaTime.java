@@ -94,13 +94,13 @@ public class WakaTime implements ApplicationComponent {
             }
             log.debug("Api Key: " + obfuscateKey(ApiKey.getApiKey()));
 
-            // add WakaTime item to File menu
+            // add WakaTime item to Tools menu
             ActionManager am = ActionManager.getInstance();
             PluginMenu action = new PluginMenu();
             am.registerAction("WakaTimeApiKey", action);
-            DefaultActionGroup fileMenu = (DefaultActionGroup) am.getAction("FileMenu");
-            fileMenu.addSeparator();
-            fileMenu.add(action);
+            DefaultActionGroup menu = (DefaultActionGroup) am.getAction("ToolsMenu");
+            menu.addSeparator();
+            menu.add(action);
 
             // Setup message listeners
             MessageBus bus = ApplicationManager.getApplication().getMessageBus();
