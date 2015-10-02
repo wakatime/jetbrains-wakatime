@@ -20,7 +20,6 @@ import java.nio.channels.ReadableByteChannel;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -30,7 +29,6 @@ public class Dependencies {
 
     private static String pythonLocation = null;
     private static String resourcesLocation = null;
-    private static String cliLocation = null;
 
     public static boolean isPythonInstalled() {
         return Dependencies.getPythonLocation() != null;
@@ -92,8 +90,10 @@ public class Dependencies {
             try {
                 String key = "Software\\\\Python\\\\PythonCore";
                 for (String version : WinRegistry.readStringSubKeys(hkey, key)) {
-                    path = WinRegistry.readString(hkey, key + "\\" + version, "InstallPath");
-                    break;
+                    path = WinRegistry.readString(hkey, key + "\\" + version + "\\InstallPath", "");
+                    if (path != null) {
+                        break;
+                    }
                 }
             } catch (IllegalAccessException e) {
                 WakaTime.log.debug(e);
