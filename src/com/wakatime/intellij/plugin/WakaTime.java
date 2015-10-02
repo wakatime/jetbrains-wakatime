@@ -56,6 +56,12 @@ public class WakaTime implements ApplicationComponent {
         IDE_NAME = PlatformUtils.getPlatformPrefix();
         IDE_VERSION = ApplicationInfo.getInstance().getFullVersion();
 
+        WakaTime.DEBUG = WakaTime.isDebugEnabled();
+        if (WakaTime.DEBUG) {
+            log.setLevel(Level.DEBUG);
+            log.debug("Logging level set to DEBUG");
+        }
+
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             public void run() {
                 if (!Dependencies.isCLIInstalled()) {
@@ -72,19 +78,11 @@ public class WakaTime implements ApplicationComponent {
                     WakaTime.READY = true;
                     log.info("wakatime-cli is up to date.");
                 }
+                log.debug("CLI location: " + Dependencies.getCLILocation());
             }
         });
 
         if (Dependencies.isPythonInstalled()) {
-
-            WakaTime.DEBUG = WakaTime.isDebugEnabled();
-            if (WakaTime.DEBUG) {
-                log.setLevel(Level.DEBUG);
-                log.debug("Logging level set to DEBUG");
-            }
-
-            log.debug("Python location: " + Dependencies.getPythonLocation());
-            log.debug("CLI location: " + Dependencies.getCLILocation());
 
             // prompt for apiKey if it does not already exist
             Project project = ProjectManager.getInstance().getDefaultProject();
@@ -152,7 +150,7 @@ public class WakaTime implements ApplicationComponent {
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             public void run() {
                 try {
-                    log.debug("Executing CLI: " + Arrays.toString(cmds));
+                    log.debug("Executing CLI: " + Arrays.toString(obfuscateKey(cmds)));
                     Process proc = Runtime.getRuntime().exec(cmds);
                     if (WakaTime.DEBUG) {
                         BufferedReader stdInput = new BufferedReader(new
@@ -275,6 +273,19 @@ public class WakaTime implements ApplicationComponent {
                 newKey = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXX" + key.substring(key.length() - 4);
         }
         return newKey;
+    }
+
+    private static String[] obfuscateKey(String[] cmds) {
+        ArrayList<String> newCmds = new ArrayList<String>();
+        String lastCmd = "";
+        for (String cmd : cmds) {
+            if (lastCmd == "--key")
+                newCmds.add(obfuscateKey(cmd));
+            else
+                newCmds.add(cmd);
+            lastCmd = cmd;
+        }
+        return newCmds.toArray(new String[newCmds.size()]);
     }
 
     @NotNull

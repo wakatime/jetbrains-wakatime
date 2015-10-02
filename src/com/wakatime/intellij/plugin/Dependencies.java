@@ -12,6 +12,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -19,6 +20,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -52,61 +54,54 @@ public class Dependencies {
     public static String getPythonLocation() {
         if (Dependencies.pythonLocation != null)
             return Dependencies.pythonLocation;
-        String []paths = new String[] {
-                "pythonw",
-                "python",
-                "/usr/local/bin/python",
-                "/usr/bin/python",
-                "\\python37\\pythonw",
-                "\\Python37\\pythonw",
-                "\\python36\\pythonw",
-                "\\Python36\\pythonw",
-                "\\python35\\pythonw",
-                "\\Python35\\pythonw",
-                "\\python34\\pythonw",
-                "\\Python34\\pythonw",
-                "\\python33\\pythonw",
-                "\\Python33\\pythonw",
-                "\\python32\\pythonw",
-                "\\Python32\\pythonw",
-                "\\python31\\pythonw",
-                "\\Python31\\pythonw",
-                "\\python30\\pythonw",
-                "\\Python30\\pythonw",
-                "\\python27\\pythonw",
-                "\\Python27\\pythonw",
-                "\\python26\\pythonw",
-                "\\Python26\\pythonw",
-                "\\python37\\python",
-                "\\Python37\\python",
-                "\\python36\\python",
-                "\\Python36\\python",
-                "\\python35\\python",
-                "\\Python35\\python",
-                "\\python34\\python",
-                "\\Python34\\python",
-                "\\python33\\python",
-                "\\Python33\\python",
-                "\\python32\\python",
-                "\\Python32\\python",
-                "\\python31\\python",
-                "\\Python31\\python",
-                "\\python30\\python",
-                "\\Python30\\python",
-                "\\python27\\python",
-                "\\Python27\\python",
-                "\\python26\\python",
-                "\\Python26\\python",
-        };
-        for (int i=0; i<paths.length; i++) {
-            try {
-                String[] cmds = { paths[i], "--version" };
-                Runtime.getRuntime().exec(cmds);
-                Dependencies.pythonLocation = paths[i];
-                break;
-            } catch (Exception e) { }
+        ArrayList<String> paths = new ArrayList<String>();
+        paths.add("/");
+        paths.add("/");
+        paths.add("/usr/local/bin/");
+        paths.add("/usr/bin/");
+        paths.add(getPythonFromRegistry(WinRegistry.HKEY_CURRENT_USER));
+        paths.add(getPythonFromRegistry(WinRegistry.HKEY_LOCAL_MACHINE));
+        for (String path : paths) {
+            if (path != null) {
+                try {
+                    String[] cmds = {combinePaths(path, "pythonw"), "--version"};
+                    Runtime.getRuntime().exec(cmds);
+                    Dependencies.pythonLocation = combinePaths(path, "pythonw");
+                    break;
+                } catch (Exception e) {
+                    try {
+                        String[] cmds = {combinePaths(path, "python"), "--version"};
+                        Runtime.getRuntime().exec(cmds);
+                        Dependencies.pythonLocation = combinePaths(path, "python");
+                        break;
+                    } catch (Exception e2) { }
+                }
+            }
+        }
+        if (Dependencies.pythonLocation != null) {
+            WakaTime.log.debug("Found python binary: " + Dependencies.pythonLocation);
+        } else {
+            WakaTime.log.warn("Could not find python binary.");
         }
         return Dependencies.pythonLocation;
+    }
+
+    public static String getPythonFromRegistry(int hkey) {
+        String path = null;
+        if (System.getProperty("os.name").contains("Windows")) {
+            try {
+                String key = "Software\\\\Python\\\\PythonCore";
+                for (String version : WinRegistry.readStringSubKeys(hkey, key)) {
+                    path = WinRegistry.readString(hkey, key + "\\" + version, "InstallPath");
+                    break;
+                }
+            } catch (IllegalAccessException e) {
+                WakaTime.log.debug(e);
+            } catch (InvocationTargetException e) {
+                WakaTime.log.debug(e);
+            }
+        }
+        return path;
     }
 
     public static boolean isCLIInstalled() {
