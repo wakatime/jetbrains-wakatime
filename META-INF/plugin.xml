@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>4.0.21</version>
+    <version>5.0.0</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,14 @@
     ]]></description>
 
     <change-notes><![CDATA[
+5.0.0 (2015-10-02)<br />
+++++++++++++++++++<br />
+<br />
+- move WakaTime menu under Tools menu<br />
+- find python binary location from Windows registry keys if not in PATH<br />
+- check latest wakatime cli version from GitHub repository instead of hard-coding<br />
+<br />
+<br />
 4.0.21 (2015-08-30)<br />
 ++++++++++++++++++<br />
 <br />
