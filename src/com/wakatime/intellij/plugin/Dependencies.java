@@ -21,12 +21,12 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class Dependencies {
-
-    private static final String cliVersion = "4.1.7";
 
     private static String pythonLocation = null;
     private static String resourcesLocation = null;
@@ -134,11 +134,26 @@ public class Dependencies {
             }
             WakaTime.log.debug("wakatime cli version check output: \"" + output + "\"");
             WakaTime.log.debug("wakatime cli version check exit code: " + p.exitValue());
-            if (p.exitValue() == 0 && output.contains(cliVersion)) {
-                return false;
+
+            if (p.exitValue() == 0) {
+                String cliVersion = latestCliVersion();
+                WakaTime.log.debug("Current cli version from GitHub: " + cliVersion);
+                if (output.contains(cliVersion))
+                    return false;
             }
         } catch (Exception e) { }
         return true;
+    }
+
+    public static String latestCliVersion() {
+        String url = "https://raw.githubusercontent.com/wakatime/wakatime/master/wakatime/__about__.py";
+        String aboutText = getUrlAsString(url);
+        Pattern p = Pattern.compile("__version_info__ = \\('([0-9]+)', '([0-9]+)', '([0-9]+)'\\)");
+        Matcher m = p.matcher(aboutText);
+        if (m.find()) {
+            return m.group(1) + "." + m.group(2) + "." + m.group(3);
+        }
+        return "Unknown";
     }
 
     public static String getCLILocation() {
@@ -254,6 +269,49 @@ public class Dependencies {
         }
 
         return false;
+    }
+
+    public static String getUrlAsString(String url) {
+        StringBuilder text = new StringBuilder();
+
+        URL downloadUrl = null;
+        try {
+            downloadUrl = new URL(url);
+        } catch (MalformedURLException e) { }
+
+        try {
+            InputStream inputStream = downloadUrl.openStream();
+            byte[] buffer = new byte[4096];
+            while (inputStream.read(buffer) != -1) {
+                text.append(new String(buffer, "UTF-8"));
+            }
+            inputStream.close();
+        } catch (RuntimeException e) {
+            WakaTime.log.error(e);
+            try {
+                // try downloading without verifying SSL cert (https://github.com/wakatime/jetbrains-wakatime/issues/46)
+                SSLContext SSL_CONTEXT = SSLContext.getInstance("SSL");
+                SSL_CONTEXT.init(null, new TrustManager[] { new LocalSSLTrustManager() }, null);
+                HttpsURLConnection.setDefaultSSLSocketFactory(SSL_CONTEXT.getSocketFactory());
+                HttpsURLConnection conn = (HttpsURLConnection)downloadUrl.openConnection();
+                InputStream inputStream = conn.getInputStream();
+                byte[] buffer = new byte[4096];
+                while (inputStream.read(buffer) != -1) {
+                    text.append(new String(buffer, "UTF-8"));
+                }
+                inputStream.close();
+            } catch (NoSuchAlgorithmException e1) {
+                WakaTime.log.error(e1);
+            } catch (KeyManagementException e1) {
+                WakaTime.log.error(e1);
+            } catch (IOException e1) {
+                WakaTime.log.error(e1);
+            }
+        } catch (IOException e) {
+            WakaTime.log.error(e);
+        }
+
+        return text.toString();
     }
 
     private static void unzip(String zipFile, File outputDir) throws IOException {
