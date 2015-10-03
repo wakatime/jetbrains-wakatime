@@ -54,11 +54,14 @@ public class Dependencies {
             return Dependencies.pythonLocation;
         ArrayList<String> paths = new ArrayList<String>();
         paths.add("/");
-        paths.add("/");
         paths.add("/usr/local/bin/");
         paths.add("/usr/bin/");
         paths.add(getPythonFromRegistry(WinRegistry.HKEY_CURRENT_USER));
         paths.add(getPythonFromRegistry(WinRegistry.HKEY_LOCAL_MACHINE));
+        paths.add("/python34");
+        paths.add("/python33");
+        paths.add("/python27");
+        paths.add("/python26");
         for (String path : paths) {
             if (path != null) {
                 try {
