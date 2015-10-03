@@ -99,6 +99,8 @@ public class Dependencies {
                 WakaTime.log.debug(e);
             } catch (InvocationTargetException e) {
                 WakaTime.log.debug(e);
+            } catch (NullPointerException e) {
+                WakaTime.log.debug(e);
             }
         }
         return path;
