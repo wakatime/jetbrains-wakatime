@@ -8,11 +8,13 @@ Website:     https://wakatime.com/
 
 package com.wakatime.intellij.plugin;
 
+import com.sun.jna.platform.win32.Advapi32Util;
+import com.sun.jna.platform.win32.WinReg;
+
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -56,8 +58,8 @@ public class Dependencies {
         paths.add("/");
         paths.add("/usr/local/bin/");
         paths.add("/usr/bin/");
-        paths.add(getPythonFromRegistry(WinRegistry.HKEY_CURRENT_USER));
-        paths.add(getPythonFromRegistry(WinRegistry.HKEY_LOCAL_MACHINE));
+        paths.add(getPythonFromRegistry(WinReg.HKEY_CURRENT_USER));
+        paths.add(getPythonFromRegistry(WinReg.HKEY_LOCAL_MACHINE));
         paths.add("/python34");
         paths.add("/python33");
         paths.add("/python27");
@@ -87,22 +89,18 @@ public class Dependencies {
         return Dependencies.pythonLocation;
     }
 
-    public static String getPythonFromRegistry(int hkey) {
+    public static String getPythonFromRegistry(WinReg.HKEY hkey) {
         String path = null;
         if (System.getProperty("os.name").contains("Windows")) {
             try {
                 String key = "Software\\\\Python\\\\PythonCore";
-                for (String version : WinRegistry.readStringSubKeys(hkey, key)) {
-                    path = WinRegistry.readString(hkey, key + "\\" + version + "\\InstallPath", "");
+                for (String version : Advapi32Util.registryGetKeys(hkey, key)) {
+                    path = Advapi32Util.registryGetStringValue(hkey, key + "\\" + version + "\\InstallPath", "");
                     if (path != null) {
                         break;
                     }
                 }
-            } catch (IllegalAccessException e) {
-                WakaTime.log.debug(e);
-            } catch (InvocationTargetException e) {
-                WakaTime.log.debug(e);
-            } catch (NullPointerException e) {
+            }  catch (Exception e) {
                 WakaTime.log.debug(e);
             }
         }
