@@ -55,6 +55,7 @@ public class Dependencies {
         if (Dependencies.pythonLocation != null)
             return Dependencies.pythonLocation;
         ArrayList<String> paths = new ArrayList<String>();
+        paths.add(null);
         paths.add("/");
         paths.add("/usr/local/bin/");
         paths.add("/usr/bin/");
@@ -65,20 +66,18 @@ public class Dependencies {
         paths.add("/python27");
         paths.add("/python26");
         for (String path : paths) {
-            if (path != null) {
+            try {
+                String[] cmds = {combinePaths(path, "pythonw"), "--version"};
+                Runtime.getRuntime().exec(cmds);
+                Dependencies.pythonLocation = combinePaths(path, "pythonw");
+                break;
+            } catch (Exception e) {
                 try {
-                    String[] cmds = {combinePaths(path, "pythonw"), "--version"};
+                    String[] cmds = {combinePaths(path, "python"), "--version"};
                     Runtime.getRuntime().exec(cmds);
-                    Dependencies.pythonLocation = combinePaths(path, "pythonw");
+                    Dependencies.pythonLocation = combinePaths(path, "python");
                     break;
-                } catch (Exception e) {
-                    try {
-                        String[] cmds = {combinePaths(path, "python"), "--version"};
-                        Runtime.getRuntime().exec(cmds);
-                        Dependencies.pythonLocation = combinePaths(path, "python");
-                        break;
-                    } catch (Exception e2) { }
-                }
+                } catch (Exception e2) { }
             }
         }
         if (Dependencies.pythonLocation != null) {
@@ -365,10 +364,12 @@ public class Dependencies {
     private static String combinePaths(String... args) {
         File path = null;
         for (String arg : args) {
-            if (path == null)
-                path = new File(arg);
-            else
-                path = new File(path, arg);
+            if (arg != null) {
+                if (path == null)
+                    path = new File(arg);
+                else
+                    path = new File(path, arg);
+            }
         }
         if (path == null)
             return null;
