@@ -229,63 +229,24 @@ public class Dependencies {
     public static void installPython() {
         if (System.getProperty("os.name").contains("Windows")) {
             String pyVer = "3.5.0";
-            String url = "https://www.python.org/ftp/python/" + pyVer + "/python-" + pyVer + ".exe";
-            if (is64bit()) {
-                url = "https://www.python.org/ftp/python/" + pyVer + "/python-" + pyVer + "-amd64.exe";
-            }
+            String arch = "win32";
+            if (is64bit()) arch = "amd64";
+            String url = "https://www.python.org/ftp/python/" + pyVer + "/python-" + pyVer + "-embed-" + arch + ".zip";
 
             File dir = new File(Dependencies.getResourcesLocation());
-            File outFile = new File(combinePaths(dir.getAbsolutePath(), "python-installer.exe"));
-            if (downloadFile(url, outFile.getAbsolutePath())) {
-
-                uninstallPython();
+            File zipFile = new File(combinePaths(dir.getAbsolutePath(), "python.zip"));
+            if (downloadFile(url, zipFile.getAbsolutePath())) {
 
                 File targetDir = new File(combinePaths(dir.getAbsolutePath(), "python"));
 
-                // execute python installer
-                ArrayList<String> cmds = new ArrayList<String>();
-                cmds.add(outFile.getAbsolutePath());
-                cmds.add("/passive");
-                cmds.add("InstallAllUsers=0");
-                cmds.add("AssociateFiles=0");
-                cmds.add("Shortcuts=0");
-                cmds.add("Include_test=0");
-                cmds.add("Include_doc=0");
-                cmds.add("Include_pip=0");
-                cmds.add("Include_tcltk=0");
-                cmds.add("Include_tools=0");
-                cmds.add("Include_launcher=0");
-                cmds.add("SimpleInstall=1");
-                cmds.add("TargetDir=\"" + targetDir.getAbsolutePath() + "\"");
-                WakaTime.log.debug("Executing: " + cmds.toString());
+                // extract python
                 try {
-                    Process p = Runtime.getRuntime().exec(cmds.toArray(new String[cmds.size()]));
-                    p.waitFor();
-                    outFile.delete();
-                } catch (Exception e) {
+                    Dependencies.unzip(zipFile.getAbsolutePath(), targetDir);
+                } catch (IOException e) {
                     WakaTime.log.error(e);
                 }
+                zipFile.delete();
             }
-        }
-    }
-
-    private static void uninstallPython() {
-        File dir = new File(Dependencies.getResourcesLocation());
-        File outFile = new File(combinePaths(dir.getAbsolutePath(), "python-installer.exe"));
-        File targetDir = new File(combinePaths(dir.getAbsolutePath(), "python"));
-        if (targetDir.exists())
-            deleteDirectory(targetDir);
-
-        ArrayList<String> cmds = new ArrayList<String>();
-        cmds.add(outFile.getAbsolutePath());
-        cmds.add("/uninstall");
-        cmds.add("/quiet");
-
-        try {
-            Process p = Runtime.getRuntime().exec(cmds.toArray(new String[cmds.size()]));
-            p.waitFor();
-        } catch (Exception e) {
-            WakaTime.log.error(e);
         }
     }
 
