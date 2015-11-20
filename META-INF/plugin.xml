@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>6.0.0</version>
+    <version>6.0.1</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+6.0.1 (2015-11-20)<br />
+++++++++++++++++++<br />
+<br />
+- use embeddable python on windows<br />
+<br />
+<br />
 6.0.0 (2015-11-20)<br />
 ++++++++++++++++++<br />
 <br />
