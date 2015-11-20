@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>5.0.4</version>
+    <version>6.0.0</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,15 @@
     ]]></description>
 
     <change-notes><![CDATA[
+6.0.0 (2015-11-20)<br />
+++++++++++++++++++<br />
+<br />
+- install python locally instead of for all users<br />
+- detect python binary from windows registry when machine is 64bit architecture<br />
+- bug fixes around async installing python and wakatime core<br />
+- close output stream after downloading files<br />
+<br />
+<br />
 5.0.4 (2015-10-06)<br />
 ++++++++++++++++++<br />
 <br />
