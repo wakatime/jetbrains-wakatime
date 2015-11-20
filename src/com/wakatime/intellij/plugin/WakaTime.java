@@ -62,6 +62,53 @@ public class WakaTime implements ApplicationComponent {
             log.debug("Logging level set to DEBUG");
         }
 
+        checkApiKey();
+
+        setupMenuItem();
+
+        if (Dependencies.isPythonInstalled()) {
+
+            checkCore();
+
+            setupEventListeners();
+
+            checkDebug();
+
+            log.info("Finished initializing WakaTime plugin");
+
+        } else {
+
+            ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
+                public void run() {
+                    log.info("Python not found, downloading python...");
+
+                    // download and install python
+                    Dependencies.installPython();
+
+                    if (Dependencies.isPythonInstalled()) {
+                        log.info("Finished installing python...");
+
+                        checkCore();
+
+                        setupEventListeners();
+
+                        checkDebug();
+
+                        log.info("Finished initializing WakaTime plugin");
+
+                    } else {
+                        ApplicationManager.getApplication().invokeLater(new Runnable(){
+                            public void run(){
+                                Messages.showErrorDialog("WakaTime requires Python to be installed.\nYou can install it from https://www.python.org/downloads/\nAfter installing Python, restart your IDE.", "Error");
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    private void checkCore() {
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             public void run() {
                 if (!Dependencies.isCLIInstalled()) {
@@ -81,57 +128,49 @@ public class WakaTime implements ApplicationComponent {
                 log.debug("CLI location: " + Dependencies.getCLILocation());
             }
         });
+    }
 
-        if (Dependencies.isPythonInstalled()) {
-
-            // prompt for apiKey if it does not already exist
-            Project project = ProjectManager.getInstance().getDefaultProject();
-            ApiKey apiKey = new ApiKey(project);
-            if (apiKey.getApiKey().equals("")) {
-                apiKey.promptForApiKey();
-            }
-            log.debug("Api Key: " + obfuscateKey(ApiKey.getApiKey()));
-
-            // add WakaTime item to Tools menu
-            ActionManager am = ActionManager.getInstance();
-            PluginMenu action = new PluginMenu();
-            am.registerAction("WakaTimeApiKey", action);
-            DefaultActionGroup menu = (DefaultActionGroup) am.getAction("ToolsMenu");
-            menu.addSeparator();
-            menu.add(action);
-
-            // Setup message listeners
-            MessageBus bus = ApplicationManager.getApplication().getMessageBus();
-            connection = bus.connect();
-            connection.subscribe(AppTopics.FILE_DOCUMENT_SYNC, new CustomSaveListener());
-            EditorFactory.getInstance().getEventMulticaster().addDocumentListener(new CustomDocumentListener());
-
-            if (WakaTime.DEBUG)
-                Messages.showWarningDialog("Running WakaTime in DEBUG mode. Your IDE may be slow when saving or editing files.", "Debug");
-
-            log.info("Finished initializing WakaTime plugin");
-
-        } else {
-
-            ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
-                public void run() {
-                    log.info("Python not found, downloading python...");
-
-                    // download and install python
-                    Dependencies.installPython();
-
-                    if (Dependencies.isPythonInstalled()) {
-                        log.info("Finished installing python...");
-                    } else {
-                        ApplicationManager.getApplication().invokeLater(new Runnable(){
-                            public void run(){
-                                Messages.showErrorDialog("WakaTime requires Python to be installed.\nYou can install it from https://www.python.org/downloads/\nAfter installing Python, restart your IDE.", "Error");
-                            }
-                        });
-                    }
+    private void checkApiKey() {
+        ApplicationManager.getApplication().invokeLater(new Runnable(){
+            public void run() {
+                // prompt for apiKey if it does not already exist
+                Project project = ProjectManager.getInstance().getDefaultProject();
+                ApiKey apiKey = new ApiKey(project);
+                if (apiKey.getApiKey().equals("")) {
+                    apiKey.promptForApiKey();
                 }
-            });
-        }
+                log.debug("Api Key: " + obfuscateKey(ApiKey.getApiKey()));
+            }
+        });
+    }
+
+    private void setupEventListeners() {
+        ApplicationManager.getApplication().invokeLater(new Runnable(){
+            public void run() {
+                MessageBus bus = ApplicationManager.getApplication().getMessageBus();
+                connection = bus.connect();
+                connection.subscribe(AppTopics.FILE_DOCUMENT_SYNC, new CustomSaveListener());
+                EditorFactory.getInstance().getEventMulticaster().addDocumentListener(new CustomDocumentListener());
+            }
+        });
+    }
+
+    private void setupMenuItem() {
+        ApplicationManager.getApplication().invokeLater(new Runnable(){
+            public void run() {
+                ActionManager am = ActionManager.getInstance();
+                PluginMenu action = new PluginMenu();
+                am.registerAction("WakaTimeApiKey", action);
+                DefaultActionGroup menu = (DefaultActionGroup) am.getAction("ToolsMenu");
+                menu.addSeparator();
+                menu.add(action);
+            }
+        });
+    }
+
+    private void checkDebug() {
+        if (WakaTime.DEBUG)
+            Messages.showWarningDialog("Running WakaTime in DEBUG mode. Your IDE may be slow when saving or editing files.", "Debug");
     }
 
     public void disposeComponent() {
@@ -142,10 +181,10 @@ public class WakaTime implements ApplicationComponent {
 
     public static void sendHeartbeat(final String file, final boolean isWrite) {
         if (WakaTime.READY)
-            WakaTime._sendHeartbeat(file, isWrite, 0);
+            sendHeartbeat(file, isWrite, 0);
     }
 
-    public static void _sendHeartbeat(final String file, final boolean isWrite, final int tries) {
+    private static void sendHeartbeat(final String file, final boolean isWrite, final int tries) {
         final String[] cmds = buildCliCommand(file, isWrite);
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             public void run() {
@@ -175,7 +214,7 @@ public class WakaTime implements ApplicationComponent {
                         } catch (InterruptedException e1) {
                             log.error(e1);
                         }
-                        WakaTime._sendHeartbeat(file, isWrite, tries + 1);
+                        sendHeartbeat(file, isWrite, tries + 1);
                     } else {
                         log.error(e);
                     }

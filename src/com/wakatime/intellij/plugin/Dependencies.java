@@ -59,12 +59,30 @@ public class Dependencies {
         paths.add("/");
         paths.add("/usr/local/bin/");
         paths.add("/usr/bin/");
-        paths.add(getPythonFromRegistry(WinReg.HKEY_CURRENT_USER));
-        paths.add(getPythonFromRegistry(WinReg.HKEY_LOCAL_MACHINE));
-        paths.add("/python34");
-        paths.add("/python33");
-        paths.add("/python27");
-        paths.add("/python26");
+        if (System.getProperty("os.name").contains("Windows")) {
+            File resourcesLocation = new File(Dependencies.getResourcesLocation());
+            paths.add(combinePaths(resourcesLocation.getAbsolutePath(), "python"));
+            paths.add(getPythonFromRegistry(WinReg.HKEY_CURRENT_USER));
+            paths.add(getPythonFromRegistry(WinReg.HKEY_LOCAL_MACHINE));
+            paths.add("/python39");
+            paths.add("/Python39");
+            paths.add("/python38");
+            paths.add("/Python38");
+            paths.add("/python37");
+            paths.add("/Python37");
+            paths.add("/python36");
+            paths.add("/Python36");
+            paths.add("/python35");
+            paths.add("/Python35");
+            paths.add("/python34");
+            paths.add("/Python34");
+            paths.add("/python33");
+            paths.add("/Python33");
+            paths.add("/python27");
+            paths.add("/Python27");
+            paths.add("/python26");
+            paths.add("/Python26");
+        }
         for (String path : paths) {
             try {
                 String[] cmds = {combinePaths(path, "pythonw"), "--version"};
@@ -92,7 +110,7 @@ public class Dependencies {
         String path = null;
         if (System.getProperty("os.name").contains("Windows")) {
             try {
-                String key = "Software\\\\Python\\\\PythonCore";
+                String key = "Software\\\\Wow6432Node\\\\Python\\\\PythonCore";
                 for (String version : Advapi32Util.registryGetKeys(hkey, key)) {
                     path = Advapi32Util.registryGetStringValue(hkey, key + "\\" + version + "\\InstallPath", "");
                     if (path != null) {
@@ -102,13 +120,28 @@ public class Dependencies {
             }  catch (Exception e) {
                 WakaTime.log.debug(e);
             }
+            if (path == null) {
+                try {
+                    String key = "Software\\\\Python\\\\PythonCore";
+                    for (String version : Advapi32Util.registryGetKeys(hkey, key)) {
+                        path = Advapi32Util.registryGetStringValue(hkey, key + "\\" + version + "\\InstallPath", "");
+                        if (path != null) {
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    WakaTime.log.debug(e);
+                }
+            }
         }
         return path;
     }
 
     public static boolean isCLIInstalled() {
         File cli = new File(Dependencies.getCLILocation());
-        return (cli.exists() && !cli.isDirectory());
+        WakaTime.log.debug("WakaTime Core Location: " + cli.getAbsolutePath());
+        WakaTime.log.debug("WakaTime Core Exists: " + cli.exists());
+        return cli.exists();
     }
 
     public static boolean isCLIOld() {
@@ -190,35 +223,69 @@ public class Dependencies {
     }
 
     public static void upgradeCLI() {
-        File cliDir = new File(new File(Dependencies.getCLILocation()).getParent());
-        cliDir.delete();
         Dependencies.installCLI();
     }
 
     public static void installPython() {
         if (System.getProperty("os.name").contains("Windows")) {
-            String url = "https://www.python.org/ftp/python/3.4.2/python-3.4.2.msi";
-            if (System.getenv("ProgramFiles(x86)") != null) {
-                url = "https://www.python.org/ftp/python/3.4.2/python-3.4.2.amd64.msi";
+            String pyVer = "3.5.0";
+            String url = "https://www.python.org/ftp/python/" + pyVer + "/python-" + pyVer + ".exe";
+            if (is64bit()) {
+                url = "https://www.python.org/ftp/python/" + pyVer + "/python-" + pyVer + "-amd64.exe";
             }
 
-            File cli = new File(Dependencies.getCLILocation());
-            String outFile = combinePaths(cli.getParentFile().getParentFile().getAbsolutePath(), "python.msi");
-            if (downloadFile(url, outFile)) {
+            File dir = new File(Dependencies.getResourcesLocation());
+            File outFile = new File(combinePaths(dir.getAbsolutePath(), "python-installer.exe"));
+            if (downloadFile(url, outFile.getAbsolutePath())) {
 
-                // execute python msi installer
+                uninstallPython();
+
+                File targetDir = new File(combinePaths(dir.getAbsolutePath(), "python"));
+
+                // execute python installer
                 ArrayList<String> cmds = new ArrayList<String>();
-                cmds.add("msiexec");
-                cmds.add("/i");
-                cmds.add(outFile);
-                cmds.add("/norestart");
-                cmds.add("/qb!");
+                cmds.add(outFile.getAbsolutePath());
+                cmds.add("/passive");
+                cmds.add("InstallAllUsers=0");
+                cmds.add("AssociateFiles=0");
+                cmds.add("Shortcuts=0");
+                cmds.add("Include_test=0");
+                cmds.add("Include_doc=0");
+                cmds.add("Include_pip=0");
+                cmds.add("Include_tcltk=0");
+                cmds.add("Include_tools=0");
+                cmds.add("Include_launcher=0");
+                cmds.add("SimpleInstall=1");
+                cmds.add("TargetDir=\"" + targetDir.getAbsolutePath() + "\"");
+                WakaTime.log.debug("Executing: " + cmds.toString());
                 try {
-                    Runtime.getRuntime().exec(cmds.toArray(new String[cmds.size()]));
+                    Process p = Runtime.getRuntime().exec(cmds.toArray(new String[cmds.size()]));
+                    p.waitFor();
+                    outFile.delete();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    WakaTime.log.error(e);
                 }
             }
+        }
+    }
+
+    private static void uninstallPython() {
+        File dir = new File(Dependencies.getResourcesLocation());
+        File outFile = new File(combinePaths(dir.getAbsolutePath(), "python-installer.exe"));
+        File targetDir = new File(combinePaths(dir.getAbsolutePath(), "python"));
+        if (targetDir.exists())
+            deleteDirectory(targetDir);
+
+        ArrayList<String> cmds = new ArrayList<String>();
+        cmds.add(outFile.getAbsolutePath());
+        cmds.add("/uninstall");
+        cmds.add("/quiet");
+
+        try {
+            Process p = Runtime.getRuntime().exec(cmds.toArray(new String[cmds.size()]));
+            p.waitFor();
+        } catch (Exception e) {
+            WakaTime.log.error(e);
         }
     }
 
@@ -241,6 +308,7 @@ public class Dependencies {
             rbc = Channels.newChannel(downloadUrl.openStream());
             fos = new FileOutputStream(saveAs);
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+            fos.close();
             return true;
         } catch (RuntimeException e) {
             WakaTime.log.error(e);
@@ -258,6 +326,7 @@ public class Dependencies {
                     fos.write(buffer, 0, bytesRead);
                 }
                 inputStream.close();
+                fos.close();
                 return true;
             } catch (NoSuchAlgorithmException e1) {
                 WakaTime.log.error(e1);
@@ -359,6 +428,16 @@ public class Dependencies {
             }
         }
         path.delete();
+    }
+
+    public static boolean is64bit() {
+        boolean is64bit = false;
+        if (System.getProperty("os.name").contains("Windows")) {
+            is64bit = (System.getenv("ProgramFiles(x86)") != null);
+        } else {
+            is64bit = (System.getProperty("os.arch").indexOf("64") != -1);
+        }
+        return is64bit;
     }
 
     private static String combinePaths(String... args) {
