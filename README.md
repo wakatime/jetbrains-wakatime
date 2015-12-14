@@ -14,7 +14,7 @@ Installation
 
 4. Click `Close` and `OK`, then Re-launch your IDE.
 
-5. Enter your [api key](https://wakatime.com/settings#apikey), then click `Save`.
+5. Enter your [api key](https://wakatime.com/settings#apikey) in `Tools -> WakaTime API Key`, then click `Save`.
 
 6. Use your IDE like you normally do and your time will be tracked for you automatically.
 
