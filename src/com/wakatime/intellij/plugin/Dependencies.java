@@ -339,7 +339,7 @@ public class Dependencies {
             } catch (IOException e1) {
                 WakaTime.log.error(e1);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             WakaTime.log.error(e);
         }
 
