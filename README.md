@@ -1,7 +1,8 @@
 jetbrains-wakatime
 ==================
 
-WakaTime is a productivity & time tracking tool for programmers. Once the WakaTime plugin is installed, you get a dashboard with reports about your programming by time, language, project, commit, and branch.
+Metrics, insights, and time tracking automatically generated from your programming activity.
+
 
 Installation
 ------------
@@ -20,15 +21,20 @@ Installation
 
 7. Visit https://wakatime.com to see your logged time.
 
+
 Screen Shots
 ------------
 
 ![Project Overview](https://wakatime.com/static/img/ScreenShots/ScreenShot-2014-10-29.png)
 
+
 Configuring
 -----------
 
-WakaTime plugins share a common config file `.wakatime.cfg` located in your user home directory with [these options](https://github.com/wakatime/wakatime#configuring) available.
+WakaTime for Jetbrains IDE's can be configured via Tools -> WakaTime Settings.
+
+For more settings, WakaTime plugins share a common config file `.wakatime.cfg` located in your user home directory with [these options](https://github.com/wakatime/wakatime#configuring) available.
+
 
 Uninstalling
 ------------
