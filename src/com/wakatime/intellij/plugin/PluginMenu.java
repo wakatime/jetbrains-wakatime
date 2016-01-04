@@ -15,12 +15,12 @@ import com.intellij.openapi.project.Project;
 
 public class PluginMenu extends AnAction {
     public PluginMenu() {
-        super("WakaTime API Key");
-        // super("WakaTime API Key", "", IconLoader.getIcon("/Mypackage/icon.png"));
+        super("WakaTime Settings");
+        // super("WakaTime Settings", "", IconLoader.getIcon("/Mypackage/icon.png"));
     }
     public void actionPerformed(AnActionEvent e) {
         Project project = e.getData(PlatformDataKeys.PROJECT);
-        ApiKey apiKey = new ApiKey(project);
-        apiKey.promptForApiKey();
+        Settings popup = new Settings(project);
+        popup.show();
     }
 }
