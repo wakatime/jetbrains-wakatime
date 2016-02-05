@@ -23,6 +23,8 @@ public class Settings extends DialogWrapper {
     private final JTextField apiKey;
     private final JLabel proxyLabel;
     private final JTextField proxy;
+    private final JLabel debugLabel;
+    private final JCheckBox debug;
 
     public Settings(@Nullable Project project) {
         super(project, true);
@@ -44,6 +46,13 @@ public class Settings extends DialogWrapper {
         if (p == null) p = "";
         proxy.setText(p);
         panel.add(proxy);
+
+        debugLabel = new JLabel("Debug:", JLabel.CENTER);
+        panel.add(debugLabel);
+        String val = ConfigFile.get("settings", "debug");
+        debug = new JCheckBox();
+        debug.setSelected(val != null && val.trim().toLowerCase().equals("true"));
+        panel.add(debug);
 
         init();
     }
@@ -68,6 +77,11 @@ public class Settings extends DialogWrapper {
     public void doOKAction() {
         ApiKey.setApiKey(apiKey.getText());
         ConfigFile.set("settings", "proxy", proxy.getText());
+        String val = "false";
+        if (debug.isSelected()) val = "true";
+        ConfigFile.set("settings", "debug", val);
+        WakaTime.setupDebugging();
+        WakaTime.setLoggingLevel();
         super.doOKAction();
     }
 

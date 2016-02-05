@@ -56,11 +56,8 @@ public class WakaTime implements ApplicationComponent {
         IDE_NAME = PlatformUtils.getPlatformPrefix();
         IDE_VERSION = ApplicationInfo.getInstance().getFullVersion();
 
-        WakaTime.DEBUG = WakaTime.isDebugEnabled();
-        if (WakaTime.DEBUG) {
-            log.setLevel(Level.DEBUG);
-            log.debug("Logging level set to DEBUG");
-        }
+        setupDebugging();
+        setLoggingLevel();
 
         checkApiKey();
 
@@ -274,34 +271,21 @@ public class WakaTime implements ApplicationComponent {
     }
 
     public static Boolean isDebugEnabled() {
-        Boolean debug = false;
-        File userHome = new File(System.getProperty("user.home"));
-        File configFile = new File(userHome, WakaTime.CONFIG);
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader(configFile.getAbsolutePath()));
-        } catch (FileNotFoundException e1) {}
-        if (br != null) {
-            try {
-                String line = br.readLine();
-                while (line != null) {
-                    String[] parts = line.split("=");
-                    if (parts.length == 2 && parts[0].trim().equals("debug") && parts[1].trim().toLowerCase().equals("true")) {
-                        debug = true;
-                    }
-                    line = br.readLine();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        String debug = ConfigFile.get("settings", "debug");
+        return debug != null && debug.trim().equals("true");
+    }
+
+    public static void setupDebugging() {
+        WakaTime.DEBUG = isDebugEnabled();
+    }
+
+    public static void setLoggingLevel() {
+        if (WakaTime.DEBUG) {
+            log.setLevel(Level.DEBUG);
+            log.debug("Logging level set to DEBUG");
+        } else {
+            log.setLevel(Level.INFO);
         }
-        return debug;
     }
 
     private static String obfuscateKey(String key) {
