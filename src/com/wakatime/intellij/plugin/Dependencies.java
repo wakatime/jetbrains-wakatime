@@ -17,6 +17,7 @@ import javax.net.ssl.TrustManager;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.security.KeyManagementException;
@@ -176,17 +177,23 @@ public class Dependencies {
                 if (output.contains(cliVersion))
                     return false;
             }
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            WakaTime.log.error(e);
+        }
         return true;
     }
 
     public static String latestCliVersion() {
         String url = "https://raw.githubusercontent.com/wakatime/wakatime/master/wakatime/__about__.py";
-        String aboutText = getUrlAsString(url);
-        Pattern p = Pattern.compile("__version_info__ = \\('([0-9]+)', '([0-9]+)', '([0-9]+)'\\)");
-        Matcher m = p.matcher(aboutText);
-        if (m.find()) {
-            return m.group(1) + "." + m.group(2) + "." + m.group(3);
+        try {
+            String aboutText = getUrlAsString(url);
+            Pattern p = Pattern.compile("__version_info__ = \\('([0-9]+)', '([0-9]+)', '([0-9]+)'\\)");
+            Matcher m = p.matcher(aboutText);
+            if (m.find()) {
+                return m.group(1) + "." + m.group(2) + "." + m.group(3);
+            }
+        } catch (Exception e) {
+            WakaTime.log.error(e);
         }
         return "Unknown";
     }
@@ -204,14 +211,15 @@ public class Dependencies {
         String zipFile = combinePaths(cli.getParentFile().getParentFile().getParentFile().getAbsolutePath(), "wakatime-cli.zip");
         File outputDir = cli.getParentFile().getParentFile().getParentFile();
 
-        // Delete old wakatime-master directory if it exists
-        File dir = cli.getParentFile().getParentFile();
-        if (dir.exists()) {
-            deleteDirectory(dir);
-        }
-
         // download wakatime-master.zip file
         if (downloadFile(url, zipFile)) {
+
+            // Delete old wakatime-master directory if it exists
+            File dir = cli.getParentFile().getParentFile();
+            if (dir.exists()) {
+                deleteDirectory(dir);
+            }
+
             try {
                 Dependencies.unzip(zipFile, outputDir);
                 File oldZipFile = new File(zipFile);
@@ -323,9 +331,9 @@ public class Dependencies {
             try {
                 // try downloading without verifying SSL cert (https://github.com/wakatime/jetbrains-wakatime/issues/46)
                 SSLContext SSL_CONTEXT = SSLContext.getInstance("SSL");
-                SSL_CONTEXT.init(null, new TrustManager[] { new LocalSSLTrustManager() }, null);
+                SSL_CONTEXT.init(null, new TrustManager[]{new LocalSSLTrustManager()}, null);
                 HttpsURLConnection.setDefaultSSLSocketFactory(SSL_CONTEXT.getSocketFactory());
-                HttpsURLConnection conn = (HttpsURLConnection)downloadUrl.openConnection();
+                HttpsURLConnection conn = (HttpsURLConnection) downloadUrl.openConnection();
                 InputStream inputStream = conn.getInputStream();
                 byte[] buffer = new byte[4096];
                 while (inputStream.read(buffer) != -1) {
@@ -336,9 +344,13 @@ public class Dependencies {
                 WakaTime.log.error(e1);
             } catch (KeyManagementException e1) {
                 WakaTime.log.error(e1);
+            } catch (UnknownHostException e1) {
+                WakaTime.log.error(e1);
             } catch (IOException e1) {
                 WakaTime.log.error(e1);
             }
+        } catch (UnknownHostException e) {
+            WakaTime.log.error(e);
         } catch (Exception e) {
             WakaTime.log.error(e);
         }
