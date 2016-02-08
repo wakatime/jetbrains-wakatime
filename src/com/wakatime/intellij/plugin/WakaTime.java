@@ -170,7 +170,7 @@ public class WakaTime implements ApplicationComponent {
             try {
                 Messages.showWarningDialog("Running WakaTime in DEBUG mode. Your IDE may be slow when saving or editing files.", "Debug");
             } catch (NullPointerException e) {
-                WakaTime.log.error(e);
+                log.warn(e);
             }
         }
     }
@@ -214,11 +214,11 @@ public class WakaTime implements ApplicationComponent {
                         try {
                             Thread.sleep(30);
                         } catch (InterruptedException e1) {
-                            log.error(e1);
+                            log.warn(e1);
                         }
                         sendHeartbeat(file, isWrite, tries + 1);
                     } else {
-                        log.error(e);
+                        log.warn(e);
                     }
                 }
             }

@@ -178,7 +178,7 @@ public class Dependencies {
                     return false;
             }
         } catch (Exception e) {
-            WakaTime.log.error(e);
+            WakaTime.log.warn(e);
         }
         return true;
     }
@@ -193,7 +193,7 @@ public class Dependencies {
                 return m.group(1) + "." + m.group(2) + "." + m.group(3);
             }
         } catch (Exception e) {
-            WakaTime.log.error(e);
+            WakaTime.log.warn(e);
         }
         return "Unknown";
     }
@@ -225,7 +225,7 @@ public class Dependencies {
                 File oldZipFile = new File(zipFile);
                 oldZipFile.delete();
             } catch (IOException e) {
-                WakaTime.log.error(e);
+                WakaTime.log.warn(e);
             }
         }
     }
@@ -251,7 +251,7 @@ public class Dependencies {
                 try {
                     Dependencies.unzip(zipFile.getAbsolutePath(), targetDir);
                 } catch (IOException e) {
-                    WakaTime.log.error(e);
+                    WakaTime.log.warn(e);
                 }
                 zipFile.delete();
             }
@@ -280,7 +280,7 @@ public class Dependencies {
             fos.close();
             return true;
         } catch (RuntimeException e) {
-            WakaTime.log.error(e);
+            WakaTime.log.warn(e);
             try {
                 // try downloading without verifying SSL cert (https://github.com/wakatime/jetbrains-wakatime/issues/46)
                 SSLContext SSL_CONTEXT = SSLContext.getInstance("SSL");
@@ -298,14 +298,14 @@ public class Dependencies {
                 fos.close();
                 return true;
             } catch (NoSuchAlgorithmException e1) {
-                WakaTime.log.error(e1);
+                WakaTime.log.warn(e1);
             } catch (KeyManagementException e1) {
-                WakaTime.log.error(e1);
+                WakaTime.log.warn(e1);
             } catch (IOException e1) {
-                WakaTime.log.error(e1);
+                WakaTime.log.warn(e1);
             }
         } catch (IOException e) {
-            WakaTime.log.error(e);
+            WakaTime.log.warn(e);
         }
 
         return false;
@@ -327,7 +327,7 @@ public class Dependencies {
             }
             inputStream.close();
         } catch (RuntimeException e) {
-            WakaTime.log.error(e);
+            WakaTime.log.warn(e);
             try {
                 // try downloading without verifying SSL cert (https://github.com/wakatime/jetbrains-wakatime/issues/46)
                 SSLContext SSL_CONTEXT = SSLContext.getInstance("SSL");
@@ -341,18 +341,18 @@ public class Dependencies {
                 }
                 inputStream.close();
             } catch (NoSuchAlgorithmException e1) {
-                WakaTime.log.error(e1);
+                WakaTime.log.warn(e1);
             } catch (KeyManagementException e1) {
-                WakaTime.log.error(e1);
+                WakaTime.log.warn(e1);
             } catch (UnknownHostException e1) {
-                WakaTime.log.error(e1);
+                WakaTime.log.warn(e1);
             } catch (IOException e1) {
-                WakaTime.log.error(e1);
+                WakaTime.log.warn(e1);
             }
         } catch (UnknownHostException e) {
-            WakaTime.log.error(e);
+            WakaTime.log.warn(e);
         } catch (Exception e) {
-            WakaTime.log.error(e);
+            WakaTime.log.warn(e);
         }
 
         return text.toString();
