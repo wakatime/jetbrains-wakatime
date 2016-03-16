@@ -65,24 +65,10 @@ public class Dependencies {
             paths.add(combinePaths(resourcesLocation.getAbsolutePath(), "python"));
             paths.add(getPythonFromRegistry(WinReg.HKEY_CURRENT_USER));
             paths.add(getPythonFromRegistry(WinReg.HKEY_LOCAL_MACHINE));
-            paths.add("/python39");
-            paths.add("/Python39");
-            paths.add("/python38");
-            paths.add("/Python38");
-            paths.add("/python37");
-            paths.add("/Python37");
-            paths.add("/python36");
-            paths.add("/Python36");
-            paths.add("/python35");
-            paths.add("/Python35");
-            paths.add("/python34");
-            paths.add("/Python34");
-            paths.add("/python33");
-            paths.add("/Python33");
-            paths.add("/python27");
-            paths.add("/Python27");
-            paths.add("/python26");
-            paths.add("/Python26");
+            for (int i=26; i<=50; i++) {
+                paths.add(combinePaths("\\python" + i, "pythonw"));
+                paths.add(combinePaths("\\Python" + i, "pythonw"));
+            }
         }
         for (String path : paths) {
             try {
