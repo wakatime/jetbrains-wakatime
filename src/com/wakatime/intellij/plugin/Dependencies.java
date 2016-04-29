@@ -357,7 +357,7 @@ public class Dependencies {
      */
     public static void configureProxy() {
         String proxyConfig = ConfigFile.get("settings", "proxy");
-        if (!proxyConfig.trim().equals("")) {
+        if (proxyConfig != null && !proxyConfig.trim().equals("")) {
             try {
                 URL proxyUrl = new URL(proxyConfig);
                 String userInfo = proxyUrl.getUserInfo();
