@@ -36,7 +36,7 @@ import org.apache.log4j.Level;
 
 public class WakaTime implements ApplicationComponent {
 
-    public static final String VERSION = "6.0.6";
+    public static final String VERSION = "6.0.7";
     public static final String CONFIG = ".wakatime.cfg";
     public static final long FREQUENCY = 2; // max minutes between heartbeats, when continuously coding
     public static final Logger log = Logger.getInstance("WakaTime");
