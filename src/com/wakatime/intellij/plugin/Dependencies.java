@@ -14,7 +14,13 @@ import com.sun.jna.platform.win32.WinReg;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -399,7 +405,7 @@ public class Dependencies {
         return is64bit;
     }
 
-    private static String combinePaths(String... args) {
+    public static String combinePaths(String... args) {
         File path = null;
         for (String arg : args) {
             if (arg != null) {
