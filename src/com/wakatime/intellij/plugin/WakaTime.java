@@ -10,7 +10,11 @@ package com.wakatime.intellij.plugin;
 
 import com.intellij.AppTopics;
 import com.intellij.ide.DataManager;
-import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
@@ -24,7 +28,8 @@ import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.apache.log4j.Level;
@@ -58,6 +63,8 @@ public class WakaTime implements ApplicationComponent {
 
         setupDebugging();
         setLoggingLevel();
+
+        Dependencies.configureProxy();
 
         checkApiKey();
 
@@ -169,9 +176,7 @@ public class WakaTime implements ApplicationComponent {
         if (WakaTime.DEBUG) {
             try {
                 Messages.showWarningDialog("Running WakaTime in DEBUG mode. Your IDE may be slow when saving or editing files.", "Debug");
-            } catch (NullPointerException e) {
-                log.warn(e);
-            }
+            } catch (NullPointerException e) { }
         }
     }
 
@@ -275,13 +280,9 @@ public class WakaTime implements ApplicationComponent {
         return true;
     }
 
-    public static Boolean isDebugEnabled() {
-        String debug = ConfigFile.get("settings", "debug");
-        return debug != null && debug.trim().equals("true");
-    }
-
     public static void setupDebugging() {
-        WakaTime.DEBUG = isDebugEnabled();
+        String debug = ConfigFile.get("settings", "debug");
+        WakaTime.DEBUG = debug != null && debug.trim().equals("true");
     }
 
     public static void setLoggingLevel() {

@@ -21,9 +21,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.Authenticator;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.net.PasswordAuthentication;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.security.KeyManagementException;
@@ -348,6 +350,35 @@ public class Dependencies {
         }
 
         return text.toString();
+    }
+
+    /**
+     * Configures a proxy if one is set in ~/.wakatime.cfg.
+     */
+    public static void configureProxy() {
+        String proxyConfig = ConfigFile.get("settings", "proxy");
+        if (!proxyConfig.trim().equals("")) {
+            try {
+                URL proxyUrl = new URL(proxyConfig);
+                String userInfo = proxyUrl.getUserInfo();
+                if (userInfo != null) {
+                    final String user = userInfo.split(":")[0];
+                    final String pass = userInfo.split(":")[1];
+                    Authenticator authenticator = new Authenticator() {
+                        public PasswordAuthentication getPasswordAuthentication() {
+                            return (new PasswordAuthentication(user, pass.toCharArray()));
+                        }
+                    };
+                    Authenticator.setDefault(authenticator);
+                }
+
+                System.setProperty("https.proxyHost", proxyUrl.getHost());
+                System.setProperty("https.proxyPort", Integer.toString(proxyUrl.getPort()));
+
+            } catch (MalformedURLException e) {
+                WakaTime.log.error("Proxy string must follow https://user:pass@host:port format: " + proxyConfig);
+            }
+        }
     }
 
     private static void unzip(String zipFile, File outputDir) throws IOException {
