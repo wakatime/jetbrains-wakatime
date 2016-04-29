@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>6.0.5</version>
+    <version>6.0.6</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+6.0.6 (2016-04-29)<br />
+++++++++++++++++++<br />
+<br />
+- use proxy from wakatime.cfg file when downloading dependencies<br />
+<br />
+<br />
 6.0.5 (2016-02-08)<br />
 ++++++++++++++++++<br />
 <br />
