@@ -207,6 +207,9 @@ public class WakaTime implements ApplicationComponent {
         try {
             scheduledFixture.cancel(true);
         } catch (Exception e) { }
+
+        // make sure to send all heartbeats before exiting
+        processHeartbeatQueue();
     }
 
     public static BigDecimal getCurrentTimestamp() {
