@@ -34,7 +34,6 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -59,7 +58,7 @@ public class WakaTime implements ApplicationComponent {
     public static String lastFile = null;
     public static BigDecimal lastTime = new BigDecimal(0);
 
-    private final Duration queueTimeout = Duration.ofSeconds(10);
+    private final int queueTimeoutSeconds = 10;
     private static ConcurrentLinkedQueue<Heartbeat> heartbeatsQueue = new ConcurrentLinkedQueue<Heartbeat>();
     private static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private static ScheduledFuture<?> scheduledFixture;
@@ -175,7 +174,7 @@ public class WakaTime implements ApplicationComponent {
                 processHeartbeatQueue();
             }
         };
-        long delay = queueTimeout.getSeconds();
+        long delay = queueTimeoutSeconds;
         scheduledFixture = scheduler.scheduleAtFixedRate(handler, delay, delay, java.util.concurrent.TimeUnit.SECONDS);
     }
 
