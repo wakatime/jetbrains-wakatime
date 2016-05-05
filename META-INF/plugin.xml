@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>7.0.1</version>
+    <version>7.0.2</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+7.0.2 (2016-05-05)<br />
+++++++++++++++++++<br />
+<br />
+- Bug fix for versions of Java without java.time.Duration available.<br />
+<br />
+<br />
 7.0.1 (2016-05-05)<br />
 ++++++++++++++++++<br />
 <br />
