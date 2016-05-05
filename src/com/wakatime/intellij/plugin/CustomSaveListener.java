@@ -12,16 +12,16 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileDocumentManagerAdapter;
 
+import java.math.BigDecimal;
+
 public class CustomSaveListener extends FileDocumentManagerAdapter {
 
     @Override
     public void beforeDocumentSaving(Document document) {
         String currentFile = FileDocumentManager.getInstance().getFile(document).getPath();
         if (WakaTime.shouldLogFile(currentFile)) {
-            long currentTime = System.currentTimeMillis() / 1000;
-            WakaTime.sendHeartbeat(currentFile, true);
-            WakaTime.lastFile = currentFile;
-            WakaTime.lastTime = currentTime;
+            BigDecimal currentTime = WakaTime.getCurrentTimestamp();
+            WakaTime.appendHeartbeat(currentTime, currentFile, true);
         }
     }
 }

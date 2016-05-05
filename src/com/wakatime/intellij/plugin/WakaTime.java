@@ -29,26 +29,40 @@ import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+
 import org.apache.log4j.Level;
 
 public class WakaTime implements ApplicationComponent {
 
     public static final String VERSION = "6.0.7";
     public static final String CONFIG = ".wakatime.cfg";
-    public static final long FREQUENCY = 2; // max minutes between heartbeats, when continuously coding
+    public static final BigDecimal FREQUENCY = new BigDecimal(2 * 60); // max secs between heartbeats for continuous coding
     public static final Logger log = Logger.getInstance("WakaTime");
 
     public static String IDE_NAME;
     public static String IDE_VERSION;
     public static MessageBusConnection connection;
     public static Boolean DEBUG = false;
-
     public static Boolean READY = false;
     public static String lastFile = null;
-    public static long lastTime = 0;
+    public static BigDecimal lastTime = new BigDecimal(0);
+
+    private final Duration queueTimeout = Duration.ofSeconds(10);
+    private static ConcurrentLinkedQueue<Heartbeat> heartbeatsQueue = new ConcurrentLinkedQueue<Heartbeat>();
+    private static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private static ScheduledFuture<?> scheduledFixture;
 
     public WakaTime() {
     }
@@ -73,11 +87,9 @@ public class WakaTime implements ApplicationComponent {
         if (Dependencies.isPythonInstalled()) {
 
             checkCore();
-
             setupEventListeners();
-
+            setupQueueProcessor();
             checkDebug();
-
             log.info("Finished initializing WakaTime plugin");
 
         } else {
@@ -93,11 +105,9 @@ public class WakaTime implements ApplicationComponent {
                         log.info("Finished installing python...");
 
                         checkCore();
-
                         setupEventListeners();
-
+                        setupQueueProcessor();
                         checkDebug();
-
                         log.info("Finished initializing WakaTime plugin");
 
                     } else {
@@ -159,6 +169,16 @@ public class WakaTime implements ApplicationComponent {
         });
     }
 
+    private void setupQueueProcessor() {
+        final Runnable handler = new Runnable() {
+            public void run() {
+                processHeartbeatQueue();
+            }
+        };
+        long delay = queueTimeout.getSeconds();
+        scheduledFixture = scheduler.scheduleAtFixedRate(handler, delay, delay, java.util.concurrent.TimeUnit.SECONDS);
+    }
+
     private void setupMenuItem() {
         ApplicationManager.getApplication().invokeLater(new Runnable(){
             public void run() {
@@ -184,73 +204,168 @@ public class WakaTime implements ApplicationComponent {
         try {
             connection.disconnect();
         } catch(Exception e) { }
+        try {
+            scheduledFixture.cancel(true);
+        } catch (Exception e) { }
     }
 
-    public static void sendHeartbeat(final String file, final boolean isWrite) {
-        if (WakaTime.READY)
-            sendHeartbeat(file, isWrite, 0);
+    public static BigDecimal getCurrentTimestamp() {
+        return new BigDecimal(String.valueOf(System.currentTimeMillis() / 1000.0)).setScale(4, BigDecimal.ROUND_HALF_UP);
     }
 
-    private static void sendHeartbeat(final String file, final boolean isWrite, final int tries) {
-        final String[] cmds = buildCliCommand(file, isWrite);
+    public static void appendHeartbeat(final BigDecimal time, final String file, final boolean isWrite) {
+        WakaTime.lastFile = file;
+        WakaTime.lastTime = time;
+        final String project = WakaTime.getProjectName();
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             public void run() {
-                try {
-                    log.debug("Executing CLI: " + Arrays.toString(obfuscateKey(cmds)));
-                    Process proc = Runtime.getRuntime().exec(cmds);
-                    if (WakaTime.DEBUG) {
-                        BufferedReader stdInput = new BufferedReader(new
-                                InputStreamReader(proc.getInputStream()));
-                        BufferedReader stdError = new BufferedReader(new
-                                InputStreamReader(proc.getErrorStream()));
-                        proc.waitFor();
-                        String s;
-                        while ((s = stdInput.readLine()) != null) {
-                            log.debug(s);
-                        }
-                        while ((s = stdError.readLine()) != null) {
-                            log.debug(s);
-                        }
-                        log.debug("Command finished with return value: " + proc.exitValue());
-                    }
-                } catch (Exception e) {
-                    if (tries < 3) {
-                        log.debug(e);
-                        try {
-                            Thread.sleep(30);
-                        } catch (InterruptedException e1) {
-                            log.warn(e1);
-                        }
-                        sendHeartbeat(file, isWrite, tries + 1);
-                    } else {
-                        log.warn(e);
-                    }
-                }
+                Heartbeat h = new Heartbeat();
+                h.entity = file;
+                h.timestamp = time;
+                h.isWrite = isWrite;
+                h.project = project;
+                heartbeatsQueue.add(h);
             }
         });
     }
 
-    public static String[] buildCliCommand(String file, boolean isWrite) {
+    private static void processHeartbeatQueue() {
+        if (WakaTime.READY) {
+
+            // get single heartbeat from queue
+            Heartbeat heartbeat = heartbeatsQueue.poll();
+            if (heartbeat == null)
+                return;
+
+            // get all extra heartbeats from queue
+            ArrayList<Heartbeat> extraHeartbeats = new ArrayList<Heartbeat>();
+            while (true) {
+                Heartbeat h = heartbeatsQueue.poll();
+                if (h == null)
+                    break;
+                extraHeartbeats.add(h);
+            }
+
+            sendHeartbeat(heartbeat, extraHeartbeats);
+        }
+    }
+
+    private static void sendHeartbeat(final Heartbeat heartbeat, final ArrayList<Heartbeat> extraHeartbeats) {
+        final String[] cmds = buildCliCommand(heartbeat, extraHeartbeats);
+        log.debug("Executing CLI: " + Arrays.toString(obfuscateKey(cmds)));
+        try {
+            Process proc = Runtime.getRuntime().exec(cmds);
+            if (extraHeartbeats.size() > 0) {
+                String json = toJSON(extraHeartbeats);
+                log.debug(json);
+                try {
+                    BufferedWriter stdin = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
+                    stdin.write(json);
+                    stdin.write("\n");
+                    stdin.flush();
+                    stdin.close();
+                } catch (IOException e) {
+                    log.warn(e);
+                }
+            }
+            if (WakaTime.DEBUG) {
+                BufferedReader stdout = new BufferedReader(new
+                        InputStreamReader(proc.getInputStream()));
+                BufferedReader stderr = new BufferedReader(new
+                        InputStreamReader(proc.getErrorStream()));
+                proc.waitFor();
+                String s;
+                while ((s = stdout.readLine()) != null) {
+                    log.debug(s);
+                }
+                while ((s = stderr.readLine()) != null) {
+                    log.debug(s);
+                }
+                log.debug("Command finished with return value: " + proc.exitValue());
+            }
+        } catch (Exception e) {
+            log.warn(e);
+        }
+    }
+
+    private static String toJSON(ArrayList<Heartbeat> extraHeartbeats) {
+        StringBuffer json = new StringBuffer();
+        json.append("[");
+        boolean first = true;
+        for (Heartbeat heartbeat : extraHeartbeats) {
+            StringBuffer h = new StringBuffer();
+            h.append("{\"entity\":\"");
+            h.append(jsonEscape(heartbeat.entity));
+            h.append("\",\"timestamp\":");
+            h.append(heartbeat.timestamp.toPlainString());
+            h.append(",\"is_write\":");
+            h.append(heartbeat.isWrite.toString());
+            h.append(",\"project\":\"");
+            h.append(jsonEscape(heartbeat.project));
+            h.append("\"}");
+            if (!first)
+                json.append(",");
+            json.append(h.toString());
+            first = false;
+        }
+        json.append("]");
+        return json.toString();
+    }
+
+    private static String jsonEscape(String s) {
+        StringBuffer escaped = new StringBuffer();
+        final int len = s.length();
+        for (int i = 0; i < len; i++) {
+            char c = s.charAt(i);
+            switch(c) {
+                case '\\': escaped.append("\\\\"); break;
+                case '"': escaped.append("\\\""); break;
+                case '\b': escaped.append("\\b"); break;
+                case '\f': escaped.append("\\f"); break;
+                case '\n': escaped.append("\\n"); break;
+                case '\r': escaped.append("\\r"); break;
+                case '\t': escaped.append("\\t"); break;
+                default:
+                    boolean isUnicode = (c >= '\u0000' && c <= '\u001F') || (c >= '\u007F' && c <= '\u009F') || (c >= '\u2000' && c <= '\u20FF');
+                    if (isUnicode){
+                        escaped.append("\\u");
+                        String hex = Integer.toHexString(c);
+                        for (int k = 0; k < 4 - hex.length(); k++) {
+                            escaped.append('0');
+                        }
+                        escaped.append(hex.toUpperCase());
+                    } else {
+                        escaped.append(c);
+                    }
+            }
+        }
+        return escaped.toString();
+    }
+
+    private static String[] buildCliCommand(Heartbeat heartbeat, ArrayList<Heartbeat> extraHeartbeats) {
         ArrayList<String> cmds = new ArrayList<String>();
         cmds.add(Dependencies.getPythonLocation());
         cmds.add(Dependencies.getCLILocation());
-        cmds.add("--file");
-        cmds.add(file);
+        cmds.add("--entity");
+        cmds.add(heartbeat.entity);
+        cmds.add("--time");
+        cmds.add(heartbeat.timestamp.toPlainString());
         cmds.add("--key");
         cmds.add(ApiKey.getApiKey());
-        String project = WakaTime.getProjectName();
-        if (project != null) {
+        if (heartbeat.project != null) {
             cmds.add("--project");
-            cmds.add(project);
+            cmds.add(heartbeat.project);
         }
         cmds.add("--plugin");
         cmds.add(IDE_NAME+"/"+IDE_VERSION+" "+IDE_NAME+"-wakatime/"+VERSION);
-        if (isWrite)
+        if (heartbeat.isWrite)
             cmds.add("--write");
+        if (extraHeartbeats.size() > 0)
+            cmds.add("--extra-heartbeats");
         return cmds.toArray(new String[cmds.size()]);
     }
 
-    public static String getProjectName() {
+    private static String getProjectName() {
         DataContext dataContext = DataManager.getInstance().getDataContext();
         if (dataContext != null) {
             Project project = null;
@@ -269,8 +384,8 @@ public class WakaTime implements ApplicationComponent {
         return null;
     }
 
-    public static boolean enoughTimePassed(long currentTime) {
-        return WakaTime.lastTime + FREQUENCY * 60 < currentTime;
+    public static boolean enoughTimePassed(BigDecimal currentTime) {
+        return WakaTime.lastTime.add(FREQUENCY).compareTo(currentTime) < 0;
     }
 
     public static boolean shouldLogFile(String file) {
