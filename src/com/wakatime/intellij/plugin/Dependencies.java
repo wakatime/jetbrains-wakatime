@@ -47,14 +47,14 @@ public class Dependencies {
 
     public static String getResourcesLocation() {
         if (Dependencies.resourcesLocation == null) {
-            String separator = "[\\\\/]";
-            Dependencies.resourcesLocation = WakaTime.class.getResource("WakaTime.class").getPath()
-                    .replaceFirst("file:", "")
-                    .replaceAll("%20", " ")
-                    .replaceFirst("com" + separator + "wakatime" + separator + "intellij" + separator + "plugin" + separator + "WakaTime.class", "")
-                    .replaceFirst("WakaTime.jar!" + separator, "") + "WakaTime-resources";
-            if (System.getProperty("os.name").startsWith("Windows") && Dependencies.resourcesLocation.startsWith("/")) {
-                Dependencies.resourcesLocation = Dependencies.resourcesLocation.substring(1);
+            if (isWindows()) {
+                File appDataFolder = new File(System.getenv("APPDATA"));
+                File resourcesFolder = new File(appDataFolder, "WakaTime");
+                Dependencies.resourcesLocation = resourcesFolder.getAbsolutePath();
+            } else {
+                File userHomeDir = new File(System.getProperty("user.home"));
+                File resourcesFolder = new File(userHomeDir, ".wakatime");
+                Dependencies.resourcesLocation = resourcesFolder.getAbsolutePath();
             }
         }
         return Dependencies.resourcesLocation;
@@ -428,12 +428,16 @@ public class Dependencies {
 
     public static boolean is64bit() {
         boolean is64bit = false;
-        if (System.getProperty("os.name").contains("Windows")) {
+        if (isWindows()) {
             is64bit = (System.getenv("ProgramFiles(x86)") != null);
         } else {
             is64bit = (System.getProperty("os.arch").indexOf("64") != -1);
         }
         return is64bit;
+    }
+
+    public static boolean isWindows() {
+        return System.getProperty("os.name").contains("Windows");
     }
 
     public static String combinePaths(String... args) {
