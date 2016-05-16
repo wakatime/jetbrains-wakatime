@@ -26,6 +26,7 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.util.PlatformUtils;
 import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
+import org.apache.commons.lang.ObjectUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -147,7 +148,10 @@ public class WakaTime implements ApplicationComponent {
         ApplicationManager.getApplication().invokeLater(new Runnable(){
             public void run() {
                 // prompt for apiKey if it does not already exist
-                Project project = ProjectManager.getInstance().getDefaultProject();
+                Project project = null;
+                try {
+                    project = ProjectManager.getInstance().getDefaultProject();
+                } catch (NullPointerException e) { }
                 ApiKey apiKey = new ApiKey(project);
                 if (apiKey.getApiKey().equals("")) {
                     apiKey.promptForApiKey();
@@ -302,9 +306,12 @@ public class WakaTime implements ApplicationComponent {
             h.append(heartbeat.timestamp.toPlainString());
             h.append(",\"is_write\":");
             h.append(heartbeat.isWrite.toString());
-            h.append(",\"project\":\"");
-            h.append(jsonEscape(heartbeat.project));
-            h.append("\"}");
+            if (heartbeat.project != null) {
+                h.append(",\"project\":\"");
+                h.append(jsonEscape(heartbeat.project));
+                h.append("\"");
+            }
+            h.append("}");
             if (!first)
                 json.append(",");
             json.append(h.toString());
@@ -315,6 +322,8 @@ public class WakaTime implements ApplicationComponent {
     }
 
     private static String jsonEscape(String s) {
+        if (s == null)
+            return null;
         StringBuffer escaped = new StringBuffer();
         final int len = s.length();
         for (int i = 0; i < len; i++) {
