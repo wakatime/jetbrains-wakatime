@@ -268,8 +268,10 @@ public class WakaTime implements ApplicationComponent {
                     BufferedWriter stdin = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
                     stdin.write(json);
                     stdin.write("\n");
-                    stdin.flush();
-                    stdin.close();
+                    try {
+                        stdin.flush();
+                        stdin.close();
+                    } catch (IOException e) { /* ignored because wakatime-cli closes pipe after receiving \n */ }
                 } catch (IOException e) {
                     log.warn(e);
                 }
