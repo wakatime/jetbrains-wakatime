@@ -126,36 +126,6 @@ public class Dependencies {
         return path;
     }
 
-    private static boolean runPython(String... args) {
-        try {
-            WakaTime.log.debug(args.toString());
-            Process p = Runtime.getRuntime().exec(args);
-            BufferedReader stdInput = new BufferedReader(new
-                    InputStreamReader(p.getInputStream()));
-            BufferedReader stdError = new BufferedReader(new
-                    InputStreamReader(p.getErrorStream()));
-            p.waitFor();
-            String output = "";
-            String s;
-            while ((s = stdInput.readLine()) != null) {
-                output += s;
-            }
-            while ((s = stdError.readLine()) != null) {
-                output += s;
-            }
-            if (output != "")
-                WakaTime.log.debug(output);
-            if (p.exitValue() != 0)
-                throw new Exception("NonZero Exit Code: " + p.exitValue());
-
-            return true;
-
-        } catch (Exception e) {
-            WakaTime.log.debug(e.toString());
-            return false;
-        }
-    }
-
     public static boolean isCLIInstalled() {
         File cli = new File(Dependencies.getCLILocation());
         return cli.exists();
@@ -400,6 +370,36 @@ public class Dependencies {
             } catch (MalformedURLException e) {
                 WakaTime.log.error("Proxy string must follow https://user:pass@host:port format: " + proxyConfig);
             }
+        }
+    }
+
+    private static boolean runPython(String... args) {
+        try {
+            WakaTime.log.debug(String.join(" ", args));
+            Process p = Runtime.getRuntime().exec(args);
+            BufferedReader stdInput = new BufferedReader(new
+                    InputStreamReader(p.getInputStream()));
+            BufferedReader stdError = new BufferedReader(new
+                    InputStreamReader(p.getErrorStream()));
+            p.waitFor();
+            String output = "";
+            String s;
+            while ((s = stdInput.readLine()) != null) {
+                output += s;
+            }
+            while ((s = stdError.readLine()) != null) {
+                output += s;
+            }
+            if (output != "")
+                WakaTime.log.debug(output);
+            if (p.exitValue() != 0)
+                throw new Exception("NonZero Exit Code: " + p.exitValue());
+
+            return true;
+
+        } catch (Exception e) {
+            WakaTime.log.debug(e.toString());
+            return false;
         }
     }
 

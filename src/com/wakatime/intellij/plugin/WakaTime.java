@@ -26,7 +26,6 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.util.PlatformUtils;
 import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
-import org.apache.commons.lang.ObjectUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -164,10 +163,20 @@ public class WakaTime implements ApplicationComponent {
     private void setupEventListeners() {
         ApplicationManager.getApplication().invokeLater(new Runnable(){
             public void run() {
+
+                // save file
                 MessageBus bus = ApplicationManager.getApplication().getMessageBus();
                 connection = bus.connect();
                 connection.subscribe(AppTopics.FILE_DOCUMENT_SYNC, new CustomSaveListener());
+
+                // edit document
                 EditorFactory.getInstance().getEventMulticaster().addDocumentListener(new CustomDocumentListener());
+
+                // mouse press
+                EditorFactory.getInstance().getEventMulticaster().addEditorMouseListener(new CustomEditorMouseListener());
+
+                // scroll document
+                EditorFactory.getInstance().getEventMulticaster().addVisibleAreaListener(new CustomVisibleAreaListener());
             }
         });
     }
