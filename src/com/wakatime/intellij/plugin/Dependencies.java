@@ -79,10 +79,10 @@ public class Dependencies {
             }
         }
         for (String path : paths) {
-            if (runPython(combinePaths(path, "pythonw"), "--version")) {
+            if (runPython(combinePaths(path, "pythonw"))) {
                 Dependencies.pythonLocation = combinePaths(path, "pythonw");
                 break;
-            } else if (runPython(combinePaths(path, "python"), "--version")) {
+            } else if (runPython(combinePaths(path, "python"))) {
                 Dependencies.pythonLocation = combinePaths(path, "python");
                 break;
             }
@@ -373,10 +373,10 @@ public class Dependencies {
         }
     }
 
-    private static boolean runPython(String... args) {
+    private static boolean runPython(String path) {
         try {
-            WakaTime.log.debug(String.join(" ", args));
-            Process p = Runtime.getRuntime().exec(args);
+            WakaTime.log.debug(path + " --version");
+            Process p = Runtime.getRuntime().exec(path + " --version");
             BufferedReader stdInput = new BufferedReader(new
                     InputStreamReader(p.getInputStream()));
             BufferedReader stdError = new BufferedReader(new
