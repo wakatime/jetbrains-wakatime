@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>7.0.5</version>
+    <version>7.0.6</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+7.0.6 (2016-06-06)<br />
+++++++++++++++++++<br />
+<br />
+- Python must return successful exit code before being used to run wakatime-cli.<br />
+<br />
+<br />
 7.0.5 (2016-05-17)<br />
 ++++++++++++++++++<br />
 <br />
