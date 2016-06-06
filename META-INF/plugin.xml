@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>7.0.7</version>
+    <version>7.0.8</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+7.0.8 (2016-06-06)<br />
+++++++++++++++++++<br />
+<br />
+- No longer using String.joins because it's not available on versions of Java before 1.8.<br />
+<br />
+<br />
 7.0.7 (2016-06-06)<br />
 ++++++++++++++++++<br />
 <br />
