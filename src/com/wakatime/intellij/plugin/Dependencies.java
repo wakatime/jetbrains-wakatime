@@ -79,18 +79,12 @@ public class Dependencies {
             }
         }
         for (String path : paths) {
-            try {
-                String[] cmds = {combinePaths(path, "pythonw"), "--version"};
-                Runtime.getRuntime().exec(cmds);
+            if (runPython(combinePaths(path, "pythonw"), "--version")) {
                 Dependencies.pythonLocation = combinePaths(path, "pythonw");
                 break;
-            } catch (Exception e) {
-                try {
-                    String[] cmds = {combinePaths(path, "python"), "--version"};
-                    Runtime.getRuntime().exec(cmds);
-                    Dependencies.pythonLocation = combinePaths(path, "python");
-                    break;
-                } catch (Exception e2) { }
+            } else if (runPython(combinePaths(path, "python"), "--version")) {
+                Dependencies.pythonLocation = combinePaths(path, "python");
+                break;
             }
         }
         if (Dependencies.pythonLocation != null) {
@@ -132,10 +126,38 @@ public class Dependencies {
         return path;
     }
 
+    private static boolean runPython(String... args) {
+        try {
+            WakaTime.log.debug(args.toString());
+            Process p = Runtime.getRuntime().exec(args);
+            BufferedReader stdInput = new BufferedReader(new
+                    InputStreamReader(p.getInputStream()));
+            BufferedReader stdError = new BufferedReader(new
+                    InputStreamReader(p.getErrorStream()));
+            p.waitFor();
+            String output = "";
+            String s;
+            while ((s = stdInput.readLine()) != null) {
+                output += s;
+            }
+            while ((s = stdError.readLine()) != null) {
+                output += s;
+            }
+            if (output != "")
+                WakaTime.log.debug(output);
+            if (p.exitValue() != 0)
+                throw new Exception("NonZero Exit Code: " + p.exitValue());
+
+            return true;
+
+        } catch (Exception e) {
+            WakaTime.log.debug(e.toString());
+            return false;
+        }
+    }
+
     public static boolean isCLIInstalled() {
         File cli = new File(Dependencies.getCLILocation());
-        WakaTime.log.debug("WakaTime Core Location: " + cli.getAbsolutePath());
-        WakaTime.log.debug("WakaTime Core Exists: " + cli.exists());
         return cli.exists();
     }
 
