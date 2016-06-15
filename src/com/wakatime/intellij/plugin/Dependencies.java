@@ -68,7 +68,7 @@ public class Dependencies {
         paths.add("/");
         paths.add("/usr/local/bin/");
         paths.add("/usr/bin/");
-        if (System.getProperty("os.name").contains("Windows")) {
+        if (isWindows()) {
             File resourcesLocation = new File(Dependencies.getResourcesLocation());
             paths.add(combinePaths(resourcesLocation.getAbsolutePath(), "python"));
             paths.add(getPythonFromRegistry(WinReg.HKEY_CURRENT_USER));
@@ -97,7 +97,7 @@ public class Dependencies {
 
     public static String getPythonFromRegistry(WinReg.HKEY hkey) {
         String path = null;
-        if (System.getProperty("os.name").contains("Windows")) {
+        if (isWindows()) {
             try {
                 String key = "Software\\\\Wow6432Node\\\\Python\\\\PythonCore";
                 for (String version : Advapi32Util.registryGetKeys(hkey, key)) {
@@ -221,7 +221,7 @@ public class Dependencies {
     }
 
     public static void installPython() {
-        if (System.getProperty("os.name").contains("Windows")) {
+        if (isWindows()) {
             String pyVer = "3.5.1";
             String arch = "win32";
             if (is64bit()) arch = "amd64";
