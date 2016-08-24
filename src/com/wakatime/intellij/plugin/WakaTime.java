@@ -57,6 +57,7 @@ public class WakaTime implements ApplicationComponent {
     public static Boolean READY = false;
     public static String lastFile = null;
     public static BigDecimal lastTime = new BigDecimal(0);
+    private static String lastProject = null;
 
     private final int queueTimeoutSeconds = 10;
     private static ConcurrentLinkedQueue<Heartbeat> heartbeatsQueue = new ConcurrentLinkedQueue<Heartbeat>();
@@ -400,10 +401,16 @@ public class WakaTime implements ApplicationComponent {
                 } catch (NoClassDefFoundError ex) { }
             }
             if (project != null) {
-                return project.getName();
+                lastProject = project.getName();
+                return lastProject;
             }
         }
-        return null;
+
+        if (lastProject != null) {
+            return lastProject;
+        } else {
+            return null;
+        }
     }
 
     public static boolean enoughTimePassed(BigDecimal currentTime) {
