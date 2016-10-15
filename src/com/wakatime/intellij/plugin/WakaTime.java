@@ -197,10 +197,12 @@ public class WakaTime implements ApplicationComponent {
             public void run() {
                 ActionManager am = ActionManager.getInstance();
                 PluginMenu action = new PluginMenu();
+                action.getTemplatePresentation().setEnabled(false);
                 am.registerAction("WakaTimeApiKey", action);
                 DefaultActionGroup menu = (DefaultActionGroup) am.getAction("ToolsMenu");
                 menu.addSeparator();
                 menu.add(action);
+                action.getTemplatePresentation().setEnabled(true);
             }
         });
     }

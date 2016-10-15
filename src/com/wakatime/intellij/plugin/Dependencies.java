@@ -222,7 +222,7 @@ public class Dependencies {
 
     public static void installPython() {
         if (isWindows()) {
-            String pyVer = "3.5.1";
+            String pyVer = "3.5.2";
             String arch = "win32";
             if (is64bit()) arch = "amd64";
             String url = "https://www.python.org/ftp/python/" + pyVer + "/python-" + pyVer + "-embed-" + arch + ".zip";
