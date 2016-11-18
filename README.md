@@ -40,3 +40,23 @@ Uninstalling
 ------------
 
 Inside your IDE, select `Preferences` -> `Plugins`, then find the `WakaTime` plugin. Click `Uninstall`. Then delete your `~/.wakatime.cfg` config file.
+
+
+Troubleshooting
+---------------
+
+First, turn on debug mode from File -> WakaTime Settings. Then restart your IDE.
+
+![wakatime settings menu](https://wakatime.com/static/img/ScreenShots/jetbrains-wakatime-menu.png?v=1)
+
+If the plugin was not loaded, you won't have a WakaTime Settings menu.
+In that case, add this line to your `~/.wakatime.cfg` file:
+
+    debug = true
+
+(`C:\Users\<user>\.wakatime.cfg` on Windows)
+
+Then, look for WakaTime related messages in your `idea.log` file:
+[Locating your idea.log file](https://intellij-support.jetbrains.com/hc/en-us/articles/207241085-Locating-IDE-log-files)
+
+For more general troubleshooting information, see [wakatime/wakatime#troubleshooting](https://github.com/wakatime/wakatime#troubleshooting).
