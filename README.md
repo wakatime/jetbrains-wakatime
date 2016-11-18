@@ -49,7 +49,7 @@ First, turn on debug mode from File -> WakaTime Settings. Then restart your IDE.
 
 ![wakatime settings menu](https://wakatime.com/static/img/ScreenShots/jetbrains-wakatime-menu.png?v=1)
 
-Then, look for WakaTime related messages in your `idea.log` file:
+Now, look for WakaTime related messages in your `idea.log` file:
 
 [Locating your idea.log file](https://intellij-support.jetbrains.com/hc/en-us/articles/207241085-Locating-IDE-log-files)
 
