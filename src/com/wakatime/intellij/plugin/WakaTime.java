@@ -151,7 +151,7 @@ public class WakaTime implements ApplicationComponent {
                 Project project = null;
                 try {
                     project = ProjectManager.getInstance().getDefaultProject();
-                } catch (NullPointerException e) { }
+                } catch (Exception e) { }
                 ApiKey apiKey = new ApiKey(project);
                 if (apiKey.getApiKey().equals("")) {
                     apiKey.promptForApiKey();
