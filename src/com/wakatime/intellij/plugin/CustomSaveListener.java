@@ -11,6 +11,7 @@ package com.wakatime.intellij.plugin;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileDocumentManagerAdapter;
+import com.intellij.openapi.vfs.VirtualFile;
 
 import java.math.BigDecimal;
 
@@ -18,10 +19,7 @@ public class CustomSaveListener extends FileDocumentManagerAdapter {
 
     @Override
     public void beforeDocumentSaving(Document document) {
-        String currentFile = FileDocumentManager.getInstance().getFile(document).getPath();
-        if (WakaTime.shouldLogFile(currentFile)) {
-            BigDecimal currentTime = WakaTime.getCurrentTimestamp();
-            WakaTime.appendHeartbeat(currentTime, currentFile, true);
-        }
+        VirtualFile file = FileDocumentManager.getInstance().getFile(document);
+        WakaTime.appendHeartbeat(file, true);
     }
 }

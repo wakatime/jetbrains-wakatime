@@ -22,9 +22,11 @@ import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.extensions.PluginId;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.PlatformUtils;
 import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
@@ -59,7 +61,7 @@ public class WakaTime implements ApplicationComponent {
     public static Boolean READY = false;
     public static String lastFile = null;
     public static BigDecimal lastTime = new BigDecimal(0);
-    private static String lastProject = null;
+    private static Project lastProject = null;
 
     private final int queueTimeoutSeconds = 10;
     private static ConcurrentLinkedQueue<Heartbeat> heartbeatsQueue = new ConcurrentLinkedQueue<Heartbeat>();
@@ -234,17 +236,25 @@ public class WakaTime implements ApplicationComponent {
         return new BigDecimal(String.valueOf(System.currentTimeMillis() / 1000.0)).setScale(4, BigDecimal.ROUND_HALF_UP);
     }
 
-    public static void appendHeartbeat(final BigDecimal time, final String file, final boolean isWrite) {
-        WakaTime.lastFile = file;
+    public static void appendHeartbeat(final VirtualFile file, final boolean isWrite) {
+        if (!shouldLogFile(file))
+            return;
+        final BigDecimal time = WakaTime.getCurrentTimestamp();
+        if (!isWrite && file.getPath().equals(WakaTime.lastFile) && !enoughTimePassed(time)) {
+            return;
+        }
+        WakaTime.lastFile = file.getPath();
         WakaTime.lastTime = time;
         final String project = WakaTime.getProjectName();
+        final String language = WakaTime.getLanguage(file);
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             public void run() {
                 Heartbeat h = new Heartbeat();
-                h.entity = file;
+                h.entity = file.getPath();
                 h.timestamp = time;
                 h.isWrite = isWrite;
                 h.project = project;
+                h.language = language;
                 heartbeatsQueue.add(h);
             }
         });
@@ -328,6 +338,11 @@ public class WakaTime implements ApplicationComponent {
                 h.append(jsonEscape(heartbeat.project));
                 h.append("\"");
             }
+            if (heartbeat.language != null) {
+                h.append(",\"language\":\"");
+                h.append(jsonEscape(heartbeat.language));
+                h.append("\"");
+            }
             h.append("}");
             if (!first)
                 json.append(",");
@@ -384,6 +399,10 @@ public class WakaTime implements ApplicationComponent {
             cmds.add("--project");
             cmds.add(heartbeat.project);
         }
+        if (heartbeat.language != null) {
+            cmds.add("--language");
+            cmds.add(heartbeat.language);
+        }
         cmds.add("--plugin");
         cmds.add(IDE_NAME+"/"+IDE_VERSION+" "+IDE_NAME+"-wakatime/"+VERSION);
         if (heartbeat.isWrite)
@@ -393,7 +412,7 @@ public class WakaTime implements ApplicationComponent {
         return cmds.toArray(new String[cmds.size()]);
     }
 
-    private static String getProjectName() {
+    private static Project getCurrentProject() {
         DataContext dataContext = DataManager.getInstance().getDataContext();
         if (dataContext != null) {
             Project project = null;
@@ -406,7 +425,7 @@ public class WakaTime implements ApplicationComponent {
                 } catch (NoClassDefFoundError ex) { }
             }
             if (project != null) {
-                lastProject = project.getName();
+                lastProject = project;
                 return lastProject;
             }
         }
@@ -418,12 +437,31 @@ public class WakaTime implements ApplicationComponent {
         }
     }
 
+    private static String getLanguage(final VirtualFile file) {
+        FileType type = file.getFileType();
+        if (type != null)
+            return type.getName();
+        return null;
+    }
+
+    private static String getProjectName() {
+        Project project = getCurrentProject();
+        if (project != null) {
+            return project.getName();
+        }
+        return null;
+    }
+
     public static boolean enoughTimePassed(BigDecimal currentTime) {
         return WakaTime.lastTime.add(FREQUENCY).compareTo(currentTime) < 0;
     }
 
-    public static boolean shouldLogFile(String file) {
-        if (file.equals("atlassian-ide-plugin.xml") || file.contains("/.idea/workspace.xml")) {
+    public static boolean shouldLogFile(VirtualFile file) {
+        if (file == null || file.getUrl().startsWith("mock://")) {
+            return false;
+        }
+        String filePath = file.getPath();
+        if (filePath.equals("atlassian-ide-plugin.xml") || filePath.contains("/.idea/workspace.xml")) {
             return false;
         }
         return true;

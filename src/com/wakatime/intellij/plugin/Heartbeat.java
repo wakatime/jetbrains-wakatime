@@ -15,4 +15,5 @@ public class Heartbeat {
     public BigDecimal timestamp;
     public Boolean isWrite;
     public String project;
+    public String language;
 }

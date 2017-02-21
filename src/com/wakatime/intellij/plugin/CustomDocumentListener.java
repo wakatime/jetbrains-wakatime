@@ -24,14 +24,6 @@ public class CustomDocumentListener implements DocumentListener {
     public void documentChanged(DocumentEvent documentEvent) {
         final FileDocumentManager instance = FileDocumentManager.getInstance();
         final VirtualFile file = instance.getFile(documentEvent.getDocument());
-        if (file != null && !file.getUrl().startsWith("mock://")) {
-            final String currentFile = file.getPath();
-            if (WakaTime.shouldLogFile(currentFile)) {
-                BigDecimal currentTime = WakaTime.getCurrentTimestamp();
-                if (!currentFile.equals(WakaTime.lastFile) || WakaTime.enoughTimePassed(currentTime)) {
-                    WakaTime.appendHeartbeat(currentTime, currentFile, false);
-                }
-            }
-        }
+        WakaTime.appendHeartbeat(file, false);
     }
 }
