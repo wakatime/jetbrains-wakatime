@@ -49,9 +49,9 @@ First, turn on debug mode from File -> WakaTime Settings. Then restart your IDE.
 
 ![wakatime settings menu](https://wakatime.com/static/img/ScreenShots/jetbrains-wakatime-menu.png?v=1)
 
-Now, look for WakaTime related messages in your `idea.log` file. (`Help` -> `Show Log`)
+Now, look for WakaTime related messages in your `idea.log` file:
 
-[Locating your idea.log file](https://intellij-support.jetbrains.com/hc/en-us/articles/207241085-Locating-IDE-log-files)
+`Help` -> `Show Log` ( [Locating your idea.log file](https://intellij-support.jetbrains.com/hc/en-us/articles/207241085-Locating-IDE-log-files) )
 
 If the plugin was not loaded, you won't have a WakaTime Settings menu.
 In that case, add this line to your `~/.wakatime.cfg` file:
