@@ -10,7 +10,7 @@ Installation
 1. Inside your IDE, select `Preferences` -> `Plugins` -> `Browse Repositories...`.
 
 2. Search for `WakaTime`.
-   
+
 3. Click the green `Install Plugin` button.
 
 4. Click `Close` and `OK`, then Re-launch your IDE.
@@ -49,7 +49,7 @@ First, turn on debug mode from File -> WakaTime Settings. Then restart your IDE.
 
 ![wakatime settings menu](https://wakatime.com/static/img/ScreenShots/jetbrains-wakatime-menu.png?v=1)
 
-Now, look for WakaTime related messages in your `idea.log` file:
+Now, look for WakaTime related messages in your `idea.log` file. (`Help` -> `Show Log`)
 
 [Locating your idea.log file](https://intellij-support.jetbrains.com/hc/en-us/articles/207241085-Locating-IDE-log-files)
 
