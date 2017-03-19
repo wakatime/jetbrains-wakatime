@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>9.0.0</version>
+    <version>9.0.1</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+9.0.1 (2017-03-18)<br />
+++++++++++++++++++<br />
+<br />
+- Allow spaces in python path. #84<br />
+<br />
+<br />
 9.0.0 (2017-02-20)<br />
 ++++++++++++++++++<br />
 <br />
