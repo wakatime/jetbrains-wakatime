@@ -7,6 +7,8 @@ Metrics, insights, and time tracking automatically generated from your programmi
 Installation
 ------------
 
+![install](./install.gif)
+
 1. Inside your IDE, select `Preferences` -> `Plugins` -> `Browse Repositories...`.
 
 2. Search for `WakaTime`.
@@ -17,9 +19,7 @@ Installation
 
 5. Enter your [api key](https://wakatime.com/settings#apikey) in `Tools -> WakaTime API Key`, then click `Save`.
 
-6. Use your IDE like you normally do and your time will be tracked for you automatically.
-
-7. Visit https://wakatime.com to see your logged time.
+6. Use your IDE and your coding activity will be displayed on your [WakaTime dashboard](https://wakatime.com).
 
 
 Screen Shots
