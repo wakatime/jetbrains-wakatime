@@ -48,7 +48,6 @@ public class Dependencies {
     public static String getResourcesLocation() {
         if (Dependencies.resourcesLocation == null) {
             if (System.getenv("WAKATIME_HOME")) {
-                File appDataFolder = new File(System.getenv("WAKATIME_HOME"));
                 File resourcesFolder = new File(System.getenv("WAKATIME_HOME"));
                 Dependencies.resourcesLocation = resourcesFolder.getAbsolutePath();
                 return Dependencies.resourcesLocation;
