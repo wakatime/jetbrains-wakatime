@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>9.0.1</version>
+    <version>9.0.2</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+9.0.2 (2018-03-18)<br />
+++++++++++++++++++<br />
+<br />
+- Support for WAKATIME_HOME env variable. #96<br />
+<br />
+<br />
 9.0.1 (2017-03-18)<br />
 ++++++++++++++++++<br />
 <br />
