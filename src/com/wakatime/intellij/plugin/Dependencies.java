@@ -47,10 +47,13 @@ public class Dependencies {
 
     public static String getResourcesLocation() {
         if (Dependencies.resourcesLocation == null) {
-            if (!System.getenv("WAKATIME_HOME").equals("")) {
+            if (System.getenv("WAKATIME_HOME") != null && !System.getenv("WAKATIME_HOME").trim().isEmpty()) {
                 File resourcesFolder = new File(System.getenv("WAKATIME_HOME"));
-                Dependencies.resourcesLocation = resourcesFolder.getAbsolutePath();
-                return Dependencies.resourcesLocation;
+                if (resourcesFolder.exists()) {
+                    WakaTime.log.info(resourcesFolder.getAbsolutePath());
+                    Dependencies.resourcesLocation = resourcesFolder.getAbsolutePath();
+                    return Dependencies.resourcesLocation;
+                }
             }
 
             if (isWindows()) {
