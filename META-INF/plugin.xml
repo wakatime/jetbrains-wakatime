@@ -27,6 +27,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+9.1.0 (2018-04-03)<br />
+++++++++++++++++++<br />
+<br />
+- Prefer Python3 over Python2 when running wakatime-cli core.<br />
+- Improve detection of Python3 on Ubuntu 17.10 platforms.<br />
+<br />
+<br />
 9.0.3 (2018-03-18)<br />
 ++++++++++++++++++<br />
 <br />
