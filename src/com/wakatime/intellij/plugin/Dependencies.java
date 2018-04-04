@@ -79,17 +79,20 @@ public class Dependencies {
         paths.add("/usr/bin/");
         if (isWindows()) {
             File resourcesLocation = new File(Dependencies.getResourcesLocation());
-            paths.add(combinePaths(resourcesLocation.getAbsolutePath(), "python"));
+            paths.add(resourcesLocation.getAbsolutePath());
             paths.add(getPythonFromRegistry(WinReg.HKEY_CURRENT_USER));
             paths.add(getPythonFromRegistry(WinReg.HKEY_LOCAL_MACHINE));
-            for (int i=26; i<=50; i++) {
-                paths.add(combinePaths("\\python" + i, "pythonw"));
-                paths.add(combinePaths("\\Python" + i, "pythonw"));
+            for (int i=50; i>=26; i--) {
+                paths.add("\\python" + i);
+                paths.add("\\Python" + i);
             }
         }
         for (String path : paths) {
             if (runPython(combinePaths(path, "pythonw"))) {
                 Dependencies.pythonLocation = combinePaths(path, "pythonw");
+                break;
+            } else if (runPython(combinePaths(path, "python3"))) {
+                Dependencies.pythonLocation = combinePaths(path, "python3");
                 break;
             } else if (runPython(combinePaths(path, "python"))) {
                 Dependencies.pythonLocation = combinePaths(path, "python");
