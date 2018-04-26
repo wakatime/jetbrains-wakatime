@@ -79,7 +79,7 @@ public class Dependencies {
         paths.add("/usr/bin/");
         if (isWindows()) {
             File resourcesLocation = new File(Dependencies.getResourcesLocation());
-            paths.add(resourcesLocation.getAbsolutePath());
+            paths.add(combinePaths(resourcesLocation.getAbsolutePath(), "python"));
             paths.add(getPythonFromRegistry(WinReg.HKEY_CURRENT_USER));
             paths.add(getPythonFromRegistry(WinReg.HKEY_LOCAL_MACHINE));
             for (int i=50; i>=26; i--) {
