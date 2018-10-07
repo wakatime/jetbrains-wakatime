@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>9.2.0</version>
+    <version>9.2.1</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+9.2.1 (2018-10-06)<br />
+++++++++++++++++++<br />
+<br />
+- Send queued heartbeats to API every 30 seconds.<br />
+<br />
+<br />
 9.2.0 (2018-04-25)<br />
 ++++++++++++++++++<br />
 <br />
