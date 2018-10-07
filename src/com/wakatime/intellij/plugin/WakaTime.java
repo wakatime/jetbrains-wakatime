@@ -58,7 +58,7 @@ public class WakaTime implements ApplicationComponent {
     public static String lastFile = null;
     public static BigDecimal lastTime = new BigDecimal(0);
 
-    private final int queueTimeoutSeconds = 10;
+    private final int queueTimeoutSeconds = 30;
     private static ConcurrentLinkedQueue<Heartbeat> heartbeatsQueue = new ConcurrentLinkedQueue<Heartbeat>();
     private static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private static ScheduledFuture<?> scheduledFixture;
