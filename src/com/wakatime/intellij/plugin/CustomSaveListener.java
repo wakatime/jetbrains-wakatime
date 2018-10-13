@@ -12,11 +12,11 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.fileEditor.FileDocumentManagerAdapter;
+import com.intellij.openapi.fileEditor.FileDocumentManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
-public class CustomSaveListener extends FileDocumentManagerAdapter {
+public class CustomSaveListener implements FileDocumentManagerListener {
 
     @Override
     public void beforeDocumentSaving(Document document) {
