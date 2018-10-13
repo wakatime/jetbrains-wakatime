@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+9.2.2 (2018-10-13)<br />
+++++++++++++++++++<br />
+<br />
+- Ignore errors when searching for Python and win registry not supported. #109<br />
+<br />
+<br />
 9.2.1 (2018-10-06)<br />
 ++++++++++++++++++<br />
 <br />
