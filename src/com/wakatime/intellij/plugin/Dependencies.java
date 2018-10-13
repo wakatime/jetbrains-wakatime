@@ -80,8 +80,12 @@ public class Dependencies {
         if (isWindows()) {
             File resourcesLocation = new File(Dependencies.getResourcesLocation());
             paths.add(combinePaths(resourcesLocation.getAbsolutePath(), "python"));
-            paths.add(getPythonFromRegistry(WinReg.HKEY_CURRENT_USER));
-            paths.add(getPythonFromRegistry(WinReg.HKEY_LOCAL_MACHINE));
+            try {
+                paths.add(getPythonFromRegistry(WinReg.HKEY_CURRENT_USER));
+                paths.add(getPythonFromRegistry(WinReg.HKEY_LOCAL_MACHINE));
+            } catch(NoClassDefFoundError e) {
+                WakaTime.log.debug(e);
+            }
             for (int i=50; i>=26; i--) {
                 paths.add("\\python" + i);
                 paths.add("\\Python" + i);
