@@ -28,4 +28,8 @@ public class CustomSaveListener implements FileDocumentManagerListener {
             WakaTime.appendHeartbeat(file, project, true);
         }
     }
+
+    @Override
+    public void beforeAllDocumentsSaving() {
+    }
 }
