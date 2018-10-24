@@ -50,8 +50,8 @@ public class Dependencies {
             if (System.getenv("WAKATIME_HOME") != null && !System.getenv("WAKATIME_HOME").trim().isEmpty()) {
                 File resourcesFolder = new File(System.getenv("WAKATIME_HOME"));
                 if (resourcesFolder.exists()) {
-                    WakaTime.log.info(resourcesFolder.getAbsolutePath());
                     Dependencies.resourcesLocation = resourcesFolder.getAbsolutePath();
+                    WakaTime.log.debug("Using $WAKATIME_HOME for resources folder: " + Dependencies.resourcesLocation);
                     return Dependencies.resourcesLocation;
                 }
             }
