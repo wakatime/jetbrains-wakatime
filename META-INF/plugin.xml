@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+9.3.0 (2018-10-23)<br />
+++++++++++++++++++<br />
+<br />
+- Use WAKATIME_HOME to define config file location. #110<br />
+<br />
+<br />
 9.2.3 (2018-10-15)<br />
 ++++++++++++++++++<br />
 <br />
