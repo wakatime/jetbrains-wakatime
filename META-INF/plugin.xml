@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+9.3.2 (2018-10-24)<br />
+++++++++++++++++++<br />
+<br />
+- Override all expected FileDocumentManagerListener methods to prevent AbstractMethodError. #111<br />
+<br />
+<br />
 9.3.1 (2018-10-24)<br />
 ++++++++++++++++++<br />
 <br />
