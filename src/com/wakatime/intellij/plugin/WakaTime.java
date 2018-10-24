@@ -16,6 +16,8 @@ import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.fileTypes.FileType;
@@ -440,6 +442,14 @@ public class WakaTime implements ApplicationComponent {
         } else {
             log.setLevel(Level.INFO);
         }
+    }
+
+    public static Project getProject(Document document) {
+        Editor[] editors = EditorFactory.getInstance().getEditors(document);
+        if (editors.length > 0) {
+            return editors[0].getProject();
+        }
+        return null;
     }
 
     private static String obfuscateKey(String key) {
