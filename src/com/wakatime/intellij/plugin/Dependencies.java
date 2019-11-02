@@ -86,7 +86,7 @@ public class Dependencies {
             } catch(NoClassDefFoundError e) {
                 WakaTime.log.debug(e);
             }
-            for (int i=50; i>=27; i--) {
+            for (int i=50; i>=34; i--) {
                 paths.add("\\python" + i);
                 paths.add("\\Python" + i);
             }
