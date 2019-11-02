@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+9.3.3 (2019-11-01)<br />
+++++++++++++++++++<br />
+<br />
+- Suppress all exceptions from showing debug warning message. #126<br />
+<br />
+<br />
 9.3.2 (2018-10-24)<br />
 ++++++++++++++++++<br />
 <br />
