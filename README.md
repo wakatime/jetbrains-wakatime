@@ -1,14 +1,11 @@
+# jetbrains-wakatime
+
 [![Coding time tracker](https://wakatime.com/badge/github/wakatime/jetbrains-wakatime.svg)](https://wakatime.com/badge/github/wakatime/jetbrains-wakatime)
-
-
-jetbrains-wakatime
-==================
 
 Metrics, insights, and time tracking automatically generated from your programming activity.
 
 
-Installation
-------------
+## Installation
 
 ![install](./install.gif)
 
@@ -25,28 +22,24 @@ Installation
 6. Use your IDE and your coding activity will be displayed on your [WakaTime dashboard](https://wakatime.com).
 
 
-Screen Shots
-------------
+## Screen Shots
 
 ![Project Overview](https://wakatime.com/static/img/ScreenShots/Screen-Shot-2016-03-21.png)
 
 
-Configuring
------------
+## Configuring
 
 WakaTime for Jetbrains IDE's can be configured via Tools -> WakaTime Settings.
 
 For more settings, WakaTime plugins share a common config file `.wakatime.cfg` located in your user home directory with [these options](https://github.com/wakatime/wakatime#configuring) available.
 
 
-Uninstalling
-------------
+## Uninstalling
 
 Inside your IDE, select `Preferences` -> `Plugins`, then find the `WakaTime` plugin. Click `Uninstall`. Then delete your `~/.wakatime.cfg` config file.
 
 
-Troubleshooting
----------------
+## Troubleshooting
 
 First, turn on debug mode from File -> WakaTime Settings. Then restart your IDE.
 
