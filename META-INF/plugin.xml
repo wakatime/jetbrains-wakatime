@@ -27,19 +27,31 @@
     ]]></description>
 
     <change-notes><![CDATA[
+11.0.0 (2020-02-23)<br />
+++++++++++++++++++<br />
+<br />
+- Download wakatime-cli standalone as zipped folder for improved performance.<br />
+<br />
+<br />
 10.0.2 (2020-02-23)<br />
 ++++++++++++++++++<br />
 <br />
 - Use legacy PluginManager to read plugin version.<br />
+<br />
+<br />
 10.0.1 (2020-02-22)<br />
 ++++++++++++++++++<br />
 <br />
 - Fix wakatime-cli filename on Windows platform.<br />
+<br />
+<br />
 10.0.0 (2020-02-22)<br />
 ++++++++++++++++++<br />
 <br />
 - Use wakatime-cli standalone.<br />
 - Replace PluginManager usage with PluginManagerCore.<br />
+<br />
+<br />
 9.3.4 (2020-02-16)<br />
 ++++++++++++++++++<br />
 <br />
