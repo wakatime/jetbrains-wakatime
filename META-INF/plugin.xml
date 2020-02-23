@@ -27,6 +27,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+10.0.2 (2020-02-23)<br />
+++++++++++++++++++<br />
+<br />
+- Use legacy PluginManager to read plugin version.<br />
 10.0.1 (2020-02-22)<br />
 ++++++++++++++++++<br />
 <br />
