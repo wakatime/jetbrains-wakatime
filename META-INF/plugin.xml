@@ -27,6 +27,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+10.0.1 (2020-02-22)<br />
+++++++++++++++++++<br />
+<br />
+- Fix wakatime-cli filename on Windows platform.<br />
 10.0.0 (2020-02-22)<br />
 ++++++++++++++++++<br />
 <br />
