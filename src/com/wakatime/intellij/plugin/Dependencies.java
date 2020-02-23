@@ -13,6 +13,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +34,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static java.nio.file.attribute.PosixFilePermission.*;
 
@@ -122,22 +125,33 @@ public class Dependencies {
 
     public static String getCLILocation() {
         String ext = isWindows() ? ".exe" : "";
-        return combinePaths(Dependencies.getResourcesLocation(), "wakatime" + ext);
+        return combinePaths(Dependencies.getResourcesLocation(), "wakatime-cli", "wakatime-cli" + ext);
     }
 
     public static void installCLI() {
         File resourceDir = new File(Dependencies.getResourcesLocation());
         if (!resourceDir.exists()) resourceDir.mkdirs();
 
-        String ext = isWindows() ? ".exe" : "";
-        String url = Dependencies.s3BucketUrl() + "wakatime" + ext;
-        String localFile = getCLILocation();
+        String url = Dependencies.s3BucketUrl() + "wakatime-cli.zip";
+        String zipFile = combinePaths(Dependencies.getResourcesLocation(), "wakatime-cli.zip");
 
-        downloadFile(url, localFile);
-        if (!isWindows()) {
+        if (downloadFile(url, zipFile)) {
+
+            // Delete old wakatime-master directory if it exists
+            File dir = new File(combinePaths(Dependencies.getResourcesLocation(), "wakatime-cli"));
+            if (dir.exists()) {
+                deleteDirectory(dir);
+            }
+
+            File outputDir = new File(Dependencies.getResourcesLocation());
             try {
-                makeExecutable(localFile);
-            } catch (java.io.IOException e) { }
+                Dependencies.unzip(zipFile, outputDir);
+                File oldZipFile = new File(zipFile);
+                oldZipFile.delete();
+                if (!isWindows()) makeExecutable(getCLILocation());
+            } catch (IOException e) {
+                WakaTime.log.warn(e);
+            }
         }
     }
 
@@ -268,6 +282,51 @@ public class Dependencies {
                 WakaTime.log.error("Proxy string must follow https://user:pass@host:port format: " + proxyConfig);
             }
         }
+    }
+
+    private static void unzip(String zipFile, File outputDir) throws IOException {
+        if(!outputDir.exists())
+            outputDir.mkdirs();
+
+        byte[] buffer = new byte[1024];
+        ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
+        ZipEntry ze = zis.getNextEntry();
+
+        while (ze != null) {
+            String fileName = ze.getName();
+            File newFile = new File(outputDir, fileName);
+
+            if (ze.isDirectory()) {
+                newFile.mkdirs();
+            } else {
+                FileOutputStream fos = new FileOutputStream(newFile.getAbsolutePath());
+                int len;
+                while ((len = zis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, len);
+                }
+                fos.close();
+            }
+
+            ze = zis.getNextEntry();
+        }
+
+        zis.closeEntry();
+        zis.close();
+    }
+
+    private static void deleteDirectory(File path) {
+        if( path.exists() ) {
+            File[] files = path.listFiles();
+            for(int i=0; i<files.length; i++) {
+                if(files[i].isDirectory()) {
+                    deleteDirectory(files[i]);
+                }
+                else {
+                    files[i].delete();
+                }
+            }
+        }
+        path.delete();
     }
 
     public static boolean is64bit() {
