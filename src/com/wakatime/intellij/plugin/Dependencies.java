@@ -8,15 +8,11 @@ Website:     https://wakatime.com/
 
 package com.wakatime.intellij.plugin;
 
-import com.sun.jna.platform.win32.Advapi32Util;
-import com.sun.jna.platform.win32.WinReg;
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,22 +24,22 @@ import java.net.UnknownHostException;
 import java.net.PasswordAuthentication;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermission;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+
+import static java.nio.file.attribute.PosixFilePermission.*;
 
 public class Dependencies {
 
-    private static String pythonLocation = null;
     private static String resourcesLocation = null;
-
-    public static boolean isPythonInstalled() {
-        return Dependencies.getPythonLocation() != null;
-    }
+    private static String s3Prefix = "https://wakatime-cli.s3-us-west-2.amazonaws.com/";
 
     public static String getResourcesLocation() {
         if (Dependencies.resourcesLocation == null) {
@@ -69,79 +65,6 @@ public class Dependencies {
         return Dependencies.resourcesLocation;
     }
 
-    public static String getPythonLocation() {
-        if (Dependencies.pythonLocation != null)
-            return Dependencies.pythonLocation;
-        ArrayList<String> paths = new ArrayList<String>();
-        paths.add(null);
-        paths.add("/");
-        paths.add("/usr/local/bin/");
-        paths.add("/usr/bin/");
-        if (isWindows()) {
-            File resourcesLocation = new File(Dependencies.getResourcesLocation());
-            paths.add(combinePaths(resourcesLocation.getAbsolutePath(), "python"));
-            try {
-                paths.add(getPythonFromRegistry(WinReg.HKEY_CURRENT_USER));
-                paths.add(getPythonFromRegistry(WinReg.HKEY_LOCAL_MACHINE));
-            } catch(NoClassDefFoundError e) {
-                WakaTime.log.debug(e);
-            }
-            for (int i=50; i>=34; i--) {
-                paths.add("\\python" + i);
-                paths.add("\\Python" + i);
-            }
-        }
-        for (String path : paths) {
-            if (runPython(combinePaths(path, "pythonw"))) {
-                Dependencies.pythonLocation = combinePaths(path, "pythonw");
-                break;
-            } else if (runPython(combinePaths(path, "python3"))) {
-                Dependencies.pythonLocation = combinePaths(path, "python3");
-                break;
-            } else if (runPython(combinePaths(path, "python"))) {
-                Dependencies.pythonLocation = combinePaths(path, "python");
-                break;
-            }
-        }
-        if (Dependencies.pythonLocation != null) {
-            WakaTime.log.debug("Found python binary: " + Dependencies.pythonLocation);
-        } else {
-            WakaTime.log.warn("Could not find python binary.");
-        }
-        return Dependencies.pythonLocation;
-    }
-
-    public static String getPythonFromRegistry(WinReg.HKEY hkey) {
-        String path = null;
-        if (isWindows()) {
-            try {
-                String key = "Software\\\\Wow6432Node\\\\Python\\\\PythonCore";
-                for (String version : Advapi32Util.registryGetKeys(hkey, key)) {
-                    path = Advapi32Util.registryGetStringValue(hkey, key + "\\" + version + "\\InstallPath", "");
-                    if (path != null) {
-                        break;
-                    }
-                }
-            }  catch (Exception e) {
-                WakaTime.log.debug(e);
-            }
-            if (path == null) {
-                try {
-                    String key = "Software\\\\Python\\\\PythonCore";
-                    for (String version : Advapi32Util.registryGetKeys(hkey, key)) {
-                        path = Advapi32Util.registryGetStringValue(hkey, key + "\\" + version + "\\InstallPath", "");
-                        if (path != null) {
-                            break;
-                        }
-                    }
-                } catch (Exception e) {
-                    WakaTime.log.debug(e);
-                }
-            }
-        }
-        return path;
-    }
-
     public static boolean isCLIInstalled() {
         File cli = new File(Dependencies.getCLILocation());
         return cli.exists();
@@ -152,7 +75,6 @@ public class Dependencies {
             return false;
         }
         ArrayList<String> cmds = new ArrayList<String>();
-        cmds.add(Dependencies.getPythonLocation());
         cmds.add(Dependencies.getCLILocation());
         cmds.add("--version");
         try {
@@ -170,12 +92,12 @@ public class Dependencies {
             while ((s = stdError.readLine()) != null) {
                 output += s;
             }
-            WakaTime.log.debug("wakatime cli version check output: \"" + output + "\"");
-            WakaTime.log.debug("wakatime cli version check exit code: " + p.exitValue());
+            WakaTime.log.debug("wakatime-cli local version output: \"" + output + "\"");
+            WakaTime.log.debug("wakatime-cli local version exit code: " + p.exitValue());
 
             if (p.exitValue() == 0) {
                 String cliVersion = latestCliVersion();
-                WakaTime.log.debug("Current cli version from GitHub: " + cliVersion);
+                WakaTime.log.debug("Current wakatime-cli version: " + cliVersion);
                 if (output.contains(cliVersion))
                     return false;
             }
@@ -186,14 +108,12 @@ public class Dependencies {
     }
 
     public static String latestCliVersion() {
-        String url = "https://raw.githubusercontent.com/wakatime/wakatime/master/wakatime/__about__.py";
+        String url = Dependencies.s3BucketUrl() + "current_version.txt";
         try {
             String aboutText = getUrlAsString(url);
-            Pattern p = Pattern.compile("__version_info__ = \\('([0-9]+)', '([0-9]+)', '([0-9]+)'\\)");
+            Pattern p = Pattern.compile("([0-9]+\\.[0-9]+\\.[0-9]+)");
             Matcher m = p.matcher(aboutText);
-            if (m.find()) {
-                return m.group(1) + "." + m.group(2) + "." + m.group(3);
-            }
+            if (m.find()) return m.group(1);
         } catch (Exception e) {
             WakaTime.log.warn(e);
         }
@@ -201,61 +121,22 @@ public class Dependencies {
     }
 
     public static String getCLILocation() {
-        return combinePaths(Dependencies.getResourcesLocation(), "wakatime-master", "wakatime", "cli.py");
+        return combinePaths(Dependencies.getResourcesLocation(), "wakatime");
     }
 
     public static void installCLI() {
-        File cli = new File(Dependencies.getCLILocation());
-        if (!cli.getParentFile().getParentFile().getParentFile().exists())
-            cli.getParentFile().getParentFile().getParentFile().mkdirs();
+        File resourceDir = new File(Dependencies.getResourcesLocation());
+        if (!resourceDir.exists()) resourceDir.mkdirs();
 
-        String url = "https://codeload.github.com/wakatime/wakatime/zip/master";
-        String zipFile = combinePaths(cli.getParentFile().getParentFile().getParentFile().getAbsolutePath(), "wakatime-cli.zip");
-        File outputDir = cli.getParentFile().getParentFile().getParentFile();
+        String url = Dependencies.s3BucketUrl() + "wakatime";
+        String ext = isWindows() ? ".exe" : "";
+        String localFile = combinePaths(resourceDir.getAbsolutePath(), "wakatime" + ext);
 
-        // download wakatime-master.zip file
-        if (downloadFile(url, zipFile)) {
-
-            // Delete old wakatime-master directory if it exists
-            File dir = cli.getParentFile().getParentFile();
-            if (dir.exists()) {
-                deleteDirectory(dir);
-            }
-
-            try {
-                Dependencies.unzip(zipFile, outputDir);
-                File oldZipFile = new File(zipFile);
-                oldZipFile.delete();
-            } catch (IOException e) {
-                WakaTime.log.warn(e);
-            }
-        }
-    }
-
-    public static void upgradeCLI() {
-        Dependencies.installCLI();
-    }
-
-    public static void installPython() {
+        downloadFile(url, localFile);
         if (isWindows()) {
-            String pyVer = "3.8.1";
-            String arch = "win32";
-            if (is64bit()) arch = "amd64";
-            String url = "https://www.python.org/ftp/python/" + pyVer + "/python-" + pyVer + "-embed-" + arch + ".zip";
-
-            File dir = new File(Dependencies.getResourcesLocation());
-            File zipFile = new File(combinePaths(dir.getAbsolutePath(), "python.zip"));
-            if (downloadFile(url, zipFile.getAbsolutePath())) {
-
-                File targetDir = new File(combinePaths(dir.getAbsolutePath(), "python"));
-
-                // extract python
-                try {
-                    Dependencies.unzip(zipFile.getAbsolutePath(), targetDir);
-                } catch (IOException e) {
-                    WakaTime.log.warn(e);
-                }
-                zipFile.delete();
+            try {
+                makeExecutable(localFile);
+            } catch (java.io.IOException e) {
             }
         }
     }
@@ -389,90 +270,8 @@ public class Dependencies {
         }
     }
 
-    private static boolean runPython(String path) {
-        try {
-            WakaTime.log.debug(path + " --version");
-            String[] cmds = {path, "--version"};
-            Process p = Runtime.getRuntime().exec(cmds);
-            BufferedReader stdInput = new BufferedReader(new
-                    InputStreamReader(p.getInputStream()));
-            BufferedReader stdError = new BufferedReader(new
-                    InputStreamReader(p.getErrorStream()));
-            p.waitFor();
-            String output = "";
-            String s;
-            while ((s = stdInput.readLine()) != null) {
-                output += s;
-            }
-            while ((s = stdError.readLine()) != null) {
-                output += s;
-            }
-            if (output != "")
-                WakaTime.log.debug(output);
-            if (p.exitValue() != 0)
-                throw new Exception("NonZero Exit Code: " + p.exitValue());
-
-            return true;
-
-        } catch (Exception e) {
-            WakaTime.log.debug(e.toString());
-            return false;
-        }
-    }
-
-    private static void unzip(String zipFile, File outputDir) throws IOException {
-        if(!outputDir.exists())
-            outputDir.mkdirs();
-
-        byte[] buffer = new byte[1024];
-        ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
-        ZipEntry ze = zis.getNextEntry();
-
-        while (ze != null) {
-            String fileName = ze.getName();
-            File newFile = new File(outputDir, fileName);
-
-            if (ze.isDirectory()) {
-                newFile.mkdirs();
-            } else {
-                FileOutputStream fos = new FileOutputStream(newFile.getAbsolutePath());
-                int len;
-                while ((len = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
-                }
-                fos.close();
-            }
-
-            ze = zis.getNextEntry();
-        }
-
-        zis.closeEntry();
-        zis.close();
-    }
-
-    private static void deleteDirectory(File path) {
-        if( path.exists() ) {
-            File[] files = path.listFiles();
-            for(int i=0; i<files.length; i++) {
-                if(files[i].isDirectory()) {
-                    deleteDirectory(files[i]);
-                }
-                else {
-                    files[i].delete();
-                }
-            }
-        }
-        path.delete();
-    }
-
     public static boolean is64bit() {
-        boolean is64bit = false;
-        if (isWindows()) {
-            is64bit = (System.getenv("ProgramFiles(x86)") != null);
-        } else {
-            is64bit = (System.getProperty("os.arch").indexOf("64") != -1);
-        }
-        return is64bit;
+        return System.getProperty("os.arch").indexOf("64") != -1;
     }
 
     public static boolean isWindows() {
@@ -492,5 +291,30 @@ public class Dependencies {
         if (path == null)
             return null;
         return path.toString();
+    }
+
+    private static String s3BucketUrl() {
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.indexOf("win") >= 0) {
+            String arch = Dependencies.is64bit() ? "64" : "32";
+            return Dependencies.s3Prefix + "windows-x86-" + arch + "/";
+        } else if (os.indexOf("mac") >= 0 || os.indexOf("darwin") >= 0) {
+            return Dependencies.s3Prefix + "mac-x86-64/";
+        } else {
+            return Dependencies.s3Prefix + "linux-x86-64/";
+        }
+    }
+
+    private static void makeExecutable(String filePath) throws IOException {
+        File file = new File(filePath);
+        Set<PosixFilePermission> perms = new HashSet<>();
+        perms.add(OWNER_READ);
+        perms.add(OWNER_WRITE);
+        perms.add(OWNER_EXECUTE);
+        perms.add(GROUP_READ);
+        perms.add(GROUP_EXECUTE);
+        perms.add(OTHERS_READ);
+        perms.add(OTHERS_EXECUTE);
+        Files.setPosixFilePermissions(file.toPath(), perms);
     }
 }

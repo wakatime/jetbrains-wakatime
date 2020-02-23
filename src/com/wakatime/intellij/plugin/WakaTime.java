@@ -78,52 +78,17 @@ public class WakaTime implements ApplicationComponent {
 
         setupDebugging();
         setLoggingLevel();
-
         Dependencies.configureProxy();
-
         checkApiKey();
-
         setupMenuItem();
-
-        if (Dependencies.isPythonInstalled()) {
-
-            checkCore();
-            setupEventListeners();
-            setupQueueProcessor();
-            checkDebug();
-            log.info("Finished initializing WakaTime plugin");
-
-        } else {
-
-            ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
-                public void run() {
-                    log.info("Python not found, downloading python...");
-
-                    // download and install python
-                    Dependencies.installPython();
-
-                    if (Dependencies.isPythonInstalled()) {
-                        log.info("Finished installing python...");
-
-                        checkCore();
-                        setupEventListeners();
-                        setupQueueProcessor();
-                        checkDebug();
-                        log.info("Finished initializing WakaTime plugin");
-
-                    } else {
-                        ApplicationManager.getApplication().invokeLater(new Runnable(){
-                            public void run(){
-                                Messages.showErrorDialog("WakaTime requires Python to be installed.\nYou can install it from https://www.python.org/downloads/\nAfter installing Python, restart your IDE.", "Error");
-                            }
-                        });
-                    }
-                }
-            });
-        }
+        checkCli();
+        setupEventListeners();
+        setupQueueProcessor();
+        checkDebug();
+        log.info("Finished initializing WakaTime plugin");
     }
 
-    private void checkCore() {
+    private void checkCli() {
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             public void run() {
                 if (!Dependencies.isCLIInstalled()) {
@@ -133,7 +98,7 @@ public class WakaTime implements ApplicationComponent {
                     log.info("Finished downloading and installing wakatime-cli.");
                 } else if (Dependencies.isCLIOld()) {
                     log.info("Upgrading wakatime-cli ...");
-                    Dependencies.upgradeCLI();
+                    Dependencies.installCLI();
                     WakaTime.READY = true;
                     log.info("Finished upgrading wakatime-cli.");
                 } else {
@@ -383,7 +348,6 @@ public class WakaTime implements ApplicationComponent {
 
     private static String[] buildCliCommand(Heartbeat heartbeat, ArrayList<Heartbeat> extraHeartbeats) {
         ArrayList<String> cmds = new ArrayList<String>();
-        cmds.add(Dependencies.getPythonLocation());
         cmds.add(Dependencies.getCLILocation());
         cmds.add("--entity");
         cmds.add(heartbeat.entity);
