@@ -134,7 +134,7 @@ public class Dependencies {
         String localFile = getCLILocation();
 
         downloadFile(url, localFile);
-        if (isWindows()) {
+        if (!isWindows()) {
             try {
                 makeExecutable(localFile);
             } catch (java.io.IOException e) { }
