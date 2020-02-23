@@ -27,6 +27,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+10.0.0 (2020-02-22)<br />
+++++++++++++++++++<br />
+<br />
+- Use wakatime-cli standalone.<br />
+- Replace PluginManager usage with PluginManagerCore.<br />
 9.3.4 (2020-02-16)<br />
 ++++++++++++++++++<br />
 <br />
