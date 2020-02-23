@@ -121,23 +121,23 @@ public class Dependencies {
     }
 
     public static String getCLILocation() {
-        return combinePaths(Dependencies.getResourcesLocation(), "wakatime");
+        String ext = isWindows() ? ".exe" : "";
+        return combinePaths(Dependencies.getResourcesLocation(), "wakatime" + ext);
     }
 
     public static void installCLI() {
         File resourceDir = new File(Dependencies.getResourcesLocation());
         if (!resourceDir.exists()) resourceDir.mkdirs();
 
-        String url = Dependencies.s3BucketUrl() + "wakatime";
         String ext = isWindows() ? ".exe" : "";
-        String localFile = combinePaths(resourceDir.getAbsolutePath(), "wakatime" + ext);
+        String url = Dependencies.s3BucketUrl() + "wakatime" + ext;
+        String localFile = getCLILocation();
 
         downloadFile(url, localFile);
         if (isWindows()) {
             try {
                 makeExecutable(localFile);
-            } catch (java.io.IOException e) {
-            }
+            } catch (java.io.IOException e) { }
         }
     }
 
