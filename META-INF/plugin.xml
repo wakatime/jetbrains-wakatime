@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>11.0.0</version>
+    <version>11.0.1</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+11.0.1 (2020-03-02)<br />
+++++++++++++++++++<br />
+<br />
+- Upgrading to the new way of adding menu items.<br />
+<br />
+<br />
 11.0.0 (2020-02-23)<br />
 ++++++++++++++++++<br />
 <br />
@@ -674,13 +680,11 @@
         </component>
     </application-components>
 
-    <project-components>
-        <!-- Add your project components here -->
-    </project-components>
-
     <actions>
         <!-- Add your actions here -->
-        <action id="pluginMenu" class="com.wakatime.intellij.plugin.PluginMenu" text="WakaTime"/>
+        <action id="pluginMenu" class="com.wakatime.intellij.plugin.PluginMenu" text="WakaTime">
+            <add-to-group group-id="ToolsMenu" anchor="first" />
+        </action>
     </actions>
 
 </idea-plugin>
