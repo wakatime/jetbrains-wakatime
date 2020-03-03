@@ -10,8 +10,6 @@ package com.wakatime.intellij.plugin;
 
 import com.intellij.AppTopics;
 import com.intellij.ide.plugins.PluginManager;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
@@ -80,7 +78,6 @@ public class WakaTime implements ApplicationComponent {
         setLoggingLevel();
         Dependencies.configureProxy();
         checkApiKey();
-        setupMenuItem();
         checkCli();
         setupEventListeners();
         setupQueueProcessor();
@@ -156,21 +153,6 @@ public class WakaTime implements ApplicationComponent {
         };
         long delay = queueTimeoutSeconds;
         scheduledFixture = scheduler.scheduleAtFixedRate(handler, delay, delay, java.util.concurrent.TimeUnit.SECONDS);
-    }
-
-    private void setupMenuItem() {
-        ApplicationManager.getApplication().invokeLater(new Runnable(){
-            public void run() {
-                ActionManager am = ActionManager.getInstance();
-                PluginMenu action = new PluginMenu();
-                action.getTemplatePresentation().setEnabled(false);
-                am.registerAction("WakaTimeApiKey", action);
-                DefaultActionGroup menu = (DefaultActionGroup) am.getAction("ToolsMenu");
-                menu.addSeparator();
-                menu.add(action);
-                action.getTemplatePresentation().setEnabled(true);
-            }
-        });
     }
 
     private void checkDebug() {

@@ -10,7 +10,6 @@ package com.wakatime.intellij.plugin;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 
 public class PluginMenu extends AnAction {
@@ -19,7 +18,7 @@ public class PluginMenu extends AnAction {
         // super("WakaTime Settings", "", IconLoader.getIcon("/Mypackage/icon.png"));
     }
     public void actionPerformed(AnActionEvent e) {
-        Project project = e.getData(PlatformDataKeys.PROJECT);
+        Project project = e.getProject();
         Settings popup = new Settings(project);
         popup.show();
     }
