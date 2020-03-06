@@ -27,10 +27,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
-11.0.1 (2020-03-02)<br />
+11.0.1 (2020-03-05)<br />
 ++++++++++++++++++<br />
 <br />
-- Upgrading to the new way of adding menu items.<br />
+- Upgrading to the new way of adding menu items. #135<br />
 <br />
 <br />
 11.0.0 (2020-02-23)<br />
