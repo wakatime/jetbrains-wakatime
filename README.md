@@ -9,13 +9,13 @@ Metrics, insights, and time tracking automatically generated from your programmi
 
 ![install](./install.gif)
 
-1. Inside your IDE, select `Preferences` -> `Plugins` -> `Browse Repositories...`.
+1. Inside your IDE, select `Preferences` -> `Plugins`.
 
 2. Search for `WakaTime`.
 
-3. Click the green `Install Plugin` button.
+3. Click the green `Install` button.
 
-4. Click `Close` and `OK`, then Re-launch your IDE.
+4. Re-launch your IDE.
 
 5. Enter your [api key](https://wakatime.com/settings#apikey) in `Tools -> WakaTime API Key`, then click `Save`.
 
