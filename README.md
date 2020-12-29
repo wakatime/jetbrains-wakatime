@@ -4,7 +4,8 @@
 
 [WakaTime][wakatime] is an open source Jetbrains plugin for metrics, insights, and time tracking automatically generated from your programming activity.
 
-Supports all Jetbrains IDES: Android Studio, AppCode, CLion, DataGrip, GoLand, IntelliJ IDEA, PhpStorm, PyCharm, Rider, RubyMine, & WebStorm.
+Supports Jetbrains IDES:
+[Android Studio][android studio], [AppCode][appcode], [CLion][clion], [DataGrip][datagrip], [GoLand][goland], [IntelliJ IDEA][wakatime], [PhpStorm][phpstorm], [PyCharm][pycharm], [Rider][rider], [RubyMine][rubymine], & [WebStorm][webstorm].
 
 
 ## Installation
@@ -61,3 +62,13 @@ In that case, add this line to your `~/.wakatime.cfg` file:
 For more general troubleshooting information, see [wakatime/wakatime#troubleshooting](https://github.com/wakatime/wakatime#troubleshooting).
 
 [wakatime]: https://wakatime.com/intellij-idea
+[android studio]: https://wakatime.com/android-studio
+[appcode]: https://wakatime.com/appcode
+[clion]: https://wakatime.com/clion
+[datagrip]: https://wakatime.com/datagrip
+[goland]: https://wakatime.com/goland
+[phpstorm]: https://wakatime.com/phpstorm
+[pycharm]: https://wakatime.com/pycharm
+[rider]: https://wakatime.com/rider
+[rubymine]: https://wakatime.com/rubymine
+[webstorm]: https://wakatime.com/webstorm
