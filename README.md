@@ -2,7 +2,9 @@
 
 [![Coding time tracker](https://wakatime.com/badge/github/wakatime/jetbrains-wakatime.svg)](https://wakatime.com/badge/github/wakatime/jetbrains-wakatime)
 
-Metrics, insights, and time tracking automatically generated from your programming activity.
+[WakaTime][wakatime] is an open source Jetbrains plugin for metrics, insights, and time tracking automatically generated from your programming activity.
+
+Supports all Jetbrains IDES: Android Studio, AppCode, CLion, DataGrip, GoLand, IntelliJ IDEA, PhpStorm, PyCharm, Rider, RubyMine, & WebStorm.
 
 
 ## Installation
@@ -57,3 +59,5 @@ In that case, add this line to your `~/.wakatime.cfg` file:
 (`C:\Users\<user>\.wakatime.cfg` on Windows)
 
 For more general troubleshooting information, see [wakatime/wakatime#troubleshooting](https://github.com/wakatime/wakatime#troubleshooting).
+
+[wakatime]: https://wakatime.com/intellij-idea
