@@ -10,6 +10,7 @@ package com.wakatime.intellij.plugin;
 
 import com.intellij.AppTopics;
 import com.intellij.ide.plugins.PluginManager;
+import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
@@ -66,7 +67,13 @@ public class WakaTime implements ApplicationComponent {
     }
 
     public void initComponent() {
-        VERSION = PluginManager.getPlugin(PluginId.getId("com.wakatime.intellij.plugin")).getVersion();
+        try {
+            // support older IDE versions with deprecated PluginManager
+            VERSION = PluginManager.getPlugin(PluginId.getId("com.wakatime.intellij.plugin")).getVersion();
+        } catch (Exception e) {
+            // use PluginManagerCore if PluginManager deprecated
+            VERSION = PluginManagerCore.getPlugin(PluginId.getId("com.wakatime.intellij.plugin")).getVersion();
+        }
         log.info("Initializing WakaTime plugin v" + VERSION + " (https://wakatime.com/)");
         //System.out.println("Initializing WakaTime plugin v" + VERSION + " (https://wakatime.com/)");
 
