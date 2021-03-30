@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+12.0.2 (2021-03-29)<br />
+++++++++++++++++++<br />
+<br />
+- Build plugin with JDK 1.8 using IDEA 2020.1 to support Android Studio. #164<br />
+<br />
+<br />
 12.0.1 (2021-03-29)<br />
 ++++++++++++++++++<br />
 <br />
