@@ -671,6 +671,9 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <statusBarWidgetFactory implementation="com.wakatime.intellij.plugin.CustomStatusBar"
+                                id="com.wakatime.intellij.plugin.CustomStatusBar"
+                                order="first" />
     </extensions>
 
     <application-components>

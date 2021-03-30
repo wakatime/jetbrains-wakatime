@@ -9,6 +9,7 @@ Website:     https://wakatime.com/
 package com.wakatime.intellij.plugin;
 
 import com.intellij.AppTopics;
+import com.intellij.ide.BrowserUtil;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.openapi.application.ApplicationInfo;
@@ -24,6 +25,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.wm.StatusBar;
+import com.intellij.openapi.wm.WindowManager;
 import com.intellij.util.PlatformUtils;
 import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
@@ -206,6 +209,11 @@ public class WakaTime implements ApplicationComponent {
                 h.project = projectName;
                 h.language = language;
                 heartbeatsQueue.add(h);
+
+                if (WakaTime.READY && project != null) {
+                    StatusBar statusbar = WindowManager.getInstance().getStatusBar(project);
+                    statusbar.updateWidget("WakaTime");
+                }
             }
         });
     }
@@ -403,6 +411,42 @@ public class WakaTime implements ApplicationComponent {
             return editors[0].getProject();
         }
         return null;
+    }
+
+    public static void openDashboardWebsite() {
+        BrowserUtil.browse("https://wakatime.com/dashboard");
+    }
+
+    private static String todayText = "";
+    private static BigDecimal todayTextTime = new BigDecimal(0);
+
+    public static String getTodayText() {
+        BigDecimal now = getCurrentTimestamp();
+        if (todayTextTime.add(new BigDecimal(30)).compareTo(now) > 0) return todayText;
+        todayTextTime = now;
+        final String[] cmds = new String[]{Dependencies.getCLILocation(), "--today", "--key", ApiKey.getApiKey()};
+        log.debug("Executing CLI: " + Arrays.toString(obfuscateKey(cmds)));
+        try {
+            Process proc = Runtime.getRuntime().exec(cmds);
+            BufferedReader stdout = new BufferedReader(new
+                    InputStreamReader(proc.getInputStream()));
+            BufferedReader stderr = new BufferedReader(new
+                    InputStreamReader(proc.getErrorStream()));
+            proc.waitFor();
+            ArrayList<String> output = new ArrayList<String>();
+            String s;
+            while ((s = stdout.readLine()) != null) {
+                output.add(s);
+            }
+            while ((s = stderr.readLine()) != null) {
+                output.add(s);
+            }
+            log.debug("Command finished with return value: " + proc.exitValue());
+            todayText = " " + String.join("", output);
+        } catch (Exception e) {
+            log.warn(e);
+        }
+        return todayText;
     }
 
     private static String obfuscateKey(String key) {
