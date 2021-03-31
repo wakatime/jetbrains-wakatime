@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+12.0.3 (2021-03-31)<br />
+++++++++++++++++++<br />
+<br />
+- Update status bar in background thread to prevent blocking UI. #166<br />
+<br />
+<br />
 12.0.2 (2021-03-29)<br />
 ++++++++++++++++++<br />
 <br />
