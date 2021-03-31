@@ -17,6 +17,7 @@ import com.intellij.openapi.wm.StatusBarWidget;
 import com.intellij.openapi.wm.StatusBarWidgetFactory;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.util.Consumer;
+import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.*;
 
 import javax.swing.Icon;
@@ -111,7 +112,8 @@ public class CustomStatusBar implements StatusBarWidgetFactory {
             @Override
             public @Nullable
             Icon getIcon() {
-                return IconLoader.getIcon("status-bar-icon.svg", WakaTime.class);
+                String theme = UIUtil.isUnderDarcula() ? "dark" : "light";
+                return IconLoader.getIcon("status-bar-icon-" + theme + "-theme.svg", WakaTime.class);
             }
 
             @Nullable
