@@ -426,26 +426,36 @@ public class WakaTime implements ApplicationComponent {
         todayTextTime = now;
         final String[] cmds = new String[]{Dependencies.getCLILocation(), "--today", "--key", ApiKey.getApiKey()};
         log.debug("Executing CLI: " + Arrays.toString(obfuscateKey(cmds)));
-        try {
-            Process proc = Runtime.getRuntime().exec(cmds);
-            BufferedReader stdout = new BufferedReader(new
-                    InputStreamReader(proc.getInputStream()));
-            BufferedReader stderr = new BufferedReader(new
-                    InputStreamReader(proc.getErrorStream()));
-            proc.waitFor();
-            ArrayList<String> output = new ArrayList<String>();
-            String s;
-            while ((s = stdout.readLine()) != null) {
-                output.add(s);
+        ApplicationManager.getApplication().invokeLater(new Runnable(){
+            public void run() {
+                try {
+                    Process proc = Runtime.getRuntime().exec(cmds);
+                    BufferedReader stdout = new BufferedReader(new
+                            InputStreamReader(proc.getInputStream()));
+                    BufferedReader stderr = new BufferedReader(new
+                            InputStreamReader(proc.getErrorStream()));
+                    proc.waitFor();
+                    ArrayList<String> output = new ArrayList<String>();
+                    String s;
+                    while ((s = stdout.readLine()) != null) {
+                        output.add(s);
+                    }
+                    while ((s = stderr.readLine()) != null) {
+                        output.add(s);
+                    }
+                    log.debug("Command finished with return value: " + proc.exitValue());
+                    todayText = " " + String.join("", output);
+                    try {
+                        Project project = ProjectManager.getInstance().getDefaultProject();
+                        todayTextTime = getCurrentTimestamp();
+                        StatusBar statusbar = WindowManager.getInstance().getStatusBar(project);
+                        statusbar.updateWidget("WakaTime");
+                    } catch (Exception e) { }
+                } catch (Exception e) {
+                    log.warn(e);
+                }
             }
-            while ((s = stderr.readLine()) != null) {
-                output.add(s);
-            }
-            log.debug("Command finished with return value: " + proc.exitValue());
-            todayText = " " + String.join("", output);
-        } catch (Exception e) {
-            log.warn(e);
-        }
+        });
         return todayText;
     }
 
