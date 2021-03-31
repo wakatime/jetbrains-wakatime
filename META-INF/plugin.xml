@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+12.0.4 (2021-03-31)<br />
+++++++++++++++++++<br />
+<br />
+- Use alternate status bar icon for light theme. #165<br />
+<br />
+<br />
 12.0.3 (2021-03-31)<br />
 ++++++++++++++++++<br />
 <br />
