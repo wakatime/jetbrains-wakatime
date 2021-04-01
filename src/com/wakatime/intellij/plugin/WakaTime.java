@@ -21,6 +21,9 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.Messages;
@@ -423,11 +426,19 @@ public class WakaTime implements ApplicationComponent {
     public static String getTodayText() {
         BigDecimal now = getCurrentTimestamp();
         if (todayTextTime.add(new BigDecimal(30)).compareTo(now) > 0) return todayText;
-        todayTextTime = now;
+        Project project;
+        try {
+            project = ProjectManager.getInstance().getDefaultProject();
+        } catch (Exception e) {
+            return todayText;
+        }
+
         final String[] cmds = new String[]{Dependencies.getCLILocation(), "--today", "--key", ApiKey.getApiKey()};
         log.debug("Executing CLI: " + Arrays.toString(obfuscateKey(cmds)));
-        ApplicationManager.getApplication().invokeLater(new Runnable(){
-            public void run() {
+
+        ProgressManager.getInstance().run(new Task.Backgroundable(project, "Updating wakatime status bar") {
+            public void run(@NotNull ProgressIndicator progressIndicator) {
+                progressIndicator.setIndeterminate(false);
                 try {
                     Process proc = Runtime.getRuntime().exec(cmds);
                     BufferedReader stdout = new BufferedReader(new
@@ -445,15 +456,12 @@ public class WakaTime implements ApplicationComponent {
                     }
                     log.debug("Command finished with return value: " + proc.exitValue());
                     todayText = " " + String.join("", output);
-                    try {
-                        Project project = ProjectManager.getInstance().getDefaultProject();
-                        todayTextTime = getCurrentTimestamp();
-                        StatusBar statusbar = WindowManager.getInstance().getStatusBar(project);
-                        statusbar.updateWidget("WakaTime");
-                    } catch (Exception e) { }
+                    todayTextTime = getCurrentTimestamp();
                 } catch (Exception e) {
                     log.warn(e);
                 }
+                progressIndicator.setFraction(1.0);
+                progressIndicator.stop();
             }
         });
         return todayText;
