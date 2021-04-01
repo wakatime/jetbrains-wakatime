@@ -424,6 +424,7 @@ public class WakaTime implements ApplicationComponent {
     private static BigDecimal todayTextTime = new BigDecimal(0);
 
     public static String getTodayText() {
+        if (!WakaTime.READY) return todayText;
         BigDecimal now = getCurrentTimestamp();
         if (todayTextTime.add(new BigDecimal(30)).compareTo(now) > 0) return todayText;
         Project project;
