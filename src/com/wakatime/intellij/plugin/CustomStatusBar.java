@@ -39,9 +39,7 @@ public class CustomStatusBar implements StatusBarWidgetFactory {
     }
 
     @Override
-    public boolean isAvailable(@NotNull Project project) {
-        return true;
-    }
+    public boolean isAvailable(@NotNull Project project) { return true; }
 
     @NotNull
     @Override
@@ -50,8 +48,7 @@ public class CustomStatusBar implements StatusBarWidgetFactory {
     }
 
     @Override
-    public void disposeWidget(@NotNull StatusBarWidget widget) {
-    }
+    public void disposeWidget(@NotNull StatusBarWidget widget) { }
 
     @Override
     public boolean canBeEnabledOn(@NotNull StatusBar statusBar) {
@@ -81,12 +78,10 @@ public class CustomStatusBar implements StatusBarWidgetFactory {
         }
 
         @Override
-        public void install(@NotNull StatusBar statusBar) {
-        }
+        public void install(@NotNull StatusBar statusBar) { }
 
         @Override
-        public void dispose() {
-        }
+        public void dispose() { }
 
         private class StatusBarPresenter implements StatusBarWidget.MultipleTextValuesPresentation, StatusBarWidget.Multiframe {
             private final WakaTimeStatusBarWidget widget;
@@ -105,9 +100,7 @@ public class CustomStatusBar implements StatusBarWidgetFactory {
 
             @Nullable
             @Override
-            public String getSelectedValue() {
-                return WakaTime.getTodayText();
-            }
+            public String getSelectedValue() { return WakaTime.getTodayText(); }
 
             @Override
             public @Nullable

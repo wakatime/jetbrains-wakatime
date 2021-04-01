@@ -25,6 +25,8 @@ public class Settings extends DialogWrapper {
     private final JTextField proxy;
     private final JLabel debugLabel;
     private final JCheckBox debug;
+    private final JLabel statusBarLabel;
+    private final JCheckBox statusBar;
 
     public Settings(@Nullable Project project) {
         super(project, true);
@@ -33,7 +35,7 @@ public class Settings extends DialogWrapper {
         panel = new JPanel();
         panel.setLayout(new GridLayout(0,2));
 
-        apiKeyLabel = new JLabel("API Key:", JLabel.CENTER);
+        apiKeyLabel = new JLabel("API key:", JLabel.CENTER);
         panel.add(apiKeyLabel);
         apiKey = new JTextField(36);
         apiKey.setText(ApiKey.getApiKey());
@@ -47,11 +49,18 @@ public class Settings extends DialogWrapper {
         proxy.setText(p);
         panel.add(proxy);
 
+        statusBarLabel = new JLabel("Show WakaTime in status bar:", JLabel.CENTER);
+        panel.add(statusBarLabel);
+        String statusBarValue = ConfigFile.get("settings", "status_bar_enabled");
+        statusBar = new JCheckBox();
+        statusBar.setSelected(statusBarValue == null || !statusBarValue.trim().toLowerCase().equals("false"));
+        panel.add(statusBar);
+
         debugLabel = new JLabel("Debug:", JLabel.CENTER);
         panel.add(debugLabel);
-        String val = ConfigFile.get("settings", "debug");
+        String debugValue = ConfigFile.get("settings", "debug");
         debug = new JCheckBox();
-        debug.setSelected(val != null && val.trim().toLowerCase().equals("true"));
+        debug.setSelected(debugValue != null && debugValue.trim().toLowerCase().equals("true"));
         panel.add(debug);
 
         init();
@@ -77,10 +86,10 @@ public class Settings extends DialogWrapper {
     public void doOKAction() {
         ApiKey.setApiKey(apiKey.getText());
         ConfigFile.set("settings", "proxy", proxy.getText());
-        String val = "false";
-        if (debug.isSelected()) val = "true";
-        ConfigFile.set("settings", "debug", val);
+        ConfigFile.set("settings", "debug", debug.isSelected() ? "true" : "false");
+        ConfigFile.set("settings", "status_bar_enabled", statusBar.isSelected() ? "true" : "false");
         WakaTime.setupDebugging();
+        WakaTime.setupStatusBar();
         WakaTime.setLoggingLevel();
         super.doOKAction();
     }

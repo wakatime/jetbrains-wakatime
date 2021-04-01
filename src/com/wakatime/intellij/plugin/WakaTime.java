@@ -60,6 +60,7 @@ public class WakaTime implements ApplicationComponent {
     public static String IDE_VERSION;
     public static MessageBusConnection connection;
     public static Boolean DEBUG = false;
+    public static Boolean STATUS_BAR = false;
     public static Boolean READY = false;
     public static String lastFile = null;
     public static BigDecimal lastTime = new BigDecimal(0);
@@ -88,6 +89,7 @@ public class WakaTime implements ApplicationComponent {
         IDE_VERSION = ApplicationInfo.getInstance().getFullVersion();
 
         setupDebugging();
+        setupStatusBar();
         setLoggingLevel();
         Dependencies.configureProxy();
         checkApiKey();
@@ -193,6 +195,10 @@ public class WakaTime implements ApplicationComponent {
     }
 
     public static void appendHeartbeat(final VirtualFile file, Project project, final boolean isWrite) {
+        if (WakaTime.READY && project != null) {
+            StatusBar statusbar = WindowManager.getInstance().getStatusBar(project);
+            if (statusbar != null) statusbar.updateWidget("WakaTime");
+        }
         if (!shouldLogFile(file))
             return;
         final String projectName = project != null ? project.getName() : null;
@@ -212,11 +218,6 @@ public class WakaTime implements ApplicationComponent {
                 h.project = projectName;
                 h.language = language;
                 heartbeatsQueue.add(h);
-
-                if (WakaTime.READY && project != null) {
-                    StatusBar statusbar = WindowManager.getInstance().getStatusBar(project);
-                    statusbar.updateWidget("WakaTime");
-                }
             }
         });
     }
@@ -399,6 +400,20 @@ public class WakaTime implements ApplicationComponent {
         WakaTime.DEBUG = debug != null && debug.trim().equals("true");
     }
 
+    public static void setupStatusBar() {
+        String statusBarVal = ConfigFile.get("settings", "status_bar_enabled");
+        WakaTime.STATUS_BAR = statusBarVal == null || !statusBarVal.trim().equals("false");
+        if (WakaTime.READY) {
+            try {
+                Project project = ProjectManager.getInstance().getDefaultProject();
+                StatusBar statusbar = WindowManager.getInstance().getStatusBar(project);
+                if (statusbar != null) statusbar.updateWidget("WakaTime");
+            } catch (Exception e) {
+                log.warn(e);
+            }
+        }
+    }
+
     public static void setLoggingLevel() {
         if (WakaTime.DEBUG) {
             log.setLevel(Level.DEBUG);
@@ -425,6 +440,7 @@ public class WakaTime implements ApplicationComponent {
 
     public static String getTodayText() {
         if (!WakaTime.READY) return todayText;
+        if (!WakaTime.STATUS_BAR) return "";
         BigDecimal now = getCurrentTimestamp();
         if (todayTextTime.add(new BigDecimal(30)).compareTo(now) > 0) return todayText;
         Project project;
