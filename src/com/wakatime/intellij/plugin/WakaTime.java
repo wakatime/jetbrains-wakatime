@@ -443,6 +443,8 @@ public class WakaTime implements ApplicationComponent {
         if (!WakaTime.STATUS_BAR) return "";
         BigDecimal now = getCurrentTimestamp();
         if (todayTextTime.add(new BigDecimal(30)).compareTo(now) > 0) return todayText;
+        todayTextTime = getCurrentTimestamp();
+
         Project project;
         try {
             project = ProjectManager.getInstance().getDefaultProject();
