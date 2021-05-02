@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+12.0.8 (2021-05-02)<br />
+++++++++++++++++++<br />
+<br />
+- Show debug warning after project fully initialized to prevent IllegalStateException Cannot find any window exception.<br />
+<br />
+<br />
 12.0.7 (2021-01-01)<br />
 ++++++++++++++++++<br />
 <br />
