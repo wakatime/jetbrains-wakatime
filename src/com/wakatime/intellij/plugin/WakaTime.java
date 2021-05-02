@@ -60,6 +60,7 @@ public class WakaTime implements ApplicationComponent {
     public static String IDE_VERSION;
     public static MessageBusConnection connection;
     public static Boolean DEBUG = false;
+    public static Boolean DEBUG_CHECKED = false;
     public static Boolean STATUS_BAR = false;
     public static Boolean READY = false;
     public static String lastFile = null;
@@ -96,7 +97,6 @@ public class WakaTime implements ApplicationComponent {
         checkCli();
         setupEventListeners();
         setupQueueProcessor();
-        checkDebug();
         log.info("Finished initializing WakaTime plugin");
     }
 
@@ -170,12 +170,13 @@ public class WakaTime implements ApplicationComponent {
         scheduledFixture = scheduler.scheduleAtFixedRate(handler, delay, delay, java.util.concurrent.TimeUnit.SECONDS);
     }
 
-    private void checkDebug() {
-        if (WakaTime.DEBUG) {
-            try {
-                Messages.showWarningDialog("Running WakaTime in DEBUG mode. Your IDE may be slow when saving or editing files.", "Debug");
-            } catch (Exception e) { }
-        }
+    private static void checkDebug() {
+        if (DEBUG_CHECKED) return;
+        DEBUG_CHECKED = true;
+        if (!DEBUG) return;
+        try {
+            Messages.showWarningDialog("Your IDE may respond slower. Disable debug mode from Tools -> WakaTime Settings.", "WakaTime Debug Mode Enabled");
+        } catch (Exception e) { }
     }
 
     public void disposeComponent() {
@@ -195,6 +196,7 @@ public class WakaTime implements ApplicationComponent {
     }
 
     public static void appendHeartbeat(final VirtualFile file, Project project, final boolean isWrite) {
+        checkDebug();
         if (WakaTime.READY && project != null) {
             StatusBar statusbar = WindowManager.getInstance().getStatusBar(project);
             if (statusbar != null) statusbar.updateWidget("WakaTime");
@@ -442,7 +444,7 @@ public class WakaTime implements ApplicationComponent {
         if (!WakaTime.READY) return todayText;
         if (!WakaTime.STATUS_BAR) return "";
         BigDecimal now = getCurrentTimestamp();
-        if (todayTextTime.add(new BigDecimal(30)).compareTo(now) > 0) return todayText;
+        if (todayTextTime.add(new BigDecimal(60)).compareTo(now) > 0) return todayText;
         todayTextTime = getCurrentTimestamp();
 
         Project project;
