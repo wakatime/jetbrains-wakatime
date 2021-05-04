@@ -363,7 +363,7 @@ public class WakaTime implements ApplicationComponent {
             cmds.add(heartbeat.project);
         }
         if (heartbeat.language != null) {
-            cmds.add("--language");
+            cmds.add("--alternate-language");
             cmds.add(heartbeat.language);
         }
         cmds.add("--plugin");
