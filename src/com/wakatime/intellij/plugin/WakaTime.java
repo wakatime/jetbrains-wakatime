@@ -97,14 +97,13 @@ public class WakaTime implements ApplicationComponent {
         checkCli();
         setupEventListeners();
         setupQueueProcessor();
-        log.info("Finished initializing WakaTime plugin");
     }
 
     private void checkCli() {
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             public void run() {
                 if (!Dependencies.isCLIInstalled()) {
-                    log.info("Downloading and installing wakatime-cli ...");
+                    log.info("Downloading and installing wakatime-cli...");
                     Dependencies.installCLI();
                     WakaTime.READY = true;
                     log.info("Finished downloading and installing wakatime-cli.");
@@ -117,7 +116,7 @@ public class WakaTime implements ApplicationComponent {
                     WakaTime.READY = true;
                     log.info("wakatime-cli is up to date.");
                 }
-                log.debug("CLI location: " + Dependencies.getCLILocation());
+                log.debug("wakatime-cli location: " + Dependencies.getCLILocation());
             }
         });
     }
