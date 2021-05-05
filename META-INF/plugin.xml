@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+13.0.0 (2021-05-04)<br />
+++++++++++++++++++<br />
+<br />
+- Support for downloading wakatime-cli from GitHub releases when standalone set to false in cfg file.<br />
+<br />
+<br />
 12.0.8 (2021-05-02)<br />
 ++++++++++++++++++<br />
 <br />
