@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+13.0.1 (2021-05-04)<br />
+++++++++++++++++++<br />
+<br />
+- Fix NullPointerException when reading standalone from config.<br />
+<br />
+<br />
 13.0.0 (2021-05-04)<br />
 ++++++++++++++++++<br />
 <br />
