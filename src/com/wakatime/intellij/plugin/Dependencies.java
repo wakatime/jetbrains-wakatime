@@ -62,26 +62,27 @@ public class Dependencies {
     private static Boolean standalone = null;
 
     public static String getResourcesLocation() {
-        if (Dependencies.resourcesLocation == null) {
-            if (System.getenv("WAKATIME_HOME") != null && !System.getenv("WAKATIME_HOME").trim().isEmpty()) {
-                File resourcesFolder = new File(System.getenv("WAKATIME_HOME"));
-                if (resourcesFolder.exists()) {
-                    Dependencies.resourcesLocation = resourcesFolder.getAbsolutePath();
-                    WakaTime.log.debug("Using $WAKATIME_HOME for resources folder: " + Dependencies.resourcesLocation);
-                    return Dependencies.resourcesLocation;
-                }
-            }
+        if (Dependencies.resourcesLocation != null) return Dependencies.resourcesLocation;
 
-            if (isWindows()) {
-                File appDataFolder = new File(System.getenv("APPDATA"));
-                File resourcesFolder = new File(appDataFolder, "WakaTime");
+        if (System.getenv("WAKATIME_HOME") != null && !System.getenv("WAKATIME_HOME").trim().isEmpty()) {
+            File resourcesFolder = new File(System.getenv("WAKATIME_HOME"));
+            if (resourcesFolder.exists()) {
                 Dependencies.resourcesLocation = resourcesFolder.getAbsolutePath();
-            } else {
-                File userHomeDir = new File(System.getProperty("user.home"));
-                File resourcesFolder = new File(userHomeDir, ".wakatime");
-                Dependencies.resourcesLocation = resourcesFolder.getAbsolutePath();
+                WakaTime.log.debug("Using $WAKATIME_HOME for resources folder: " + Dependencies.resourcesLocation);
+                return Dependencies.resourcesLocation;
             }
         }
+
+        if (isWindows()) {
+            File windowsHome = new File(System.getenv("USERPROFILE"));
+            File resourcesFolder = new File(windowsHome, ".wakatime");
+            Dependencies.resourcesLocation = resourcesFolder.getAbsolutePath();
+            return Dependencies.resourcesLocation;
+        }
+
+        File userHomeDir = new File(System.getProperty("user.home"));
+        File resourcesFolder = new File(userHomeDir, ".wakatime");
+        Dependencies.resourcesLocation = resourcesFolder.getAbsolutePath();
         return Dependencies.resourcesLocation;
     }
 
