@@ -412,13 +412,15 @@ public class Dependencies {
 
     public static boolean isAlpha() {
         if (alpha != null) return alpha;
-        alpha = ConfigFile.get("settings", "alpha").equals("true");
+        String setting = ConfigFile.get("settings", "alpha");
+        alpha = setting != null && setting.equals("true");
         return alpha;
     }
 
     public static boolean isStandalone() {
         if (standalone != null) return standalone;
-        standalone = !ConfigFile.get("settings", "standalone").equals("false");
+        String setting = ConfigFile.get("settings", "standalone");
+        standalone = setting == null || !setting.equals("false");
         return standalone;
     }
 
