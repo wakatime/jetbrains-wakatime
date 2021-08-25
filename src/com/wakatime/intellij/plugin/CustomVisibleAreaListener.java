@@ -14,12 +14,23 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
+import java.awt.Rectangle;
+
 public class CustomVisibleAreaListener implements VisibleAreaListener {
     @Override
     public void visibleAreaChanged(VisibleAreaEvent visibleAreaEvent) {
+        if (!didChange(visibleAreaEvent)) return;
         FileDocumentManager instance = FileDocumentManager.getInstance();
         VirtualFile file = instance.getFile(visibleAreaEvent.getEditor().getDocument());
         Project project = visibleAreaEvent.getEditor().getProject();
         WakaTime.appendHeartbeat(file, project, false);
+    }
+
+    private boolean didChange(VisibleAreaEvent visibleAreaEvent) {
+        Rectangle oldRect = visibleAreaEvent.getOldRectangle();
+        if (oldRect == null) return true;
+        Rectangle newRect = visibleAreaEvent.getNewRectangle();
+        if (newRect == null) return false;
+        return newRect.x != oldRect.x || newRect.y != oldRect.y;
     }
 }

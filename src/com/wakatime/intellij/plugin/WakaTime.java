@@ -224,24 +224,23 @@ public class WakaTime implements ApplicationComponent {
     }
 
     private static void processHeartbeatQueue() {
-        if (WakaTime.READY) {
+        if (!WakaTime.READY) return;
 
-            // get single heartbeat from queue
-            Heartbeat heartbeat = heartbeatsQueue.poll();
-            if (heartbeat == null)
-                return;
+        // get single heartbeat from queue
+        Heartbeat heartbeat = heartbeatsQueue.poll();
+        if (heartbeat == null)
+            return;
 
-            // get all extra heartbeats from queue
-            ArrayList<Heartbeat> extraHeartbeats = new ArrayList<Heartbeat>();
-            while (true) {
-                Heartbeat h = heartbeatsQueue.poll();
-                if (h == null)
-                    break;
-                extraHeartbeats.add(h);
-            }
-
-            sendHeartbeat(heartbeat, extraHeartbeats);
+        // get all extra heartbeats from queue
+        ArrayList<Heartbeat> extraHeartbeats = new ArrayList<Heartbeat>();
+        while (true) {
+            Heartbeat h = heartbeatsQueue.poll();
+            if (h == null)
+                break;
+            extraHeartbeats.add(h);
         }
+
+        sendHeartbeat(heartbeat, extraHeartbeats);
     }
 
     private static void sendHeartbeat(final Heartbeat heartbeat, final ArrayList<Heartbeat> extraHeartbeats) {
