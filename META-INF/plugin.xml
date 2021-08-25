@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+13.0.3 (2021-08-25)<br />
+++++++++++++++++++<br />
+<br />
+- Prevent tracking time when IDE not active, project not initialized, or scroll area unchanged. #183<br />
+<br />
+<br />
 13.0.2 (2021-05-08)<br />
 ++++++++++++++++++<br />
 <br />
