@@ -8,18 +8,22 @@ Website:     https://wakatime.com/
 
 package com.wakatime.intellij.plugin;
 
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.event.EditorMouseEvent;
 import com.intellij.openapi.editor.event.EditorMouseListener;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
 public class CustomEditorMouseListener  implements EditorMouseListener {
     @Override
     public void mousePressed(EditorMouseEvent editorMouseEvent) {
-        FileDocumentManager instance = FileDocumentManager.getInstance();
-        VirtualFile file = instance.getFile(editorMouseEvent.getEditor().getDocument());
+        // WakaTime.log.debug("mousePressed event");
+        if (!WakaTime.isAppActive()) return;
+        Document document = editorMouseEvent.getEditor().getDocument();
+        VirtualFile file = WakaTime.getFile(document);
+        if (file == null) return;
         Project project = editorMouseEvent.getEditor().getProject();
+        if (!WakaTime.isProjectInitialized(project)) return;
         WakaTime.appendHeartbeat(file, project, false);
     }
 

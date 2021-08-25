@@ -11,7 +11,7 @@ package com.wakatime.intellij.plugin;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
 public class CustomDocumentListener implements DocumentListener {
@@ -21,9 +21,13 @@ public class CustomDocumentListener implements DocumentListener {
 
     @Override
     public void documentChanged(DocumentEvent documentEvent) {
+        // WakaTime.log.debug("documentChanged event");
+        if (!WakaTime.isAppActive()) return;
         Document document = documentEvent.getDocument();
-        FileDocumentManager instance = FileDocumentManager.getInstance();
-        VirtualFile file = instance.getFile(document);
-        WakaTime.appendHeartbeat(file, WakaTime.getProject(document), false);
+        VirtualFile file = WakaTime.getFile(document);
+        if (file == null) return;
+        Project project = WakaTime.getProject(document);
+        if (!WakaTime.isProjectInitialized(project)) return;
+        WakaTime.appendHeartbeat(file, project, false);
     }
 }

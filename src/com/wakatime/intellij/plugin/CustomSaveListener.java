@@ -9,8 +9,8 @@ Website:     https://wakatime.com/
 package com.wakatime.intellij.plugin;
 
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileDocumentManagerListener;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,9 +18,13 @@ public class CustomSaveListener implements FileDocumentManagerListener {
 
     @Override
     public void beforeDocumentSaving(Document document) {
-        FileDocumentManager instance = FileDocumentManager.getInstance();
-        VirtualFile file = instance.getFile(document);
-        WakaTime.appendHeartbeat(file, WakaTime.getProject(document), true);
+        // WakaTime.log.debug("beforeDocumentSaving event");
+        if (!WakaTime.isAppActive()) return;
+        VirtualFile file = WakaTime.getFile(document);
+        if (file == null) return;
+        Project project = WakaTime.getProject(document);
+        if (!WakaTime.isProjectInitialized(project)) return;
+        WakaTime.appendHeartbeat(file, project, true);
     }
 
     @Override

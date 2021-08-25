@@ -8,9 +8,9 @@ Website:     https://wakatime.com/
 
 package com.wakatime.intellij.plugin;
 
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.event.VisibleAreaEvent;
 import com.intellij.openapi.editor.event.VisibleAreaListener;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
@@ -19,10 +19,14 @@ import java.awt.Rectangle;
 public class CustomVisibleAreaListener implements VisibleAreaListener {
     @Override
     public void visibleAreaChanged(VisibleAreaEvent visibleAreaEvent) {
+        // WakaTime.log.debug("visibleAreaChanged event");
         if (!didChange(visibleAreaEvent)) return;
-        FileDocumentManager instance = FileDocumentManager.getInstance();
-        VirtualFile file = instance.getFile(visibleAreaEvent.getEditor().getDocument());
+        if (!WakaTime.isAppActive()) return;
+        Document document = visibleAreaEvent.getEditor().getDocument();
+        VirtualFile file = WakaTime.getFile(document);
+        if (file == null) return;
         Project project = visibleAreaEvent.getEditor().getProject();
+        if (!WakaTime.isProjectInitialized(project)) return;
         WakaTime.appendHeartbeat(file, project, false);
     }
 

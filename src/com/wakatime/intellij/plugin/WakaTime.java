@@ -20,6 +20,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.extensions.PluginId;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
@@ -35,6 +36,7 @@ import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.KeyboardFocusManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -380,6 +382,14 @@ public class WakaTime implements ApplicationComponent {
         return null;
     }
 
+    public static VirtualFile getFile(Document document) {
+        if (document == null) return null;
+        FileDocumentManager instance = FileDocumentManager.getInstance();
+        if (instance == null) return null;
+        VirtualFile file = instance.getFile(document);
+        return file;
+    }
+
     public static boolean enoughTimePassed(BigDecimal currentTime) {
         return WakaTime.lastTime.add(FREQUENCY).compareTo(currentTime) < 0;
     }
@@ -393,6 +403,15 @@ public class WakaTime implements ApplicationComponent {
             return false;
         }
         return true;
+    }
+
+    public static boolean isAppActive() {
+        return KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow() != null;
+    }
+
+    public static boolean isProjectInitialized(Project project) {
+        if (project == null) return true;
+        return project.isInitialized();
     }
 
     public static void setupDebugging() {
