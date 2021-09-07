@@ -94,13 +94,14 @@ public class CustomStatusBar implements StatusBarWidgetFactory {
             @Override
             public ListPopup getPopupStep() {
                 WakaTime.openDashboardWebsite();
+                WakaTime.updateStatusBarText();
                 widget.statusBar.updateWidget("WakaTime");
                 return null;
             }
 
             @Nullable
             @Override
-            public String getSelectedValue() { return WakaTime.getTodayText(); }
+            public String getSelectedValue() { return WakaTime.getStatusBarText(); }
 
             @Override
             public @Nullable

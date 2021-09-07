@@ -22,9 +22,6 @@ import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.Messages;
@@ -198,9 +195,12 @@ public class WakaTime implements ApplicationComponent {
 
     public static void appendHeartbeat(final VirtualFile file, Project project, final boolean isWrite) {
         checkDebug();
-        if (WakaTime.READY && project != null) {
-            StatusBar statusbar = WindowManager.getInstance().getStatusBar(project);
-            if (statusbar != null) statusbar.updateWidget("WakaTime");
+        if (WakaTime.READY) {
+            updateStatusBarText();
+            if (project != null) {
+                StatusBar statusbar = WindowManager.getInstance().getStatusBar(project);
+                if (statusbar != null) statusbar.updateWidget("WakaTime");
+            }
         }
         if (!shouldLogFile(file))
             return;
@@ -424,6 +424,7 @@ public class WakaTime implements ApplicationComponent {
         WakaTime.STATUS_BAR = statusBarVal == null || !statusBarVal.trim().equals("false");
         if (WakaTime.READY) {
             try {
+                updateStatusBarText();
                 Project project = ProjectManager.getInstance().getDefaultProject();
                 StatusBar statusbar = WindowManager.getInstance().getStatusBar(project);
                 if (statusbar != null) statusbar.updateWidget("WakaTime");
@@ -454,29 +455,27 @@ public class WakaTime implements ApplicationComponent {
         BrowserUtil.browse("https://wakatime.com/dashboard");
     }
 
-    private static String todayText = "";
+    private static String todayText = "initialized";
     private static BigDecimal todayTextTime = new BigDecimal(0);
 
-    public static String getTodayText() {
-        if (!WakaTime.READY) return todayText;
+    public static String getStatusBarText() {
+        if (!WakaTime.READY) return "";
         if (!WakaTime.STATUS_BAR) return "";
+        return todayText;
+    }
+
+    public static void updateStatusBarText() {
+
+        // rate limit, to prevent from fetching Today's stats too frequently
         BigDecimal now = getCurrentTimestamp();
-        if (todayTextTime.add(new BigDecimal(60)).compareTo(now) > 0) return todayText;
+        if (todayTextTime.add(new BigDecimal(60)).compareTo(now) > 0) return;
         todayTextTime = getCurrentTimestamp();
 
-        Project project;
-        try {
-            project = ProjectManager.getInstance().getDefaultProject();
-        } catch (Exception e) {
-            return todayText;
-        }
+        ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
+            public void run() {
+                final String[] cmds = new String[]{Dependencies.getCLILocation(), "--today", "--key", ApiKey.getApiKey()};
+                log.debug("Executing CLI: " + Arrays.toString(obfuscateKey(cmds)));
 
-        final String[] cmds = new String[]{Dependencies.getCLILocation(), "--today", "--key", ApiKey.getApiKey()};
-        log.debug("Executing CLI: " + Arrays.toString(obfuscateKey(cmds)));
-
-        ProgressManager.getInstance().run(new Task.Backgroundable(project, "Updating wakatime status bar") {
-            public void run(@NotNull ProgressIndicator progressIndicator) {
-                progressIndicator.setIndeterminate(false);
                 try {
                     Process proc = Runtime.getRuntime().exec(cmds);
                     BufferedReader stdout = new BufferedReader(new
@@ -495,14 +494,13 @@ public class WakaTime implements ApplicationComponent {
                     log.debug("Command finished with return value: " + proc.exitValue());
                     todayText = " " + String.join("", output);
                     todayTextTime = getCurrentTimestamp();
+                    } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
                 } catch (Exception e) {
                     log.warn(e);
                 }
-                progressIndicator.setFraction(1.0);
-                progressIndicator.stop();
             }
         });
-        return todayText;
     }
 
     private static String obfuscateKey(String key) {
