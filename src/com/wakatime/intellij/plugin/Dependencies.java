@@ -175,6 +175,14 @@ public class Dependencies {
     }
 
     public static String getCLILocation() {
+        if (System.getenv("WAKATIME_BIN") != null && !System.getenv("WAKATIME_BIN").trim().isEmpty()) {
+            File cliBinary = new File(System.getenv("WAKATIME_BIN"));
+            if (cliBinary.exists()) {
+                WakaTime.log.debug("Using $WAKATIME_BIN as CLI Executable: " + cliBinary);
+                return System.getenv("WAKATIME_BIN");
+            }
+        }
+
         String ext = isWindows() ? ".exe" : "";
         if (!isStandalone()) {
             return combinePaths(getResourcesLocation(), "wakatime-cli-" + platform() + "-" + architecture() + ext);

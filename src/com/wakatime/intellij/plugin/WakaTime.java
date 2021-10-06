@@ -107,10 +107,17 @@ public class WakaTime implements ApplicationComponent {
                     WakaTime.READY = true;
                     log.info("Finished downloading and installing wakatime-cli.");
                 } else if (Dependencies.isCLIOld()) {
-                    log.info("Upgrading wakatime-cli ...");
-                    Dependencies.installCLI();
-                    WakaTime.READY = true;
-                    log.info("Finished upgrading wakatime-cli.");
+                    if (System.getenv("WAKATIME_BIN") != null && !System.getenv("WAKATIME_BIN").trim().isEmpty()) {
+                        File cliBinary = new File(System.getenv("WAKATIME_BIN"));
+                        if (cliBinary.exists()) {
+                          log.warn("$WAKATIME_BIN is out of date, please update it.")
+                        }
+                    } else {
+                        log.info("Upgrading wakatime-cli ...");
+                        Dependencies.installCLI();
+                        WakaTime.READY = true;
+                        log.info("Finished upgrading wakatime-cli.");
+                    }
                 } else {
                     WakaTime.READY = true;
                     log.info("wakatime-cli is up to date.");
