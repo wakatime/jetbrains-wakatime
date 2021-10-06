@@ -34,11 +34,7 @@ import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.KeyboardFocusManager;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,7 +106,7 @@ public class WakaTime implements ApplicationComponent {
                     if (System.getenv("WAKATIME_BIN") != null && !System.getenv("WAKATIME_BIN").trim().isEmpty()) {
                         File cliBinary = new File(System.getenv("WAKATIME_BIN"));
                         if (cliBinary.exists()) {
-                          log.warn("$WAKATIME_BIN is out of date, please update it.")
+                          log.warn("$WAKATIME_BIN is out of date, please update it.");
                         }
                     } else {
                         log.info("Upgrading wakatime-cli ...");
