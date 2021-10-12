@@ -175,11 +175,11 @@ public class Dependencies {
     }
 
     public static String getCLILocation() {
-        if (System.getenv("WAKATIME_BIN") != null && !System.getenv("WAKATIME_BIN").trim().isEmpty()) {
-            File cliBinary = new File(System.getenv("WAKATIME_BIN"));
+        if (System.getenv("WAKATIME_CLI_LOCATION") != null && !System.getenv("WAKATIME_CLI_LOCATION").trim().isEmpty()) {
+            File cliBinary = new File(System.getenv("WAKATIME_CLI_LOCATION"));
             if (cliBinary.exists()) {
-                WakaTime.log.debug("Using $WAKATIME_BIN as CLI Executable: " + cliBinary);
-                return System.getenv("WAKATIME_BIN");
+                WakaTime.log.debug("Using $WAKATIME_CLI_LOCATION as CLI Executable: " + cliBinary);
+                return System.getenv("WAKATIME_CLI_LOCATION");
             }
         }
 
