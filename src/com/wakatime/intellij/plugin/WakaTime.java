@@ -131,11 +131,11 @@ public class WakaTime implements ApplicationComponent {
                 try {
                     project = ProjectManager.getInstance().getDefaultProject();
                 } catch (Exception e) { }
-                ApiKey apiKey = new ApiKey(project);
-                if (apiKey.getApiKey().equals("")) {
+                if (ConfigFile.getApiKey().equals("")) {
+                    ApiKey apiKey = new ApiKey(project);
                     apiKey.promptForApiKey();
                 }
-                log.debug("Api Key: " + obfuscateKey(ApiKey.getApiKey()));
+                log.debug("Api Key: " + obfuscateKey(ConfigFile.getApiKey()));
             }
         });
     }
@@ -360,7 +360,7 @@ public class WakaTime implements ApplicationComponent {
         cmds.add("--time");
         cmds.add(heartbeat.timestamp.toPlainString());
         cmds.add("--key");
-        cmds.add(ApiKey.getApiKey());
+        cmds.add(ConfigFile.getApiKey());
         if (heartbeat.project != null) {
             cmds.add("--project");
             cmds.add(heartbeat.project);
@@ -476,7 +476,7 @@ public class WakaTime implements ApplicationComponent {
 
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             public void run() {
-                final String[] cmds = new String[]{Dependencies.getCLILocation(), "--today", "--key", ApiKey.getApiKey()};
+                final String[] cmds = new String[]{Dependencies.getCLILocation(), "--today", "--key", ConfigFile.getApiKey()};
                 log.debug("Executing CLI: " + Arrays.toString(obfuscateKey(cmds)));
 
                 try {

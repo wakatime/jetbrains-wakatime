@@ -38,7 +38,7 @@ public class Settings extends DialogWrapper {
         apiKeyLabel = new JLabel("API key:", JLabel.CENTER);
         panel.add(apiKeyLabel);
         apiKey = new JTextField(36);
-        apiKey.setText(ApiKey.getApiKey());
+        apiKey.setText(ConfigFile.getApiKey());
         panel.add(apiKey);
 
         proxyLabel = new JLabel("Proxy:", JLabel.CENTER);
@@ -84,7 +84,7 @@ public class Settings extends DialogWrapper {
 
     @Override
     public void doOKAction() {
-        ApiKey.setApiKey(apiKey.getText());
+        ConfigFile.setApiKey(apiKey.getText());
         ConfigFile.set("settings", "proxy", proxy.getText());
         ConfigFile.set("settings", "debug", debug.isSelected() ? "true" : "false");
         ConfigFile.set("settings", "status_bar_enabled", statusBar.isSelected() ? "true" : "false");

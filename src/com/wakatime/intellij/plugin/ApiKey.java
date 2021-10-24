@@ -19,7 +19,6 @@ import java.util.UUID;
 public class ApiKey extends DialogWrapper {
     private final JPanel panel;
     private final JTextField input;
-    private static String _api_key = "";
 
     public ApiKey(@Nullable Project project) {
         super(project, true);
@@ -51,31 +50,14 @@ public class ApiKey extends DialogWrapper {
 
     @Override
     public void doOKAction() {
-        ApiKey.setApiKey(input.getText());
+        ConfigFile.setApiKey(input.getText());
         super.doOKAction();
     }
 
     public String promptForApiKey() {
-        input.setText(ApiKey.getApiKey());
+        input.setText(ConfigFile.getApiKey());
         this.show();
         return input.getText();
-    }
-
-    public static String getApiKey() {
-        if (!ApiKey._api_key.equals("")) {
-            return ApiKey._api_key;
-        }
-
-        String apiKey = ConfigFile.get("settings", "api_key");
-        if (apiKey == null) apiKey = "";
-
-        ApiKey._api_key = apiKey;
-        return apiKey;
-    }
-
-    public static void setApiKey(String apiKey) {
-        ConfigFile.set("settings", "api_key", apiKey);
-        ApiKey._api_key = apiKey;
     }
 
 }

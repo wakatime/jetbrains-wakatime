@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 public class ConfigFile {
     private static final String fileName = ".wakatime.cfg";
     private static String cachedConfigFile = null;
+    private static String _api_key = "";
 
     private static String getConfigFilePath() {
         if (ConfigFile.cachedConfigFile == null) {
@@ -142,6 +143,23 @@ public class ConfigFile {
             writer.print(contents.toString());
             writer.close();
         }
+    }
+
+    public static String getApiKey() {
+        if (!ConfigFile._api_key.equals("")) {
+            return ConfigFile._api_key;
+        }
+
+        String apiKey = get("settings", "api_key");
+        if (apiKey == null) apiKey = "";
+
+        ConfigFile._api_key = apiKey;
+        return apiKey;
+    }
+
+    public static void setApiKey(String apiKey) {
+        set("settings", "api_key", apiKey);
+        ConfigFile._api_key = apiKey;
     }
 
 }
