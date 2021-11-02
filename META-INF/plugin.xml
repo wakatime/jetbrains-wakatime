@@ -27,6 +27,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+13.1.2 (2021-11-01)<br />
+++++++++++++++++++<br />
+<br />
+- Use separate file for internal configs.<br />
+- Use last modified instead of etag for GitHub Releases API caching.<br />
+<br />
+<br />
 13.1.1 (2021-10-24)<br />
 ++++++++++++++++++<br />
 <br />
