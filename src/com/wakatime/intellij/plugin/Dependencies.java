@@ -45,12 +45,12 @@ import static java.nio.file.attribute.PosixFilePermission.*;
 class Response {
     public int statusCode;
     public String body;
-    public String etag;
+    public String lastModified;
 
-    public Response(int statusCode, String body, @Nullable String etag) {
+    public Response(int statusCode, String body, @Nullable String lastModified) {
         this.statusCode = statusCode;
         this.body = body;
-        this.etag = etag;
+        this.lastModified = lastModified;
     }
 }
 
@@ -136,9 +136,9 @@ public class Dependencies {
         if (!isStandalone()) {
             String url = Dependencies.githubReleasesApiUrl();
             try {
-                Response resp = getUrlAsString(url, ConfigFile.get("internal", "cli_version_etag"));
+                Response resp = getUrlAsString(url, ConfigFile.get("internal", "cli_version_last_modified", true));
                 if (resp == null) {
-                    cliVersion = ConfigFile.get("internal", "cli_version").trim();
+                    cliVersion = ConfigFile.get("internal", "cli_version", true).trim();
                     WakaTime.log.debug("Using cached wakatime-cli version from config: " + cliVersion);
                     return cliVersion;
                 }
@@ -146,9 +146,9 @@ public class Dependencies {
                 Matcher m = p.matcher(resp.body);
                 if (m.find()) {
                     cliVersion = m.group(1);
-                    if (!isStandalone() && resp.etag != null) {
-                        ConfigFile.set("internal", "cli_version_etag", resp.etag);
-                        ConfigFile.set("internal", "cli_version", cliVersion);
+                    if (!isStandalone() && resp.lastModified != null) {
+                        ConfigFile.set("internal", "cli_version_last_modified", true, resp.lastModified);
+                        ConfigFile.set("internal", "cli_version", true, cliVersion);
                     }
                     return cliVersion;
                 }
@@ -280,7 +280,7 @@ public class Dependencies {
         return false;
     }
 
-    public static Response getUrlAsString(String url, @Nullable String etag) {
+    public static Response getUrlAsString(String url, @Nullable String lastModified) {
         StringBuilder text = new StringBuilder();
 
         URL downloadUrl = null;
@@ -288,13 +288,13 @@ public class Dependencies {
             downloadUrl = new URL(url);
         } catch (MalformedURLException e) { }
 
-        String responseEtag = null;
+        String responseLastModified = null;
         int statusCode = -1;
         try {
             HttpsURLConnection conn = (HttpsURLConnection) downloadUrl.openConnection();
             conn.setRequestProperty("User-Agent", "github.com/wakatime/jetbrains-wakatime");
-            if (etag != null && !etag.trim().equals("")) {
-                conn.setRequestProperty("If-None-Match", etag.trim());
+            if (lastModified != null && !lastModified.trim().equals("")) {
+                conn.setRequestProperty("If-Modified-Since", lastModified.trim());
             }
             statusCode = conn.getResponseCode();
             if (statusCode == 304) return null;
@@ -304,7 +304,7 @@ public class Dependencies {
                 text.append(new String(buffer, "UTF-8"));
             }
             inputStream.close();
-            if (conn.getResponseCode() == 200) responseEtag = conn.getHeaderField("ETag");
+            if (conn.getResponseCode() == 200) responseLastModified = conn.getHeaderField("Last-Modified");
         } catch (RuntimeException e) {
             WakaTime.log.warn(e);
             try {
@@ -314,8 +314,8 @@ public class Dependencies {
                 HttpsURLConnection.setDefaultSSLSocketFactory(SSL_CONTEXT.getSocketFactory());
                 HttpsURLConnection conn = (HttpsURLConnection) downloadUrl.openConnection();
                 conn.setRequestProperty("User-Agent", "github.com/wakatime/jetbrains-wakatime");
-                if (etag != null && !etag.trim().equals("")) {
-                    conn.setRequestProperty("If-None-Match", etag.trim());
+                if (lastModified != null && !lastModified.trim().equals("")) {
+                    conn.setRequestProperty("If-Modified-Since", lastModified.trim());
                 }
                 statusCode = conn.getResponseCode();
                 if (statusCode == 304) return null;
@@ -325,7 +325,7 @@ public class Dependencies {
                     text.append(new String(buffer, "UTF-8"));
                 }
                 inputStream.close();
-                if (conn.getResponseCode() == 200) responseEtag = conn.getHeaderField("ETag");
+                if (conn.getResponseCode() == 200) responseLastModified = conn.getHeaderField("Last-Modified");
             } catch (NoSuchAlgorithmException e1) {
                 WakaTime.log.warn(e1);
             } catch (KeyManagementException e1) {
@@ -341,14 +341,14 @@ public class Dependencies {
             WakaTime.log.warn(e);
         }
 
-        return new Response(statusCode, text.toString(), responseEtag);
+        return new Response(statusCode, text.toString(), responseLastModified);
     }
 
     /**
      * Configures a proxy if one is set in ~/.wakatime.cfg.
      */
     public static void configureProxy() {
-        String proxyConfig = ConfigFile.get("settings", "proxy");
+        String proxyConfig = ConfigFile.get("settings", "proxy", false);
         if (proxyConfig != null && !proxyConfig.trim().equals("")) {
             try {
                 URL proxyUrl = new URL(proxyConfig);
@@ -421,14 +421,14 @@ public class Dependencies {
 
     public static boolean isAlpha() {
         if (alpha != null) return alpha;
-        String setting = ConfigFile.get("settings", "alpha");
+        String setting = ConfigFile.get("settings", "alpha", false);
         alpha = setting != null && setting.equals("true");
         return alpha;
     }
 
     public static boolean isStandalone() {
         if (standalone != null) return standalone;
-        String setting = ConfigFile.get("settings", "standalone");
+        String setting = ConfigFile.get("settings", "standalone", false);
         standalone = setting == null || !setting.equals("false");
         return standalone;
     }

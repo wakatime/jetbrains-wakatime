@@ -418,12 +418,12 @@ public class WakaTime implements ApplicationComponent {
     }
 
     public static void setupDebugging() {
-        String debug = ConfigFile.get("settings", "debug");
+        String debug = ConfigFile.get("settings", "debug", false);
         WakaTime.DEBUG = debug != null && debug.trim().equals("true");
     }
 
     public static void setupStatusBar() {
-        String statusBarVal = ConfigFile.get("settings", "status_bar_enabled");
+        String statusBarVal = ConfigFile.get("settings", "status_bar_enabled", false);
         WakaTime.STATUS_BAR = statusBarVal == null || !statusBarVal.trim().equals("false");
         if (WakaTime.READY) {
             try {

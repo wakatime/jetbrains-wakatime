@@ -44,21 +44,21 @@ public class Settings extends DialogWrapper {
         proxyLabel = new JLabel("Proxy:", JLabel.CENTER);
         panel.add(proxyLabel);
         proxy = new JTextField();
-        String p = ConfigFile.get("settings", "proxy");
+        String p = ConfigFile.get("settings", "proxy", false);
         if (p == null) p = "";
         proxy.setText(p);
         panel.add(proxy);
 
         statusBarLabel = new JLabel("Show WakaTime in status bar:", JLabel.CENTER);
         panel.add(statusBarLabel);
-        String statusBarValue = ConfigFile.get("settings", "status_bar_enabled");
+        String statusBarValue = ConfigFile.get("settings", "status_bar_enabled", false);
         statusBar = new JCheckBox();
         statusBar.setSelected(statusBarValue == null || !statusBarValue.trim().toLowerCase().equals("false"));
         panel.add(statusBar);
 
         debugLabel = new JLabel("Debug:", JLabel.CENTER);
         panel.add(debugLabel);
-        String debugValue = ConfigFile.get("settings", "debug");
+        String debugValue = ConfigFile.get("settings", "debug", false);
         debug = new JCheckBox();
         debug.setSelected(debugValue != null && debugValue.trim().toLowerCase().equals("true"));
         panel.add(debug);
@@ -85,9 +85,9 @@ public class Settings extends DialogWrapper {
     @Override
     public void doOKAction() {
         ConfigFile.setApiKey(apiKey.getText());
-        ConfigFile.set("settings", "proxy", proxy.getText());
-        ConfigFile.set("settings", "debug", debug.isSelected() ? "true" : "false");
-        ConfigFile.set("settings", "status_bar_enabled", statusBar.isSelected() ? "true" : "false");
+        ConfigFile.set("settings", "proxy", false, proxy.getText());
+        ConfigFile.set("settings", "debug", false, debug.isSelected() ? "true" : "false");
+        ConfigFile.set("settings", "status_bar_enabled", false, statusBar.isSelected() ? "true" : "false");
         WakaTime.setupDebugging();
         WakaTime.setupStatusBar();
         WakaTime.setLoggingLevel();
