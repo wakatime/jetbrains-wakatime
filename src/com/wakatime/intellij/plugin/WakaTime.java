@@ -31,6 +31,7 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.util.PlatformUtils;
 import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
+import org.apache.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.KeyboardFocusManager;
@@ -42,8 +43,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-
-import org.apache.log4j.Level;
 
 public class WakaTime implements ApplicationComponent {
 
@@ -175,9 +174,11 @@ public class WakaTime implements ApplicationComponent {
         if (DEBUG_CHECKED) return;
         DEBUG_CHECKED = true;
         if (!DEBUG) return;
-        try {
-            Messages.showWarningDialog("Your IDE may respond slower. Disable debug mode from Tools -> WakaTime Settings.", "WakaTime Debug Mode Enabled");
-        } catch (Exception e) { }
+        ApplicationManager.getApplication().invokeLater(new Runnable(){
+            public void run() {
+                Messages.showWarningDialog("Your IDE may respond slower. Disable debug mode from Tools -> WakaTime Settings.", "WakaTime Debug Mode Enabled");
+            }
+        });
     }
 
     public void disposeComponent() {
