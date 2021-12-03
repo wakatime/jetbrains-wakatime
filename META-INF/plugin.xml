@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+13.1.4 (2021-12-03)<br />
+++++++++++++++++++<br />
+<br />
+- Prevent exception from AWT events are not allowed inside write action. #191<br />
+<br />
+<br />
 13.1.3 (2021-11-02)<br />
 ++++++++++++++++++<br />
 <br />
