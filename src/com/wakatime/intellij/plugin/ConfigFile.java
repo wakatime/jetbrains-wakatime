@@ -55,7 +55,7 @@ public class ConfigFile {
                             if (parts.length == 2 && parts[0].trim().equals(key)) {
                                 val = parts[1].trim();
                                 br.close();
-                                return val;
+                                return removeNulls(val);
                             }
                         }
                     }
@@ -71,10 +71,13 @@ public class ConfigFile {
                 }
             }
         } catch (FileNotFoundException e1) { /* ignored */ }
-        return val;
+        return removeNulls(val);
     }
 
     public static void set(String section, String key, boolean internal, String val) {
+        key = removeNulls(key);
+        val = removeNulls(val);
+
         String file = ConfigFile.getConfigFilePath(internal);
         StringBuilder contents = new StringBuilder();
         try {
@@ -84,6 +87,7 @@ public class ConfigFile {
                 String line = br.readLine();
                 Boolean found = false;
                 while (line != null) {
+                    line = removeNulls(line);
                     if (line.trim().startsWith("[") && line.trim().endsWith("]")) {
                         if (section.toLowerCase().equals(currentSection) && !found) {
                             contents.append(key + " = " + val + "\n");
@@ -161,6 +165,11 @@ public class ConfigFile {
     public static void setApiKey(String apiKey) {
         set("settings", "api_key", false, apiKey);
         ConfigFile._api_key = apiKey;
+    }
+
+    private static String removeNulls(String s) {
+        if (s == null) return null;
+        return s.replace("\0", "");
     }
 
 }
