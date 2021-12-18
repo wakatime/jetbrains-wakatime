@@ -244,7 +244,9 @@ public class Dependencies {
         URL downloadUrl = null;
         try {
             downloadUrl = new URL(url);
-        } catch (MalformedURLException e) { }
+        } catch (MalformedURLException e) {
+            WakaTime.log.error(e);
+        }
 
         ReadableByteChannel rbc = null;
         FileOutputStream fos = null;
@@ -293,7 +295,9 @@ public class Dependencies {
         URL downloadUrl = null;
         try {
             downloadUrl = new URL(url);
-        } catch (MalformedURLException e) { }
+        } catch (MalformedURLException e) {
+            WakaTime.log.error(e);
+        }
 
         String responseLastModified = null;
         int statusCode = -1;
