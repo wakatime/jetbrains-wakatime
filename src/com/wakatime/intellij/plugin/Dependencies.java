@@ -248,6 +248,8 @@ public class Dependencies {
             WakaTime.log.error(e);
         }
 
+        WakaTime.log.debug("DownloadFile(" + downloadUrl.toString() + ")");
+
         ReadableByteChannel rbc = null;
         FileOutputStream fos = null;
         try {
@@ -298,6 +300,8 @@ public class Dependencies {
         } catch (MalformedURLException e) {
             WakaTime.log.error(e);
         }
+
+        WakaTime.log.debug("getUrlAsString(" + downloadUrl.toString() + ")");
 
         String responseLastModified = null;
         int statusCode = -1;
