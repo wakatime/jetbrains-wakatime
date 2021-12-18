@@ -375,8 +375,10 @@ public class Dependencies {
                     Authenticator.setDefault(authenticator);
                 }
 
-                System.setProperty("https.proxyHost", proxyUrl.getHost());
-                System.setProperty("https.proxyPort", Integer.toString(proxyUrl.getPort()));
+                if (!proxyUrl.getHost().trim().isEmpty()) {
+                    System.setProperty("https.proxyHost", proxyUrl.getHost());
+                    System.setProperty("https.proxyPort", Integer.toString(proxyUrl.getPort()));
+                }
 
             } catch (MalformedURLException e) {
                 WakaTime.log.error("Proxy string must follow https://user:pass@host:port format: " + proxyConfig);
