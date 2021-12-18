@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+13.1.6 (2021-12-18)<br />
+++++++++++++++++++<br />
+<br />
+- Prevent trying to use empty proxy. #195<br />
+<br />
+<br />
 13.1.5 (2021-12-17)<br />
 ++++++++++++++++++<br />
 <br />
