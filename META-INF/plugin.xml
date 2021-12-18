@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+13.1.5 (2021-12-17)<br />
+++++++++++++++++++<br />
+<br />
+- Log malformed url to idea.log file. #195<br />
+<br />
+<br />
 13.1.4 (2021-12-03)<br />
 ++++++++++++++++++<br />
 <br />
