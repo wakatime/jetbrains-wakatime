@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+13.1.7 (2021-12-18)<br />
+++++++++++++++++++<br />
+<br />
+- Log dependency download url in debug mode. #195<br />
+<br />
+<br />
 13.1.6 (2021-12-18)<br />
 ++++++++++++++++++<br />
 <br />
