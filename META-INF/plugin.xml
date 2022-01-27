@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+13.1.9 (2022-01-27)<br />
+++++++++++++++++++<br />
+<br />
+- Create symlink to wakatime-cli for other editor plugins.<br />
+<br />
+<br />
 13.1.8 (2021-12-18)<br />
 ++++++++++++++++++<br />
 <br />
