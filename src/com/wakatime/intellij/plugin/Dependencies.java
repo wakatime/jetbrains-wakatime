@@ -187,13 +187,8 @@ public class Dependencies {
                 unzip(zipFile, outputDir);
                 File oldZipFile = new File(zipFile);
                 oldZipFile.delete();
-                File symlink = new File(combinePaths(getResourcesLocation(), "wakatime-cli"));
                 if (!isWindows()) {
                   makeExecutable(getCLILocation());
-                  recursiveDelete(file);
-                  Files.createSymbolicLink(symlink.toPath(), new File(getCLILocation()).toPath());
-                } else {
-                    Files.copy(new File(getCLILocation()).toPath(), symlink.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 }
             } catch (IOException e) {
                 WakaTime.log.warn(e);
@@ -430,10 +425,10 @@ public class Dependencies {
 
     private static void recursiveDelete(File path) {
         if(path.exists()) {
-            if (path.isDirectory()) {
+            if (isDirectory(path)) {
                 File[] files = path.listFiles();
                 for (int i = 0; i < files.length; i++) {
-                    if (files[i].isDirectory()) {
+                    if (isDirectory(files[i])) {
                         recursiveDelete(files[i]);
                     } else {
                         files[i].delete();
@@ -509,5 +504,47 @@ public class Dependencies {
         perms.add(OTHERS_READ);
         perms.add(OTHERS_EXECUTE);
         Files.setPosixFilePermissions(file.toPath(), perms);
+    }
+
+    private static boolean isSymLink(File filepath) {
+        try {
+            return Files.isSymbolicLink(filepath.toPath());
+        } catch(SecurityException e) {
+            return false;
+        }
+    }
+
+    private static boolean isDirectory(File filepath) {
+        try {
+            return filepath.isDirectory();
+        } catch(SecurityException e) {
+            return false;
+        }
+    }
+
+    public static void createSylink(String source, String destination) {
+        File sourceLink = new File(source);
+        if (isDirectory(sourceLink)) recursiveDelete(sourceLink);
+        if (!isWindows()) {
+            if (!isSymLink(sourceLink)) {
+                recursiveDelete(sourceLink);
+                try {
+                    Files.createSymbolicLink(sourceLink.toPath(), new File(destination).toPath());
+                } catch (Exception e) {
+                    WakaTime.log.warn(e);
+                    try {
+                        Files.copy(new File(destination).toPath(), sourceLink.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    } catch (Exception ex) {
+                        WakaTime.log.warn(ex);
+                    }
+                }
+            }
+        } else {
+            try {
+                Files.copy(new File(destination).toPath(), sourceLink.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (Exception e) {
+                WakaTime.log.warn(e);
+            }
+        }
     }
 }
