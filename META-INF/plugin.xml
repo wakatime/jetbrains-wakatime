@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+13.1.10 (2022-01-27)<br />
+++++++++++++++++++<br />
+<br />
+- Delete old wakatime-cli directory before creating symlink.<br />
+<br />
+<br />
 13.1.9 (2022-01-27)<br />
 ++++++++++++++++++<br />
 <br />
