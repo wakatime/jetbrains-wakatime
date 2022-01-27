@@ -28,6 +28,7 @@ import java.net.PasswordAuthentication;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -186,7 +187,14 @@ public class Dependencies {
                 unzip(zipFile, outputDir);
                 File oldZipFile = new File(zipFile);
                 oldZipFile.delete();
-                if (!isWindows()) makeExecutable(getCLILocation());
+                File symlink = new File(combinePaths(getResourcesLocation(), "wakatime-cli"));
+                if (!isWindows()) {
+                  makeExecutable(getCLILocation());
+                  recursiveDelete(file);
+                  Files.createSymbolicLink(symlink.toPath(), new File(getCLILocation()).toPath());
+                } else {
+                    Files.copy(new File(getCLILocation()).toPath(), symlink.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                }
             } catch (IOException e) {
                 WakaTime.log.warn(e);
             }
