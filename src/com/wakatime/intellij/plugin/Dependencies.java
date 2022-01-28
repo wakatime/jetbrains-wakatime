@@ -185,11 +185,11 @@ public class Dependencies {
             File outputDir = new File(getResourcesLocation());
             try {
                 unzip(zipFile, outputDir);
+                if (!isWindows()) {
+                    makeExecutable(getCLILocation());
+                }
                 File oldZipFile = new File(zipFile);
                 oldZipFile.delete();
-                if (!isWindows()) {
-                  makeExecutable(getCLILocation());
-                }
             } catch (IOException e) {
                 WakaTime.log.warn(e);
             }
@@ -522,7 +522,7 @@ public class Dependencies {
         }
     }
 
-    public static void createSylink(String source, String destination) {
+    public static void createSymlink(String source, String destination) {
         File sourceLink = new File(source);
         if (isDirectory(sourceLink)) recursiveDelete(sourceLink);
         if (!isWindows()) {

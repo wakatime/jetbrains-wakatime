@@ -117,7 +117,7 @@ public class WakaTime implements ApplicationComponent {
                     WakaTime.READY = true;
                     log.info("wakatime-cli is up to date.");
                 }
-                Dependencies.createSylink(Dependencies.combinePaths(Dependencies.getResourcesLocation(), "wakatime-cli"), Dependencies.getCLILocation());
+                Dependencies.createSymlink(Dependencies.combinePaths(Dependencies.getResourcesLocation(), "wakatime-cli"), Dependencies.getCLILocation());
                 log.debug("wakatime-cli location: " + Dependencies.getCLILocation());
             }
         });
