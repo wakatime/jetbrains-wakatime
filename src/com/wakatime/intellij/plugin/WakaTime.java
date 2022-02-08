@@ -132,8 +132,12 @@ public class WakaTime implements ApplicationComponent {
                     project = ProjectManager.getInstance().getDefaultProject();
                 } catch (Exception e) { }
                 if (ConfigFile.getApiKey().equals("")) {
-                    ApiKey apiKey = new ApiKey(project);
-                    apiKey.promptForApiKey();
+                    try {
+                        ApiKey apiKey = new ApiKey(project);
+                        apiKey.promptForApiKey();
+                    } catch(Exception e) {
+                        log.warn(e);
+                    }
                 }
                 log.debug("Api Key: " + obfuscateKey(ConfigFile.getApiKey()));
             }
