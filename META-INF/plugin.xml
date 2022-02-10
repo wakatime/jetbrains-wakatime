@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+13.1.11 (2022-02-09)<br />
+++++++++++++++++++<br />
+<br />
+- Prevent exception when api key dialog opens before UI ready. #200<br />
+<br />
+<br />
 13.1.10 (2022-01-27)<br />
 ++++++++++++++++++<br />
 <br />
