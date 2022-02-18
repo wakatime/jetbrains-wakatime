@@ -86,7 +86,6 @@ public class WakaTime implements ApplicationComponent {
         setupDebugging();
         setupStatusBar();
         setLoggingLevel();
-        Dependencies.configureProxy();
         checkApiKey();
         checkCli();
         setupEventListeners();
