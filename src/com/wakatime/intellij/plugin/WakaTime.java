@@ -122,7 +122,7 @@ public class WakaTime implements ApplicationComponent {
         });
     }
 
-    private void checkApiKey() {
+    private static void checkApiKey() {
         ApplicationManager.getApplication().invokeLater(new Runnable(){
             public void run() {
                 // prompt for apiKey if it does not already exist
@@ -136,6 +136,8 @@ public class WakaTime implements ApplicationComponent {
                         apiKey.promptForApiKey();
                     } catch(Exception e) {
                         log.warn(e);
+                    } catch (Throwable throwable) {
+                        log.warn("Unable to prompt for api key because UI not ready.");
                     }
                 }
                 log.debug("Api Key: " + obfuscateKey(ConfigFile.getApiKey()));
@@ -235,6 +237,8 @@ public class WakaTime implements ApplicationComponent {
 
     private static void processHeartbeatQueue() {
         if (!WakaTime.READY) return;
+
+        checkApiKey();
 
         // get single heartbeat from queue
         Heartbeat heartbeat = heartbeatsQueue.poll();
@@ -364,8 +368,11 @@ public class WakaTime implements ApplicationComponent {
         cmds.add(heartbeat.entity);
         cmds.add("--time");
         cmds.add(heartbeat.timestamp.toPlainString());
-        cmds.add("--key");
-        cmds.add(ConfigFile.getApiKey());
+        String apiKey = ConfigFile.getApiKey();
+        if (!apiKey.equals("")) {
+            cmds.add("--key");
+            cmds.add(apiKey);
+        }
         if (heartbeat.project != null) {
             cmds.add("--project");
             cmds.add(heartbeat.project);
