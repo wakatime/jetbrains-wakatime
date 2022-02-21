@@ -29,7 +29,7 @@ public class ConfigFile {
                 if (folder.exists()) {
                     ConfigFile.cachedConfigFile = folder.getAbsolutePath();
                     WakaTime.log.debug("Using $WAKATIME_HOME for config folder: " + ConfigFile.cachedConfigFile);
-                    return ConfigFile.cachedConfigFile;
+                    return new File(ConfigFile.cachedConfigFile, internal ? internalFileName : fileName).getAbsolutePath();
                 }
             }
             ConfigFile.cachedConfigFile = new File(System.getProperty("user.home")).getAbsolutePath();
