@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+13.1.14 (2022-03-06)<br />
+++++++++++++++++++<br />
+<br />
+- Show error message when Defender blocks WakaTime from running. #203<br />
+<br />
+<br />
 13.1.13 (2022-02-18)<br />
 ++++++++++++++++++<br />
 <br />
