@@ -294,6 +294,11 @@ public class WakaTime implements ApplicationComponent {
             }
         } catch (Exception e) {
             log.warn(e);
+            if (Dependencies.isWindows() && e.toString().contains("Access is denied")) {
+                try {
+                    Messages.showWarningDialog("Microsoft Defender is blocking WakaTime. Please allow " + Dependencies.getCLILocation() + " to run so WakaTime can upload code stats to your dashboard.", "Error");
+                } catch (Exception ex) { }
+            }
         }
     }
 
@@ -513,6 +518,11 @@ public class WakaTime implements ApplicationComponent {
                     interruptedException.printStackTrace();
                 } catch (Exception e) {
                     log.warn(e);
+                    if (Dependencies.isWindows() && e.toString().contains("Access is denied")) {
+                        try {
+                            Messages.showWarningDialog("Microsoft Defender is blocking WakaTime. Please allow " + Dependencies.getCLILocation() + " to run so WakaTime can upload code stats to your dashboard.", "Error");
+                        } catch (Exception ex) { }
+                    }
                 }
             }
         });

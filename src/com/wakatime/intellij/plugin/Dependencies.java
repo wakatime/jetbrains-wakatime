@@ -204,7 +204,8 @@ public class Dependencies {
             "freebsd-amd64",
             "freebsd-arm",
             "linux-386",
-            "linux-amd64", "linux-arm",
+            "linux-amd64",
+            "linux-arm",
             "linux-arm64",
             "netbsd-386",
             "netbsd-amd64",
@@ -311,6 +312,8 @@ public class Dependencies {
         }
 
         WakaTime.log.debug("getUrlAsString(" + downloadUrl.toString() + ")");
+
+        setupProxy();
 
         String responseLastModified = null;
         int statusCode = -1;
