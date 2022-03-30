@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.0.0 (2022-03-30)<br />
+++++++++++++++++++<br />
+<br />
+- Track time spent building. #116<br />
+<br />
+<br />
 13.1.14 (2022-03-06)<br />
 ++++++++++++++++++<br />
 <br />
