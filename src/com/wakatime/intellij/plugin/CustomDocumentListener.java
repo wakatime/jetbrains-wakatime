@@ -9,19 +9,15 @@ Website:     https://wakatime.com/
 package com.wakatime.intellij.plugin;
 
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.event.BulkAwareDocumentListener;
 import com.intellij.openapi.editor.event.DocumentEvent;
-import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
-public class CustomDocumentListener implements DocumentListener {
+public class CustomDocumentListener implements BulkAwareDocumentListener.Simple {
     @Override
-    public void beforeDocumentChange(DocumentEvent documentEvent) {
-    }
-
-    @Override
-    public void documentChanged(DocumentEvent documentEvent) {
-        // WakaTime.log.debug("documentChanged event");
+    public void documentChangedNonBulk(DocumentEvent documentEvent) {
+        // WakaTime.log.debug("documentChangedNonBulk event");
         if (!WakaTime.isAppActive()) return;
         Document document = documentEvent.getDocument();
         VirtualFile file = WakaTime.getFile(document);

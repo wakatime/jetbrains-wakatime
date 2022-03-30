@@ -16,4 +16,5 @@ public class Heartbeat {
     public Boolean isWrite;
     public String project;
     public String language;
+    public Boolean isBuilding;
 }
