@@ -404,7 +404,7 @@ public class WakaTime implements ApplicationComponent {
             cmds.add(apiKey);
         }
         if (heartbeat.project != null) {
-            cmds.add("--project");
+            cmds.add("--alternate-project");
             cmds.add(heartbeat.project);
         }
         if (heartbeat.language != null) {
