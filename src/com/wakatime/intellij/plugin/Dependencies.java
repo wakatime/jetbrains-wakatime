@@ -246,7 +246,9 @@ public class Dependencies {
         try {
             downloadUrl = new URL(url);
         } catch (MalformedURLException e) {
+            WakaTime.log.error("DownloadFile(" + url + ") failed to init new URL");
             WakaTime.log.error(e);
+            return false;
         }
 
         WakaTime.log.debug("DownloadFile(" + downloadUrl.toString() + ")");
@@ -308,7 +310,9 @@ public class Dependencies {
         try {
             downloadUrl = new URL(url);
         } catch (MalformedURLException e) {
+            WakaTime.log.error("getUrlAsString(" + url + ") failed to init new URL");
             WakaTime.log.error(e);
+            return null;
         }
 
         WakaTime.log.debug("getUrlAsString(" + downloadUrl.toString() + ")");
