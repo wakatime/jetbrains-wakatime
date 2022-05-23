@@ -12,8 +12,11 @@ import java.math.BigDecimal;
 
 public class Heartbeat {
     public String entity;
+    public Integer lineCount;
+    public Integer lineNumber;
     public BigDecimal timestamp;
     public Boolean isWrite;
+    public Boolean isUnsavedFile;
     public String project;
     public String language;
     public Boolean isBuilding;

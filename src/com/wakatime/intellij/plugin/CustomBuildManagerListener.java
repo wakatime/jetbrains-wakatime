@@ -11,6 +11,7 @@ package com.wakatime.intellij.plugin;
 import com.intellij.compiler.server.BuildManagerListener;
 import com.intellij.openapi.compiler.CompilationStatusListener;
 import com.intellij.openapi.compiler.CompileContext;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +20,6 @@ import java.awt.EventQueue;
 import java.util.UUID;
 
 public class CustomBuildManagerListener implements BuildManagerListener, CompilationStatusListener {
-
     @Override
     public void buildStarted(@NotNull Project project, @NotNull UUID sessionId, boolean isAutomake) {
         // WakaTime.log.debug("buildStarted event");
@@ -30,8 +30,9 @@ public class CustomBuildManagerListener implements BuildManagerListener, Compila
             public void run() {
                 VirtualFile file = WakaTime.getCurrentFile(project);
                 if (file == null) return;
+                Document document = WakaTime.getCurrentDocument(project);
                 WakaTime.isBuilding = true;
-                WakaTime.appendHeartbeat(file, project, false);
+                WakaTime.appendHeartbeat(file, project, false, document.getLineCount(), null);
             }
         });
     }

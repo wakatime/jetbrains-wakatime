@@ -15,7 +15,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
 public class CustomSaveListener implements FileDocumentManagerListener {
-
     @Override
     public void beforeDocumentSaving(Document document) {
         // WakaTime.log.debug("beforeDocumentSaving event");
@@ -24,7 +23,7 @@ public class CustomSaveListener implements FileDocumentManagerListener {
         if (file == null) return;
         Project project = WakaTime.getProject(document);
         if (!WakaTime.isProjectInitialized(project)) return;
-        WakaTime.appendHeartbeat(file, project, true);
+        WakaTime.appendHeartbeat(file, project, true, document.getLineCount(), null);
     }
 
     @Override

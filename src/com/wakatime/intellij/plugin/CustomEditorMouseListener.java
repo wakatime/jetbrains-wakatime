@@ -14,7 +14,7 @@ import com.intellij.openapi.editor.event.EditorMouseListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
-public class CustomEditorMouseListener  implements EditorMouseListener {
+public class CustomEditorMouseListener implements EditorMouseListener {
     @Override
     public void mousePressed(EditorMouseEvent editorMouseEvent) {
         // WakaTime.log.debug("mousePressed event");
@@ -24,7 +24,15 @@ public class CustomEditorMouseListener  implements EditorMouseListener {
         if (file == null) return;
         Project project = editorMouseEvent.getEditor().getProject();
         if (!WakaTime.isProjectInitialized(project)) return;
-        WakaTime.appendHeartbeat(file, project, false);
+
+        Integer lineNumber = null;
+        try {
+            lineNumber = document.getLineNumber(editorMouseEvent.getOffset());
+        } catch (NoSuchMethodError e) {
+            // ignore
+        }
+
+        WakaTime.appendHeartbeat(file, project, false, document.getLineCount(), lineNumber);
     }
 
     @Override
