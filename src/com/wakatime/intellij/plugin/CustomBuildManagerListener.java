@@ -11,7 +11,6 @@ package com.wakatime.intellij.plugin;
 import com.intellij.compiler.server.BuildManagerListener;
 import com.intellij.openapi.compiler.CompilationStatusListener;
 import com.intellij.openapi.compiler.CompileContext;
-import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
@@ -30,9 +29,8 @@ public class CustomBuildManagerListener implements BuildManagerListener, Compila
             public void run() {
                 VirtualFile file = WakaTime.getCurrentFile(project);
                 if (file == null) return;
-                Document document = WakaTime.getCurrentDocument(project);
                 WakaTime.isBuilding = true;
-                WakaTime.appendHeartbeat(file, project, false, document.getLineCount(), null);
+                WakaTime.appendHeartbeat(file, project, false, null);
             }
         });
     }

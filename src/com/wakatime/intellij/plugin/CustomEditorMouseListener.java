@@ -24,15 +24,8 @@ public class CustomEditorMouseListener implements EditorMouseListener {
         if (file == null) return;
         Project project = editorMouseEvent.getEditor().getProject();
         if (!WakaTime.isProjectInitialized(project)) return;
-
-        Integer lineNumber = null;
-        try {
-            lineNumber = document.getLineNumber(editorMouseEvent.getOffset());
-        } catch (NoSuchMethodError e) {
-            // ignore
-        }
-
-        WakaTime.appendHeartbeat(file, project, false, document.getLineCount(), lineNumber);
+        LineStats lineStats = WakaTime.getLineStats(document, editorMouseEvent.getEditor().getCaretModel().getOffset());
+        WakaTime.appendHeartbeat(file, project, false, lineStats);
     }
 
     @Override

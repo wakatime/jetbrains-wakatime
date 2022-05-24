@@ -9,7 +9,9 @@ Website:     https://wakatime.com/
 package com.wakatime.intellij.plugin;
 
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileDocumentManagerListener;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +25,10 @@ public class CustomSaveListener implements FileDocumentManagerListener {
         if (file == null) return;
         Project project = WakaTime.getProject(document);
         if (!WakaTime.isProjectInitialized(project)) return;
-        WakaTime.appendHeartbeat(file, project, true, document.getLineCount(), null);
+        Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+        int offset = editor.getCaretModel().getOffset();
+        LineStats lineStats = WakaTime.getLineStats(document, offset);
+        WakaTime.appendHeartbeat(file, project, true, lineStats);
     }
 
     @Override

@@ -63,6 +63,7 @@ public class WakaTime implements ApplicationComponent {
     public static String lastFile = null;
     public static BigDecimal lastTime = new BigDecimal(0);
     public static Boolean isBuilding = false;
+    public static LineStats lineStats = new LineStats();
 
     private final int queueTimeoutSeconds = 30;
     private static ConcurrentLinkedQueue<Heartbeat> heartbeatsQueue = new ConcurrentLinkedQueue<Heartbeat>();
@@ -208,9 +209,7 @@ public class WakaTime implements ApplicationComponent {
         return new BigDecimal(String.valueOf(System.currentTimeMillis() / 1000.0)).setScale(4, BigDecimal.ROUND_HALF_UP);
     }
 
-    public static void appendHeartbeat(
-            final VirtualFile file, final Project project, final boolean isWrite,
-            final Integer lineCount, final Integer lineNumber) {
+    public static void appendHeartbeat(final VirtualFile file, final Project project, final boolean isWrite, @Nullable final LineStats lineStats) {
         checkDebug();
 
         if (WakaTime.READY) {
@@ -245,13 +244,10 @@ public class WakaTime implements ApplicationComponent {
                 h.project = projectName;
                 h.language = language;
                 h.isBuilding = WakaTime.isBuilding;
-
-                if (lineCount != null) {
-                    h.lineCount = lineCount;
-                }
-
-                if (lineNumber != null) {
-                    h.lineNumber = lineNumber;
+                if (lineStats != null) {
+                    h.lineCount = lineStats.lineCount;
+                    h.lineNumber = lineStats.lineNumber;
+                    h.cursorPosition = lineStats.cursorPosition;
                 }
 
                 heartbeatsQueue.add(h);
@@ -272,7 +268,7 @@ public class WakaTime implements ApplicationComponent {
                 VirtualFile file = WakaTime.getCurrentFile(project);
                 if (file == null) return;
                 Document document = WakaTime.getCurrentDocument(project);
-                WakaTime.appendHeartbeat(file, project, false, document.getLineCount(), null);
+                WakaTime.appendHeartbeat(file, project, false, null);
             }
         }, 10, TimeUnit.SECONDS);
     }
@@ -364,6 +360,10 @@ public class WakaTime implements ApplicationComponent {
                 h.append(",\"lineno\":");
                 h.append(heartbeat.lineNumber);
             }
+            if (heartbeat.cursorPosition != null) {
+                h.append(",\"cursorpos\":");
+                h.append(heartbeat.cursorPosition);
+            }
             if (heartbeat.isUnsavedFile) {
                 h.append(",\"is_unsaved_entity\":true");
             }
@@ -441,6 +441,10 @@ public class WakaTime implements ApplicationComponent {
         if (heartbeat.lineNumber != null) {
             cmds.add("--lineno");
             cmds.add(heartbeat.lineNumber.toString());
+        }
+        if (heartbeat.cursorPosition != null) {
+            cmds.add("--cursorpos");
+            cmds.add(heartbeat.cursorPosition.toString());
         }
         if (heartbeat.project != null) {
             cmds.add("--alternate-project");
@@ -569,6 +573,18 @@ public class WakaTime implements ApplicationComponent {
             project = ProjectManager.getInstance().getDefaultProject();
         } catch (Exception e) { }
         return project;
+    }
+
+    public static LineStats getLineStats(Document document, int offset) {
+        LineStats lineStats = new LineStats();
+        lineStats.lineCount = document.getLineCount();
+        try {
+            lineStats.lineNumber = document.getLineNumber(offset);
+        } catch (NoSuchMethodError e) { }
+        try {
+            lineStats.cursorPosition = offset - document.getLineStartOffset(lineStats.lineCount - 1);
+        } catch (NoSuchMethodError e) { }
+        return lineStats;
     }
 
     public static void openDashboardWebsite() {

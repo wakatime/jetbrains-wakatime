@@ -9,12 +9,13 @@ Website:     https://wakatime.com/
 package com.wakatime.intellij.plugin;
 
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.VisibleAreaEvent;
 import com.intellij.openapi.editor.event.VisibleAreaListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
-import java.awt.Rectangle;
+import java.awt.*;
 
 public class CustomVisibleAreaListener implements VisibleAreaListener {
     @Override
@@ -27,7 +28,12 @@ public class CustomVisibleAreaListener implements VisibleAreaListener {
         if (file == null) return;
         Project project = visibleAreaEvent.getEditor().getProject();
         if (!WakaTime.isProjectInitialized(project)) return;
-        WakaTime.appendHeartbeat(file, project, false, document.getLineCount(), null);
+
+        Editor editor = visibleAreaEvent.getEditor();
+        int offset = editor.getCaretModel().getOffset();
+        LineStats lineStats = WakaTime.getLineStats(document, offset);
+
+        WakaTime.appendHeartbeat(file, project, false, lineStats);
     }
 
     private boolean didChange(VisibleAreaEvent visibleAreaEvent) {

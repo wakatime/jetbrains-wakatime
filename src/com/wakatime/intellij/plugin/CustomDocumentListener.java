@@ -24,14 +24,7 @@ public class CustomDocumentListener implements BulkAwareDocumentListener.Simple 
         if (file == null) return;
         Project project = WakaTime.getProject(document);
         if (!WakaTime.isProjectInitialized(project)) return;
-
-        Integer lineNumber = null;
-        try {
-            lineNumber = document.getLineNumber(documentEvent.getOffset());
-        } catch (NoSuchMethodError e) {
-            // ignore
-        }
-
-        WakaTime.appendHeartbeat(file, project, false, document.getLineCount(), lineNumber);
+        LineStats lineStats = WakaTime.getLineStats(document, documentEvent.getOffset());
+        WakaTime.appendHeartbeat(file, project, false, lineStats);
     }
 }
