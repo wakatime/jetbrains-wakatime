@@ -149,7 +149,7 @@ public class WakaTime implements ApplicationComponent {
     private void setupEventListeners() {
         ApplicationManager.getApplication().invokeLater(new Runnable(){
             public void run() {
-                Disposable disposable = Disposer.newDisposable((String) "WakaTimeListener");
+                Disposable disposable = Disposer.newDisposable("WakaTimeListener");
                 MessageBusConnection connection = ApplicationManager.getApplication().getMessageBus().connect();
 
                 // save file
@@ -208,8 +208,11 @@ public class WakaTime implements ApplicationComponent {
         return new BigDecimal(String.valueOf(System.currentTimeMillis() / 1000.0)).setScale(4, BigDecimal.ROUND_HALF_UP);
     }
 
-    public static void appendHeartbeat(final VirtualFile file, Project project, final boolean isWrite) {
+    public static void appendHeartbeat(
+            final VirtualFile file, final Project project, final boolean isWrite,
+            final Integer lineCount, final Integer lineNumber) {
         checkDebug();
+
         if (WakaTime.READY) {
             updateStatusBarText();
             if (project != null) {
@@ -217,24 +220,40 @@ public class WakaTime implements ApplicationComponent {
                 if (statusbar != null) statusbar.updateWidget("WakaTime");
             }
         }
+
         if (!shouldLogFile(file)) return;
+
         final BigDecimal time = WakaTime.getCurrentTimestamp();
+
         if (!isWrite && file.getPath().equals(WakaTime.lastFile) && !enoughTimePassed(time)) {
             return;
         }
+
         WakaTime.lastFile = file.getPath();
         WakaTime.lastTime = time;
+
         final String projectName = project != null ? project.getName() : null;
         final String language = WakaTime.getLanguage(file);
+
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             public void run() {
                 Heartbeat h = new Heartbeat();
                 h.entity = file.getPath();
                 h.timestamp = time;
                 h.isWrite = isWrite;
+                h.isUnsavedFile = !file.exists();
                 h.project = projectName;
                 h.language = language;
                 h.isBuilding = WakaTime.isBuilding;
+
+                if (lineCount != null) {
+                    h.lineCount = lineCount;
+                }
+
+                if (lineNumber != null) {
+                    h.lineNumber = lineNumber;
+                }
+
                 heartbeatsQueue.add(h);
 
                 if (WakaTime.isBuilding) setBuildTimeout();
@@ -252,7 +271,8 @@ public class WakaTime implements ApplicationComponent {
                 if (!WakaTime.isProjectInitialized(project)) return;
                 VirtualFile file = WakaTime.getCurrentFile(project);
                 if (file == null) return;
-                WakaTime.appendHeartbeat(file, project, false);
+                Document document = WakaTime.getCurrentDocument(project);
+                WakaTime.appendHeartbeat(file, project, false, document.getLineCount(), null);
             }
         }, 10, TimeUnit.SECONDS);
     }
@@ -268,7 +288,7 @@ public class WakaTime implements ApplicationComponent {
             return;
 
         // get all extra heartbeats from queue
-        ArrayList<Heartbeat> extraHeartbeats = new ArrayList<Heartbeat>();
+        ArrayList<Heartbeat> extraHeartbeats = new ArrayList<>();
         while (true) {
             Heartbeat h = heartbeatsQueue.poll();
             if (h == null)
@@ -336,11 +356,22 @@ public class WakaTime implements ApplicationComponent {
             h.append(heartbeat.timestamp.toPlainString());
             h.append(",\"is_write\":");
             h.append(heartbeat.isWrite.toString());
+            if (heartbeat.lineCount != null) {
+                h.append(",\"lines\":");
+                h.append(heartbeat.lineCount);
+            }
+            if (heartbeat.lineNumber != null) {
+                h.append(",\"lineno\":");
+                h.append(heartbeat.lineNumber);
+            }
+            if (heartbeat.isUnsavedFile) {
+                h.append(",\"is_unsaved_entity\":true");
+            }
             if (heartbeat.isBuilding) {
                 h.append(",\"category\":\"building\"");
             }
             if (heartbeat.project != null) {
-                h.append(",\"project\":\"");
+                h.append(",\"alternate_project\":\"");
                 h.append(jsonEscape(heartbeat.project));
                 h.append("\"");
             }
@@ -352,7 +383,7 @@ public class WakaTime implements ApplicationComponent {
             h.append("}");
             if (!first)
                 json.append(",");
-            json.append(h.toString());
+            json.append(h);
             first = false;
         }
         json.append("]");
@@ -403,6 +434,14 @@ public class WakaTime implements ApplicationComponent {
             cmds.add("--key");
             cmds.add(apiKey);
         }
+        if (heartbeat.lineCount != null) {
+            cmds.add("--lines-in-file");
+            cmds.add(heartbeat.lineCount.toString());
+        }
+        if (heartbeat.lineNumber != null) {
+            cmds.add("--lineno");
+            cmds.add(heartbeat.lineNumber.toString());
+        }
         if (heartbeat.project != null) {
             cmds.add("--alternate-project");
             cmds.add(heartbeat.project);
@@ -415,6 +454,8 @@ public class WakaTime implements ApplicationComponent {
         cmds.add(IDE_NAME+"/"+IDE_VERSION+" "+IDE_NAME+"-wakatime/"+VERSION);
         if (heartbeat.isWrite)
             cmds.add("--write");
+        if (heartbeat.isUnsavedFile)
+            cmds.add("--is-unsaved-entity");
         if (heartbeat.isBuilding) {
             cmds.add("--category");
             cmds.add("building");
@@ -480,14 +521,6 @@ public class WakaTime implements ApplicationComponent {
         }
     }
 
-    public static Project getProject(Document document) {
-        Editor[] editors = EditorFactory.getInstance().getEditors(document);
-        if (editors.length > 0) {
-            return editors[0].getProject();
-        }
-        return null;
-    }
-
     private static String getLanguage(final VirtualFile file) {
         FileType type = file.getFileType();
         if (type != null)
@@ -505,21 +538,37 @@ public class WakaTime implements ApplicationComponent {
     }
 
     @Nullable
-    public static Project getCurrentProject() {
-        Project project = null;
-        try {
-            project = ProjectManager.getInstance().getDefaultProject();
-        } catch (Exception e) { }
-        return project;
-    }
-
-    @Nullable
     public static VirtualFile getCurrentFile(Project project) {
         if (project == null) return null;
         Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
         if (editor == null) return null;
         Document document = editor.getDocument();
         return WakaTime.getFile(document);
+    }
+
+    public static Project getProject(Document document) {
+        Editor[] editors = EditorFactory.getInstance().getEditors(document);
+        if (editors.length > 0) {
+            return editors[0].getProject();
+        }
+        return null;
+    }
+
+    @Nullable
+    public static Document getCurrentDocument(Project project) {
+        if (project == null) return null;
+        Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+        if (editor == null) return null;
+        return editor.getDocument();
+    }
+
+    @Nullable
+    public static Project getCurrentProject() {
+        Project project = null;
+        try {
+            project = ProjectManager.getInstance().getDefaultProject();
+        } catch (Exception e) { }
+        return project;
     }
 
     public static void openDashboardWebsite() {

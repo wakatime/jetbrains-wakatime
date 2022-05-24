@@ -27,7 +27,7 @@ public class CustomVisibleAreaListener implements VisibleAreaListener {
         if (file == null) return;
         Project project = visibleAreaEvent.getEditor().getProject();
         if (!WakaTime.isProjectInitialized(project)) return;
-        WakaTime.appendHeartbeat(file, project, false);
+        WakaTime.appendHeartbeat(file, project, false, document.getLineCount(), null);
     }
 
     private boolean didChange(VisibleAreaEvent visibleAreaEvent) {
