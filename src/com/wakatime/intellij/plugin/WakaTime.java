@@ -8,6 +8,7 @@ Website:     https://wakatime.com/
 
 package com.wakatime.intellij.plugin;
 
+import com.google.api.Http;
 import com.intellij.AppTopics;
 import com.intellij.compiler.server.BuildManagerListener;
 import com.intellij.ide.BrowserUtil;
@@ -36,6 +37,7 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.util.PlatformUtils;
 import com.intellij.util.concurrency.AppExecutorUtil;
 import com.intellij.util.messages.MessageBusConnection;
+import com.intellij.util.net.HttpConfigurable;
 import org.apache.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -464,11 +466,45 @@ public class WakaTime implements ApplicationComponent {
             cmds.add("--category");
             cmds.add("building");
         }
+
+        String proxy = getBuiltinProxy();
+        if (proxy != null) {
+            WakaTime.log.info("built-in proxy will be used: " + proxy);
+            cmds.add("--proxy");
+            cmds.add(proxy);
+        }
+
         if (extraHeartbeats.size() > 0)
             cmds.add("--extra-heartbeats");
         return cmds.toArray(new String[cmds.size()]);
     }
 
+    private static String getBuiltinProxy() {
+        HttpConfigurable config = HttpConfigurable.getInstance();
+
+        String host = config.PROXY_HOST;
+        if (host != null) {
+            String auth = "";
+            String protocol = config.PROXY_TYPE_IS_SOCKS ? "socks5://" : "https://";
+
+            String user = null;
+            try {
+                user = config.getProxyLogin();
+                if (user != null) {
+                    auth = String.format("%s:%s@", user, config.getPlainProxyPassword());
+                }
+            } catch (NoSuchMethodError e) { }
+
+            String url = protocol + auth + host;
+            if (config.PROXY_PORT > 0) {
+                url += String.format(":%d", config.PROXY_PORT);
+            }
+
+            return url;
+        }
+
+        return null;
+    }
 
     public static boolean enoughTimePassed(BigDecimal currentTime) {
         return WakaTime.lastTime.add(FREQUENCY).compareTo(currentTime) < 0;
