@@ -15,6 +15,7 @@ import com.intellij.ide.BrowserUtil;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.compiler.CompilerTopics;
@@ -136,6 +137,8 @@ public class WakaTime implements ApplicationComponent {
                 Project project = getCurrentProject();
                 if (project == null) return;
                 if (ConfigFile.getApiKey().equals("")) {
+                    Application app = ApplicationManager.getApplication();
+                    if (app.isDispatchThread()) return;
                     try {
                         ApiKey apiKey = new ApiKey(project);
                         apiKey.promptForApiKey();

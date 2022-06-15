@@ -846,21 +846,18 @@
     <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
         <statusBarWidgetFactory implementation="com.wakatime.intellij.plugin.CustomStatusBar"
                                 id="com.wakatime.intellij.plugin.CustomStatusBar"
                                 order="first" />
     </extensions>
 
     <application-components>
-        <!-- Add your application components here -->
         <component>
             <implementation-class>com.wakatime.intellij.plugin.WakaTime</implementation-class>
         </component>
     </application-components>
 
     <actions>
-        <!-- Add your actions here -->
         <action id="pluginMenu" class="com.wakatime.intellij.plugin.PluginMenu" text="WakaTime">
             <add-to-group group-id="ToolsMenu" anchor="first" />
         </action>
