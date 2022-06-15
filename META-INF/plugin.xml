@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>14.0.3</version>
+    <version>14.0.4</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.0.4 (2022-06-15)<br />
+++++++++++++++++++<br />
+<br />
+- Skip detecting line stats when project null to prevent IllegalArgumentException. #218<br />
+<br />
+<br />
 14.0.3 (2022-06-15)<br />
 ++++++++++++++++++<br />
 <br />
