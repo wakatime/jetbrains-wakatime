@@ -10,7 +10,7 @@ package com.wakatime.intellij.plugin;
 
 import com.google.api.Http;
 import com.intellij.AppTopics;
-import com.intellij.compiler.server.BuildManagerListener;
+//import com.intellij.compiler.server.BuildManagerListener;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.ide.plugins.PluginManagerCore;
@@ -18,7 +18,7 @@ import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.compiler.CompilerTopics;
+//import com.intellij.openapi.compiler.CompilerTopics;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
@@ -171,8 +171,8 @@ public class WakaTime implements ApplicationComponent {
                 EditorFactory.getInstance().getEventMulticaster().addVisibleAreaListener(new CustomVisibleAreaListener(), disposable);
 
                 // compiling
-                connection.subscribe(BuildManagerListener.TOPIC, new CustomBuildManagerListener());
-                connection.subscribe(CompilerTopics.COMPILATION_STATUS, new CustomBuildManagerListener());
+                // connection.subscribe(BuildManagerListener.TOPIC, new CustomBuildManagerListener());
+                // connection.subscribe(CompilerTopics.COMPILATION_STATUS, new CustomBuildManagerListener());
             }
         });
     }
