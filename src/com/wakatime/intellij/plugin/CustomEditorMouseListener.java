@@ -19,18 +19,22 @@ public class CustomEditorMouseListener implements EditorMouseListener {
     @Override
     public void mousePressed(EditorMouseEvent editorMouseEvent) {
         WakaTime.log.debug("mousePressed event");
-        if (!WakaTime.isAppActive()) return;
-        Document document = editorMouseEvent.getEditor().getDocument();
-        VirtualFile file = WakaTime.getFile(document);
-        if (file == null) return;
-        Project project = editorMouseEvent.getEditor().getProject();
-        if (!WakaTime.isProjectInitialized(project)) return;
-        ApplicationManager.getApplication().invokeLater(new Runnable() {
-            public void run() {
-                LineStats lineStats = WakaTime.getLineStats(document, editorMouseEvent.getEditor().getCaretModel().getOffset());
-                WakaTime.appendHeartbeat(file, project, false, lineStats);
-            }
-        });
+        try {
+            if (!WakaTime.isAppActive()) return;
+            Document document = editorMouseEvent.getEditor().getDocument();
+            VirtualFile file = WakaTime.getFile(document);
+            if (file == null) return;
+            Project project = editorMouseEvent.getEditor().getProject();
+            if (!WakaTime.isProjectInitialized(project)) return;
+            ApplicationManager.getApplication().invokeLater(new Runnable() {
+                public void run() {
+                    LineStats lineStats = WakaTime.getLineStats(document, editorMouseEvent.getEditor().getCaretModel().getOffset());
+                    WakaTime.appendHeartbeat(file, project, false, lineStats);
+                }
+            });
+        } catch(Exception e) {
+            WakaTime.log.error(e);
+        }
     }
 
     @Override

@@ -20,15 +20,19 @@ public class CustomSaveListener implements FileDocumentManagerListener {
     @Override
     public void beforeDocumentSaving(Document document) {
         WakaTime.log.debug("beforeDocumentSaving event");
-        if (!WakaTime.isAppActive()) return;
-        VirtualFile file = WakaTime.getFile(document);
-        if (file == null) return;
-        Project project = WakaTime.getProject(document);
-        if (!WakaTime.isProjectInitialized(project)) return;
-        Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
-        int offset = editor.getCaretModel().getOffset();
-        LineStats lineStats = WakaTime.getLineStats(document, offset);
-        WakaTime.appendHeartbeat(file, project, true, lineStats);
+        try {
+            if (!WakaTime.isAppActive()) return;
+            VirtualFile file = WakaTime.getFile(document);
+            if (file == null) return;
+            Project project = WakaTime.getProject(document);
+            if (!WakaTime.isProjectInitialized(project)) return;
+            Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+            int offset = editor.getCaretModel().getOffset();
+            LineStats lineStats = WakaTime.getLineStats(document, offset);
+            WakaTime.appendHeartbeat(file, project, true, lineStats);
+        } catch(Exception e) {
+            WakaTime.log.error(e);
+        }
     }
 
     @Override

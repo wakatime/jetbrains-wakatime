@@ -21,19 +21,21 @@ public class CustomVisibleAreaListener implements VisibleAreaListener {
     @Override
     public void visibleAreaChanged(VisibleAreaEvent visibleAreaEvent) {
         WakaTime.log.debug("visibleAreaChanged event");
-        if (!didChange(visibleAreaEvent)) return;
-        if (!WakaTime.isAppActive()) return;
-        Document document = visibleAreaEvent.getEditor().getDocument();
-        VirtualFile file = WakaTime.getFile(document);
-        if (file == null) return;
-        Project project = visibleAreaEvent.getEditor().getProject();
-        if (!WakaTime.isProjectInitialized(project)) return;
-
-        Editor editor = visibleAreaEvent.getEditor();
-        int offset = editor.getCaretModel().getOffset();
-        LineStats lineStats = WakaTime.getLineStats(document, offset);
-
-        WakaTime.appendHeartbeat(file, project, false, lineStats);
+        try {
+            if (!didChange(visibleAreaEvent)) return;
+            if (!WakaTime.isAppActive()) return;
+            Document document = visibleAreaEvent.getEditor().getDocument();
+            VirtualFile file = WakaTime.getFile(document);
+            if (file == null) return;
+            Project project = visibleAreaEvent.getEditor().getProject();
+            if (!WakaTime.isProjectInitialized(project)) return;
+            Editor editor = visibleAreaEvent.getEditor();
+            int offset = editor.getCaretModel().getOffset();
+            LineStats lineStats = WakaTime.getLineStats(document, offset);
+            WakaTime.appendHeartbeat(file, project, false, lineStats);
+        } catch(Exception e) {
+            WakaTime.log.error(e);
+        }
     }
 
     private boolean didChange(VisibleAreaEvent visibleAreaEvent) {
