@@ -8,6 +8,7 @@ Website:     https://wakatime.com/
 
 package com.wakatime.intellij.plugin;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.event.EditorMouseEvent;
 import com.intellij.openapi.editor.event.EditorMouseListener;
@@ -17,15 +18,19 @@ import com.intellij.openapi.vfs.VirtualFile;
 public class CustomEditorMouseListener implements EditorMouseListener {
     @Override
     public void mousePressed(EditorMouseEvent editorMouseEvent) {
-        // WakaTime.log.debug("mousePressed event");
+        WakaTime.log.debug("mousePressed event");
         if (!WakaTime.isAppActive()) return;
         Document document = editorMouseEvent.getEditor().getDocument();
         VirtualFile file = WakaTime.getFile(document);
         if (file == null) return;
         Project project = editorMouseEvent.getEditor().getProject();
         if (!WakaTime.isProjectInitialized(project)) return;
-        LineStats lineStats = WakaTime.getLineStats(document, editorMouseEvent.getEditor().getCaretModel().getOffset());
-        WakaTime.appendHeartbeat(file, project, false, lineStats);
+        ApplicationManager.getApplication().invokeLater(new Runnable() {
+            public void run() {
+                LineStats lineStats = WakaTime.getLineStats(document, editorMouseEvent.getEditor().getCaretModel().getOffset());
+                WakaTime.appendHeartbeat(file, project, false, lineStats);
+            }
+        });
     }
 
     @Override

@@ -8,7 +8,6 @@ Website:     https://wakatime.com/
 
 package com.wakatime.intellij.plugin;
 
-import com.google.api.Http;
 import com.intellij.AppTopics;
 //import com.intellij.compiler.server.BuildManagerListener;
 import com.intellij.ide.BrowserUtil;
@@ -443,11 +442,11 @@ public class WakaTime implements ApplicationComponent {
             cmds.add("--lines-in-file");
             cmds.add(heartbeat.lineCount.toString());
         }
-        if (heartbeat.lineNumber != null) {
+        if (heartbeat.lineNumber != null && false) {
             cmds.add("--lineno");
             cmds.add(heartbeat.lineNumber.toString());
         }
-        if (heartbeat.cursorPosition != null) {
+        if (heartbeat.cursorPosition != null && false) {
             cmds.add("--cursorpos");
             cmds.add(heartbeat.cursorPosition.toString());
         }
@@ -616,13 +615,13 @@ public class WakaTime implements ApplicationComponent {
 
     public static LineStats getLineStats(Document document, int offset) {
         LineStats lineStats = new LineStats();
-        lineStats.lineCount = document.getLineCount();
         try {
-            lineStats.lineNumber = document.getLineNumber(offset);
-        } catch (NoSuchMethodError e) { }
-        try {
-            lineStats.cursorPosition = offset - document.getLineStartOffset(lineStats.lineCount - 1);
-        } catch (NoSuchMethodError e) { }
+            lineStats.lineCount = document.getLineCount();
+            lineStats.lineNumber = document.getLineNumber(offset) + 1;
+            lineStats.cursorPosition = offset - document.getLineStartOffset(lineStats.lineNumber - 1) + 1;
+        } catch (Exception e) {
+            log.warn(e);
+        }
         return lineStats;
     }
 
