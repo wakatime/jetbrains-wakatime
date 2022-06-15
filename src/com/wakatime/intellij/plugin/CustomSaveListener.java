@@ -29,8 +29,10 @@ public class CustomSaveListener implements FileDocumentManagerListener {
             LineStats lineStats = new LineStats();
             if (project != null) {
                 Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
-                int offset = editor.getCaretModel().getOffset();
-                lineStats = WakaTime.getLineStats(document, offset);
+                if (editor != null) {
+                    int offset = editor.getCaretModel().getOffset();
+                    lineStats = WakaTime.getLineStats(document, offset);
+                }
             }
             WakaTime.appendHeartbeat(file, project, true, lineStats);
         } catch(Exception e) {
