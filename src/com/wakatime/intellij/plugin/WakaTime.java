@@ -484,6 +484,8 @@ public class WakaTime implements ApplicationComponent {
     private static String getBuiltinProxy() {
         HttpConfigurable config = HttpConfigurable.getInstance();
 
+        if (!config.isHttpProxyEnabledForUrl("https://api.wakatime.com")) return null;
+
         String host = config.PROXY_HOST;
         if (host != null) {
             String auth = "";
