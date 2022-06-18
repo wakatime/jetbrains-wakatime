@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.0.6 (2022-06-18)<br />
+++++++++++++++++++<br />
+<br />
+- Allow disabling IDE proxy for api.wakatime.com in IntelliJ built-in proxy settings. #224<br />
+<br />
+<br />
 14.0.5 (2022-06-15)<br />
 ++++++++++++++++++<br />
 <br />
