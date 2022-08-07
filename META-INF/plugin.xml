@@ -885,6 +885,7 @@
         <statusBarWidgetFactory implementation="com.wakatime.intellij.plugin.CustomStatusBar"
                                 id="com.wakatime.intellij.plugin.CustomStatusBar"
                                 order="first" />
+        <postStartupActivity implementation="com.wakatime.intellij.plugin.WakaTimeStartupActivity" />
     </extensions>
 
     <application-components>

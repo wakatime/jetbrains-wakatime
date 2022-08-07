@@ -91,9 +91,8 @@ public class WakaTime implements ApplicationComponent {
         IDE_VERSION = ApplicationInfo.getInstance().getFullVersion();
 
         setupDebugging();
-        setupStatusBar();
         setLoggingLevel();
-        checkApiKey();
+        setupStatusBar();
         checkCli();
         setupEventListeners();
         setupQueueProcessor();
@@ -125,28 +124,6 @@ public class WakaTime implements ApplicationComponent {
                 }
                 Dependencies.createSymlink(Dependencies.combinePaths(Dependencies.getResourcesLocation(), "wakatime-cli"), Dependencies.getCLILocation());
                 log.debug("wakatime-cli location: " + Dependencies.getCLILocation());
-            }
-        });
-    }
-
-    private static void checkApiKey() {
-        ApplicationManager.getApplication().invokeLater(new Runnable(){
-            public void run() {
-                // prompt for apiKey if it does not already exist
-                Project project = getCurrentProject();
-                if (project == null) return;
-                if (ConfigFile.getApiKey().equals("")) {
-                    Application app = ApplicationManager.getApplication();
-                    if (app.isDispatchThread()) return;
-                    try {
-                        ApiKey apiKey = new ApiKey(project);
-                        apiKey.promptForApiKey();
-                    } catch(Exception e) {
-                        log.warn(e);
-                    } catch (Throwable throwable) {
-                        log.warn("Unable to prompt for api key because UI not ready.");
-                    }
-                }
             }
         });
     }
@@ -207,6 +184,28 @@ public class WakaTime implements ApplicationComponent {
 
         // make sure to send all heartbeats before exiting
         processHeartbeatQueue();
+    }
+
+    public static void checkApiKey() {
+        ApplicationManager.getApplication().invokeLater(new Runnable(){
+            public void run() {
+                // prompt for apiKey if it does not already exist
+                Project project = getCurrentProject();
+                if (project == null) return;
+                if (ConfigFile.getApiKey().equals("")) {
+                    Application app = ApplicationManager.getApplication();
+                    if (app.isUnitTestMode() || !app.isDispatchThread()) return;
+                    try {
+                        ApiKey apiKey = new ApiKey(project);
+                        apiKey.promptForApiKey();
+                    } catch(Exception e) {
+                        log.warn(e);
+                    } catch (Throwable throwable) {
+                        log.warn("Unable to prompt for api key because UI not ready.");
+                    }
+                }
+            }
+        });
     }
 
     public static BigDecimal getCurrentTimestamp() {
