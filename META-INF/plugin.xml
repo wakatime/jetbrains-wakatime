@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.1.0 (2022-08-07)<br />
+++++++++++++++++++<br />
+<br />
+- Fix prompt for api key on startup. #228<br />
+<br />
+<br />
 14.0.6 (2022-06-18)<br />
 ++++++++++++++++++<br />
 <br />
