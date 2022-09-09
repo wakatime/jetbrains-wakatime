@@ -390,10 +390,10 @@ public class Dependencies {
      * Configures a proxy if one is set in ~/.wakatime.cfg.
      */
     private static void setupProxy() {
-        originalProxyHost = System.getProperty("https.proxyHost");
-        originalProxyPort = System.getProperty("https.proxyPort");
         String proxyConfig = ConfigFile.get("settings", "proxy", false);
         if (proxyConfig != null && !proxyConfig.trim().equals("")) {
+            originalProxyHost = System.getProperty("https.proxyHost");
+            originalProxyPort = System.getProperty("https.proxyPort");
             try {
                 URL proxyUrl = new URL(proxyConfig);
                 String userInfo = proxyUrl.getUserInfo();
@@ -420,8 +420,17 @@ public class Dependencies {
     }
 
     private static void teardownProxy() {
-        if (originalProxyHost != null) System.setProperty("https.proxyHost", originalProxyHost);
-        if (originalProxyPort != null) System.setProperty("https.proxyPort", originalProxyPort);
+        if (originalProxyHost != null) {
+            System.setProperty("https.proxyHost", originalProxyHost);
+        } else {
+            System.clearProperty("https.proxyHost");
+        }
+        if (originalProxyPort != null) {
+            System.setProperty("https.proxyPort", originalProxyPort);
+        } else {
+            System.clearProperty("https.proxyPort");
+        }
+        Authenticator.setDefault(null);
     }
 
     private static void unzip(String zipFile, File outputDir) throws IOException {
