@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.1.1 (2022-09-09)<br />
+++++++++++++++++++<br />
+<br />
+- Correctly clear system proxy if not previously set. #232<br />
+<br />
+<br />
 14.1.0 (2022-08-07)<br />
 ++++++++++++++++++<br />
 <br />
