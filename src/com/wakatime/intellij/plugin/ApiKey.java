@@ -41,7 +41,7 @@ public class ApiKey extends DialogWrapper {
     protected ValidationInfo doValidate() {
         String apiKey = input.getText();
         try {
-            UUID.fromString(apiKey);
+            UUID.fromString(apiKey.replaceFirst("^waka_", ""));
         } catch (Exception e) {
             return new ValidationInfo("Invalid api key.");
         }

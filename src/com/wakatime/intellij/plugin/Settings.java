@@ -75,7 +75,7 @@ public class Settings extends DialogWrapper {
     @Override
     protected ValidationInfo doValidate() {
         try {
-            UUID.fromString(apiKey.getText());
+            UUID.fromString(apiKey.getText().replaceFirst("^waka_", ""));
         } catch (Exception e) {
             return new ValidationInfo("Invalid api key.");
         }
