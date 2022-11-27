@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.1.2 (2022-11-27)<br />
+++++++++++++++++++<br />
+<br />
+- Support api key with waka prefix.<br />
+<br />
+<br />
 14.1.1 (2022-09-09)<br />
 ++++++++++++++++++<br />
 <br />
