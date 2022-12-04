@@ -35,7 +35,7 @@ Supports Jetbrains IDES:
 
 WakaTime for Jetbrains IDE's can be configured via Tools -> WakaTime Settings.
 
-For more settings, WakaTime plugins share a common config file `.wakatime.cfg` located in your user home directory with [these options](https://github.com/wakatime/wakatime#configuring) available.
+For more settings, WakaTime plugins share a common config file `.wakatime.cfg` located in your user home directory with [these options](https://github.com/wakatime/wakatime-cli/blob/develop/USAGE.md) available.
 
 
 ## Uninstalling
