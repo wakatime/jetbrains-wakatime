@@ -1,4 +1,4 @@
-<idea-plugin version="2" url="https://wakatime.com">
+<idea-plugin version="2" url="https://wakatime.com" require-restart="true">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
     <version>14.1.2</version>
