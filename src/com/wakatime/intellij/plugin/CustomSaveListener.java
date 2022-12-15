@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class CustomSaveListener implements FileDocumentManagerListener {
     @Override
     public void beforeDocumentSaving(Document document) {
-        WakaTime.log.debug("beforeDocumentSaving event");
+        // WakaTime.log.debug("beforeDocumentSaving event");
         try {
             if (!WakaTime.isAppActive()) return;
             VirtualFile file = WakaTime.getFile(document);

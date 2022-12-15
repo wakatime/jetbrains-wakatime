@@ -18,7 +18,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 public class CustomEditorMouseListener implements EditorMouseListener {
     @Override
     public void mousePressed(EditorMouseEvent editorMouseEvent) {
-        WakaTime.log.debug("mousePressed event");
+        // WakaTime.log.debug("mousePressed event");
         try {
             if (!WakaTime.isAppActive()) return;
             Document document = editorMouseEvent.getEditor().getDocument();

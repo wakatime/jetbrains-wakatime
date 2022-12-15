@@ -17,7 +17,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 public class CustomDocumentListener implements BulkAwareDocumentListener.Simple {
     @Override
     public void documentChangedNonBulk(DocumentEvent documentEvent) {
-        WakaTime.log.debug("documentChangedNonBulk event");
+        // WakaTime.log.debug("documentChangedNonBulk event");
         try {
             if (!WakaTime.isAppActive()) return;
             Document document = documentEvent.getDocument();

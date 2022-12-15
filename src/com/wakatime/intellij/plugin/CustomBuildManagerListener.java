@@ -21,7 +21,7 @@ import java.util.UUID;
 public class CustomBuildManagerListener implements BuildManagerListener, CompilationStatusListener {
     @Override
     public void buildStarted(@NotNull Project project, @NotNull UUID sessionId, boolean isAutomake) {
-        WakaTime.log.debug("buildStarted event");
+        // WakaTime.log.debug("buildStarted event");
         if (!WakaTime.isAppActive()) return;
         if (!WakaTime.isProjectInitialized(project)) return;
         EventQueue.invokeLater(new Runnable() {

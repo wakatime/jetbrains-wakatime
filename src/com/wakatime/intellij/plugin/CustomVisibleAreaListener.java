@@ -20,7 +20,7 @@ import java.awt.*;
 public class CustomVisibleAreaListener implements VisibleAreaListener {
     @Override
     public void visibleAreaChanged(VisibleAreaEvent visibleAreaEvent) {
-        WakaTime.log.debug("visibleAreaChanged event");
+        // WakaTime.log.debug("visibleAreaChanged event");
         try {
             if (!didChange(visibleAreaEvent)) return;
             if (!WakaTime.isAppActive()) return;
