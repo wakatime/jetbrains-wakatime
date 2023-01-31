@@ -45,7 +45,11 @@ Inside your IDE, select `Preferences` -> `Plugins`, then find the `WakaTime` plu
 
 ## Troubleshooting
 
-First, turn on debug mode from File -> WakaTime Settings. Then restart your IDE.
+If you’re using a proxy, try excluding `*.wakatime.com` from using your IDE proxy:
+
+![jetbrains proxy settings](https://wakatime.com/static/img/ScreenShots/jetbrains-no-proxy-setting.png?v=1)
+
+Next, turn on debug mode from File -> WakaTime Settings. Then restart your IDE.
 
 ![wakatime settings menu](https://wakatime.com/static/img/ScreenShots/jetbrains-wakatime-menu.png?v=1)
 
