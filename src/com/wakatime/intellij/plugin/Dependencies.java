@@ -119,7 +119,7 @@ public class Dependencies {
                 if (output.trim().equals(cliVersion)) return false;
             }
         } catch (Exception e) {
-            WakaTime.log.warn(e);
+            WakaTime.warnException(e);
         }
         return true;
     }
@@ -415,6 +415,7 @@ public class Dependencies {
 
             } catch (MalformedURLException e) {
                 WakaTime.log.error("Proxy string must follow https://user:pass@host:port format: " + proxyConfig);
+                WakaTime.warnException(e);
             }
         }
     }
@@ -538,7 +539,7 @@ public class Dependencies {
         try {
             file.setExecutable(true);
         } catch(SecurityException e) {
-            WakaTime.log.warn(e);
+            WakaTime.warnException(e);
         }
     }
 
@@ -546,7 +547,7 @@ public class Dependencies {
         try {
             return Files.isSymbolicLink(filepath.toPath());
         } catch(SecurityException e) {
-            WakaTime.log.warn(e);
+            WakaTime.warnException(e);
             return false;
         }
     }
@@ -555,7 +556,7 @@ public class Dependencies {
         try {
             return filepath.isDirectory();
         } catch(SecurityException e) {
-            WakaTime.log.warn(e);
+            WakaTime.warnException(e);
             return false;
         }
     }
@@ -569,11 +570,11 @@ public class Dependencies {
                 try {
                     Files.createSymbolicLink(sourceLink.toPath(), new File(destination).toPath());
                 } catch (Exception e) {
-                    WakaTime.log.warn(e);
+                    WakaTime.warnException(e);
                     try {
                         Files.copy(new File(destination).toPath(), sourceLink.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     } catch (Exception ex) {
-                        WakaTime.log.warn(ex);
+                        WakaTime.warnException(ex);
                     }
                 }
             }
@@ -581,7 +582,7 @@ public class Dependencies {
             try {
                 Files.copy(new File(destination).toPath(), sourceLink.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } catch (Exception e) {
-                WakaTime.log.warn(e);
+                WakaTime.warnException(e);
             }
         }
     }

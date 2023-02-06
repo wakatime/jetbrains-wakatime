@@ -34,7 +34,7 @@ public class CustomVisibleAreaListener implements VisibleAreaListener {
             LineStats lineStats = WakaTime.getLineStats(document, offset);
             WakaTime.appendHeartbeat(file, project, false, lineStats);
         } catch(Exception e) {
-            WakaTime.log.error(e);
+            WakaTime.warnException(e);
         }
     }
 

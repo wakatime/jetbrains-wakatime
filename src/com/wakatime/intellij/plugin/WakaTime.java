@@ -199,7 +199,7 @@ public class WakaTime implements ApplicationComponent {
                         ApiKey apiKey = new ApiKey(project);
                         apiKey.promptForApiKey();
                     } catch(Exception e) {
-                        log.warn(e);
+                        warnException(e);
                     } catch (Throwable throwable) {
                         log.warn("Unable to prompt for api key because UI not ready.");
                     }
@@ -315,7 +315,7 @@ public class WakaTime implements ApplicationComponent {
                         stdin.close();
                     } catch (IOException e) { /* ignored because wakatime-cli closes pipe after receiving \n */ }
                 } catch (IOException e) {
-                    log.warn(e);
+                    warnException(e);
                 }
             }
             if (WakaTime.DEBUG) {
@@ -334,7 +334,7 @@ public class WakaTime implements ApplicationComponent {
                 log.debug("Command finished with return value: " + proc.exitValue());
             }
         } catch (Exception e) {
-            log.warn(e);
+            warnException(e);
             if (Dependencies.isWindows() && e.toString().contains("Access is denied")) {
                 try {
                     Messages.showWarningDialog("Microsoft Defender is blocking WakaTime. Please allow " + Dependencies.getCLILocation() + " to run so WakaTime can upload code stats to your dashboard.", "Error");
@@ -550,7 +550,7 @@ public class WakaTime implements ApplicationComponent {
                 if (statusbar == null) return;
                 statusbar.updateWidget("WakaTime");
             } catch (Exception e) {
-                log.warn(e);
+                warnException(e);
             }
         }
     }
@@ -621,7 +621,7 @@ public class WakaTime implements ApplicationComponent {
             lineStats.lineNumber = document.getLineNumber(offset) + 1;
             lineStats.cursorPosition = offset - document.getLineStartOffset(lineStats.lineNumber - 1) + 1;
         } catch (Exception e) {
-            log.warn(e);
+            warnException(e);
         }
         return lineStats;
     }
@@ -669,10 +669,10 @@ public class WakaTime implements ApplicationComponent {
                     log.debug("Command finished with return value: " + proc.exitValue());
                     todayText = " " + String.join("", output);
                     todayTextTime = getCurrentTimestamp();
-                    } catch (InterruptedException interruptedException) {
-                    interruptedException.printStackTrace();
+                } catch (InterruptedException interruptedException) {
+                    warnException(interruptedException);
                 } catch (Exception e) {
-                    log.warn(e);
+                    warnException(e);
                     if (Dependencies.isWindows() && e.toString().contains("Access is denied")) {
                         try {
                             Messages.showWarningDialog("Microsoft Defender is blocking WakaTime. Please allow " + Dependencies.getCLILocation() + " to run so WakaTime can upload code stats to your dashboard.", "Error");
@@ -704,6 +704,13 @@ public class WakaTime implements ApplicationComponent {
             lastCmd = cmd;
         }
         return newCmds.toArray(new String[newCmds.size()]);
+    }
+
+    public static void warnException(Exception e) {
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        String str = e.getMessage() + "\n" + sw.toString();
+        log.warn(str);
     }
 
     @NotNull

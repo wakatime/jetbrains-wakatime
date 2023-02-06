@@ -36,7 +36,7 @@ public class CustomSaveListener implements FileDocumentManagerListener {
             }
             WakaTime.appendHeartbeat(file, project, true, lineStats);
         } catch(Exception e) {
-            WakaTime.log.error(e);
+            WakaTime.warnException(e);
         }
     }
 

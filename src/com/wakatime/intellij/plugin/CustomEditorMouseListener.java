@@ -33,7 +33,7 @@ public class CustomEditorMouseListener implements EditorMouseListener {
                 }
             });
         } catch(Exception e) {
-            WakaTime.log.error(e);
+            WakaTime.warnException(e);
         }
     }
 
