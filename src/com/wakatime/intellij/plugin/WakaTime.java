@@ -621,7 +621,7 @@ public class WakaTime implements ApplicationComponent {
             lineStats.lineNumber = document.getLineNumber(offset) + 1;
             lineStats.cursorPosition = offset - document.getLineStartOffset(lineStats.lineNumber - 1) + 1;
         } catch (Exception e) {
-            warnException(e);
+            debugException(e);
         }
         return lineStats;
     }
@@ -704,6 +704,14 @@ public class WakaTime implements ApplicationComponent {
             lastCmd = cmd;
         }
         return newCmds.toArray(new String[newCmds.size()]);
+    }
+
+    public static void debugException(Exception e) {
+        if (!log.isDebugEnabled()) return;
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        String str = e.getMessage() + "\n" + sw.toString();
+        log.debug(str);
     }
 
     public static void warnException(Exception e) {
