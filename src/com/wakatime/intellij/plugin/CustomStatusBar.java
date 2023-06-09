@@ -95,7 +95,7 @@ public class CustomStatusBar implements StatusBarWidgetFactory {
             public ListPopup getPopupStep() {
                 WakaTime.openDashboardWebsite();
                 WakaTime.updateStatusBarText();
-                widget.statusBar.updateWidget("WakaTime");
+                if (widget.statusBar != null) widget.statusBar.updateWidget("WakaTime");
                 return null;
             }
 
