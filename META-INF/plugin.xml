@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.1.5 (2023-06-09)<br />
+++++++++++++++++++<br />
+<br />
+- Prevent updating status bar when null. #257<br />
+<br />
+<br />
 14.1.4 (2023-02-05)<br />
 ++++++++++++++++++<br />
 <br />
