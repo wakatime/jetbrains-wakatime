@@ -300,6 +300,9 @@ public class WakaTime implements ApplicationComponent {
 
     private static void sendHeartbeat(final Heartbeat heartbeat, final ArrayList<Heartbeat> extraHeartbeats) {
         final String[] cmds = buildCliCommand(heartbeat, extraHeartbeats);
+        if (cmds.length == 0) {
+            return;
+        }
         log.debug("Executing CLI: " + Arrays.toString(obfuscateKey(cmds)));
         try {
             Process proc = Runtime.getRuntime().exec(cmds);
@@ -428,6 +431,12 @@ public class WakaTime implements ApplicationComponent {
     private static String[] buildCliCommand(Heartbeat heartbeat, ArrayList<Heartbeat> extraHeartbeats) {
         ArrayList<String> cmds = new ArrayList<String>();
         cmds.add(Dependencies.getCLILocation());
+        cmds.add("--plugin");
+        String plugin = pluginString();
+        if (plugin == null) {
+            return new String[0];
+        }
+        cmds.add(pluginString());
         cmds.add("--entity");
         cmds.add(heartbeat.entity);
         cmds.add("--time");
@@ -457,8 +466,6 @@ public class WakaTime implements ApplicationComponent {
             cmds.add("--alternate-language");
             cmds.add(heartbeat.language);
         }
-        cmds.add("--plugin");
-        cmds.add(IDE_NAME+"/"+IDE_VERSION+" "+IDE_NAME+"-wakatime/"+VERSION);
         if (heartbeat.isWrite)
             cmds.add("--write");
         if (heartbeat.isUnsavedFile)
@@ -478,6 +485,14 @@ public class WakaTime implements ApplicationComponent {
         if (extraHeartbeats.size() > 0)
             cmds.add("--extra-heartbeats");
         return cmds.toArray(new String[cmds.size()]);
+    }
+
+    private static String pluginString() {
+        if (IDE_NAME == null || IDE_NAME.equals("")) {
+            return null;
+        }
+
+        return IDE_NAME+"/"+IDE_VERSION+" "+IDE_NAME+"-wakatime/"+VERSION;
     }
 
     private static String getBuiltinProxy() {
