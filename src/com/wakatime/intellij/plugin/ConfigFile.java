@@ -19,23 +19,29 @@ import java.io.UnsupportedEncodingException;
 public class ConfigFile {
     private static final String fileName = ".wakatime.cfg";
     private static final String internalFileName = ".wakatime-internal.cfg";
-    private static String cachedConfigFile = null;
+    private static String cachedHomeFolder = null;
     private static String _api_key = "";
 
     private static String getConfigFilePath(boolean internal) {
-        if (ConfigFile.cachedConfigFile == null) {
+        if (ConfigFile.cachedHomeFolder == null) {
             if (System.getenv("WAKATIME_HOME") != null && !System.getenv("WAKATIME_HOME").trim().isEmpty()) {
                 File folder = new File(System.getenv("WAKATIME_HOME"));
                 if (folder.exists()) {
-                    ConfigFile.cachedConfigFile = folder.getAbsolutePath();
-                    WakaTime.log.debug("Using $WAKATIME_HOME for config folder: " + ConfigFile.cachedConfigFile);
-                    return new File(ConfigFile.cachedConfigFile, internal ? internalFileName : fileName).getAbsolutePath();
+                    ConfigFile.cachedHomeFolder = folder.getAbsolutePath();
+                    WakaTime.log.debug("Using $WAKATIME_HOME for config folder: " + ConfigFile.cachedHomeFolder);
+                    if (internal) {
+                        return new File(new File(ConfigFile.cachedHomeFolder, ".wakatime"), internalFileName).getAbsolutePath();
+                    }
+                    return new File(ConfigFile.cachedHomeFolder, fileName).getAbsolutePath();
                 }
             }
-            ConfigFile.cachedConfigFile = new File(System.getProperty("user.home")).getAbsolutePath();
-            WakaTime.log.debug("Using $HOME for config folder: " + ConfigFile.cachedConfigFile);
+            ConfigFile.cachedHomeFolder = new File(System.getProperty("user.home")).getAbsolutePath();
+            WakaTime.log.debug("Using $HOME for config folder: " + ConfigFile.cachedHomeFolder);
         }
-        return new File(ConfigFile.cachedConfigFile, internal ? internalFileName : fileName).getAbsolutePath();
+        if (internal) {
+            return new File(new File(ConfigFile.cachedHomeFolder, ".wakatime"), internalFileName).getAbsolutePath();
+        }
+        return new File(ConfigFile.cachedHomeFolder, fileName).getAbsolutePath();
     }
 
     public static String get(String section, String key, boolean internal) {
