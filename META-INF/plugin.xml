@@ -27,10 +27,16 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.2.1 (2023-08-21)<br />
+++++++++++++++++++<br />
+<br />
+- Fix internal config filename. #261<br />
+<br />
+<br />
 14.2.0 (2023-08-21)<br />
 ++++++++++++++++++<br />
 <br />
-- Move internal config into wakatime folder #261.<br />
+- Move internal config into wakatime folder. #261<br />
 <br />
 <br />
 14.1.6 (2023-08-18)<br />
