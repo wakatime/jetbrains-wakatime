@@ -18,7 +18,7 @@ import java.io.UnsupportedEncodingException;
 
 public class ConfigFile {
     private static final String fileName = ".wakatime.cfg";
-    private static final String internalFileName = ".wakatime-internal.cfg";
+    private static final String internalFileName = "wakatime-internal.cfg";
     private static String cachedHomeFolder = null;
     private static String _api_key = "";
 
