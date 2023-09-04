@@ -64,9 +64,9 @@ In that case, add this line to your `~/.wakatime.cfg` file:
 
 (`C:\Users\<user>\.wakatime.cfg` on Windows)
 
-For more general troubleshooting information, see [Wakatime General Troubleshooting](https://wakatime.com/help).
+For more general troubleshooting information, see [WakaTime CLI Troubleshooting](https://wakatime.com/help](https://github.com/wakatime/wakatime-cli/blob/develop/TROUBLESHOOTING.md).
 
-For more information on various IDEs, you can visit the following:
+For more information on various IDEs:
 
 - [intellij-idea](https://wakatime.com/intellij-idea)
 - [Android Studio](https://wakatime.com/android-studio)
