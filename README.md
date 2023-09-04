@@ -66,17 +66,16 @@ In that case, add this line to your `~/.wakatime.cfg` file:
 
 For more general troubleshooting information, see [WakaTime CLI Troubleshooting](https://github.com/wakatime/wakatime-cli/blob/develop/TROUBLESHOOTING.md).
 
-For more information on various IDEs:
-
-- [IntelliJ IDEA](https://wakatime.com/intellij-idea)
-- [Android Studio](https://wakatime.com/android-studio)
-- [AppCode](https://wakatime.com/appcode)
-- [CLion](https://wakatime.com/clion)
-- [DataGrip](https://wakatime.com/datagrip)
-- [GoLand](https://wakatime.com/goland)
-- [PhpStorm](https://wakatime.com/phpstorm)
-- [PyCharm](https://wakatime.com/pycharm)
-- [Rider](https://wakatime.com/rider)
-- [RubyMine](https://wakatime.com/rubymine)
-- [WebStorm](https://wakatime.com/webstorm)
+[wakatime]: https://wakatime.com/
+[IntelliJ IDEA]: https://wakatime.com/intellij-idea
+[Android Studio]: https://wakatime.com/android-studio
+[AppCode]: https://wakatime.com/appcode
+[CLion]: https://wakatime.com/clion
+[DataGrip]: https://wakatime.com/datagrip
+[GoLand]: https://wakatime.com/goland
+[PhpStorm]: https://wakatime.com/phpstorm
+[PyCharm]: https://wakatime.com/pycharm
+[Rider]: https://wakatime.com/rider
+[RubyMine]: https://wakatime.com/rubymine
+[WebStorm]: https://wakatime.com/webstorm
 
