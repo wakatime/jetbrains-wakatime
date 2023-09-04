@@ -64,16 +64,19 @@ In that case, add this line to your `~/.wakatime.cfg` file:
 
 (`C:\Users\<user>\.wakatime.cfg` on Windows)
 
-For more general troubleshooting information, see [wakatime/wakatime#troubleshooting](https://github.com/wakatime/wakatime#troubleshooting).
+For more general troubleshooting information, see [Wakatime General Troubleshooting](https://wakatime.com/help).
 
-[wakatime]: https://wakatime.com/intellij-idea
-[android studio]: https://wakatime.com/android-studio
-[appcode]: https://wakatime.com/appcode
-[clion]: https://wakatime.com/clion
-[datagrip]: https://wakatime.com/datagrip
-[goland]: https://wakatime.com/goland
-[phpstorm]: https://wakatime.com/phpstorm
-[pycharm]: https://wakatime.com/pycharm
-[rider]: https://wakatime.com/rider
-[rubymine]: https://wakatime.com/rubymine
-[webstorm]: https://wakatime.com/webstorm
+For more information on various IDEs, you can visit the following:
+
+- [intellij-idea](https://wakatime.com/intellij-idea)
+- [Android Studio](https://wakatime.com/android-studio)
+- [AppCode](https://wakatime.com/appcode)
+- [CLion](https://wakatime.com/clion)
+- [DataGrip](https://wakatime.com/datagrip)
+- [GoLand](https://wakatime.com/goland)
+- [PhpStorm](https://wakatime.com/phpstorm)
+- [PyCharm](https://wakatime.com/pycharm)
+- [Rider](https://wakatime.com/rider)
+- [RubyMine](https://wakatime.com/rubymine)
+- [WebStorm](https://wakatime.com/webstorm)
+
