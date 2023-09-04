@@ -6,7 +6,17 @@
 
 Supports Jetbrains IDES:
 
-[Android Studio][android studio], [AppCode][appcode], [CLion][clion], [DataGrip][datagrip], [GoLand][goland], [IntelliJ IDEA][wakatime], [PhpStorm][phpstorm], [PyCharm][pycharm], [Rider][rider], [RubyMine][rubymine], & [WebStorm][webstorm].
+* [Android Studio][android studio]
+* [AppCode][appcode]
+* [CLion][clion]
+* [DataGrip][datagrip]
+* [GoLand][goland]
+* [IntelliJ IDEA][wakatime]
+* [PhpStorm][phpstorm]
+* [PyCharm][pycharm]
+* [Rider][rider]
+* [RubyMine][rubymine]
+* [WebStorm][webstorm]
 
 
 ## Installation
