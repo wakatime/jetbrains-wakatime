@@ -28,7 +28,7 @@ public class CustomDocumentListener implements BulkAwareDocumentListener.Simple 
             LineStats lineStats = WakaTime.getLineStats(document, documentEvent.getOffset());
             WakaTime.appendHeartbeat(file, project, false, lineStats);
         } catch(Exception e) {
-            WakaTime.warnException(e);
+            WakaTime.debugException(e);
         }
     }
 }
