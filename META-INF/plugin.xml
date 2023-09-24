@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.2.2 (2023-09-24)<br />
+++++++++++++++++++<br />
+<br />
+- Debug non-critical exceptions instead of warn. #267<br />
+<br />
+<br />
 14.2.1 (2023-08-21)<br />
 ++++++++++++++++++<br />
 <br />
