@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.2.3 (2023-10-09)<br />
+++++++++++++++++++<br />
+<br />
+- Remove usage of internal PlatformUtils.<br />
+<br />
+<br />
 14.2.2 (2023-09-24)<br />
 ++++++++++++++++++<br />
 <br />
