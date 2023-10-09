@@ -18,6 +18,7 @@ import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 //import com.intellij.openapi.compiler.CompilerTopics;
+import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
@@ -34,7 +35,6 @@ import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
-import com.intellij.util.PlatformUtils;
 import com.intellij.util.concurrency.AppExecutorUtil;
 import com.intellij.util.messages.MessageBusConnection;
 import com.intellij.util.net.HttpConfigurable;
@@ -87,7 +87,7 @@ public class WakaTime implements ApplicationComponent {
         //System.out.println("Initializing WakaTime plugin v" + VERSION + " (https://wakatime.com/)");
 
         // Set runtime constants
-        IDE_NAME = PlatformUtils.getPlatformPrefix();
+        IDE_NAME = ApplicationNamesInfo.getInstance().getProductName();
         IDE_VERSION = ApplicationInfo.getInstance().getFullVersion();
 
         setupDebugging();
