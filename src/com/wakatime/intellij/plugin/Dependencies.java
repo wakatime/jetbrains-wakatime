@@ -57,6 +57,7 @@ public class Dependencies {
     private static Boolean alpha = null;
     private static String originalProxyHost = null;
     private static String originalProxyPort = null;
+    private static String githubReleasesUrl = "https://api.github.com/repos/wakatime/wakatime-cli/releases/latest";
 
     public static String getResourcesLocation() {
         if (Dependencies.resourcesLocation != null) return Dependencies.resourcesLocation;
@@ -126,9 +127,8 @@ public class Dependencies {
 
     public static String latestCliVersion() {
         if (cliVersion != null) return cliVersion;
-        String url = Dependencies.githubReleasesApiUrl();
         try {
-            Response resp = getUrlAsString(url, ConfigFile.get("internal", "cli_version_last_modified", true), true);
+            Response resp = getUrlAsString(githubReleasesUrl, ConfigFile.get("internal", "cli_version_last_modified", true), true);
             if (resp == null) {
                 cliVersion = ConfigFile.get("internal", "cli_version", true).trim();
                 WakaTime.log.debug("Using cached wakatime-cli version from config: " + cliVersion);
@@ -480,13 +480,6 @@ public class Dependencies {
         }
     }
 
-    public static boolean isAlpha() {
-        if (alpha != null) return alpha;
-        String setting = ConfigFile.get("settings", "alpha", false);
-        alpha = setting != null && setting.equals("true");
-        return alpha;
-    }
-
     public static boolean is64bit() {
         return System.getProperty("os.arch").indexOf("64") != -1;
     }
@@ -525,13 +518,6 @@ public class Dependencies {
         if (path == null)
             return null;
         return path.toString();
-    }
-
-    private static String githubReleasesApiUrl() {
-        if (isAlpha()) {
-            return "https://api.github.com/repos/wakatime/wakatime-cli/releases?per_page=1";
-        }
-        return "https://api.github.com/repos/wakatime/wakatime-cli/releases/latest";
     }
 
     private static void makeExecutable(String filePath) throws IOException {
