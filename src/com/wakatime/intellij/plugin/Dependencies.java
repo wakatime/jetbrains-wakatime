@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.Authenticator;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -53,11 +54,10 @@ class Response {
 public class Dependencies {
 
     private static String resourcesLocation = null;
-    private static String cliVersion = null;
-    private static Boolean alpha = null;
     private static String originalProxyHost = null;
     private static String originalProxyPort = null;
     private static String githubReleasesUrl = "https://api.github.com/repos/wakatime/wakatime-cli/releases/latest";
+    private static String githubDownloadUrl = "https://github.com/wakatime/wakatime-cli/releases/latest/download";
 
     public static String getResourcesLocation() {
         if (Dependencies.resourcesLocation != null) return Dependencies.resourcesLocation;
@@ -114,11 +114,26 @@ public class Dependencies {
             WakaTime.log.debug("wakatime-cli local version output: \"" + output + "\"");
             WakaTime.log.debug("wakatime-cli local version exit code: " + p.exitValue());
 
-            if (p.exitValue() == 0) {
-                String cliVersion = latestCliVersion();
-                WakaTime.log.debug("Latest wakatime-cli version: " + cliVersion);
-                if (output.trim().equals(cliVersion)) return false;
+            if (p.exitValue() != 0) return true;
+
+            String accessed = ConfigFile.get("internal", "cli_version_last_accessed", true);
+            BigInteger now = WakaTime.getCurrentTimestamp().toBigInteger();
+            if (accessed != null && accessed.trim().equals("true")) {
+                try {
+                    BigInteger lastAccessed = new BigInteger(accessed.trim());
+                    BigInteger fourHours = BigInteger.valueOf(4 * 3600);
+                    if (lastAccessed != null && lastAccessed.add(fourHours).compareTo(now) > 0) {
+                        WakaTime.log.debug("Skip checking for wakatime-cli updates because recently checked "+ (now.subtract(lastAccessed).toString()) +" seconds ago");
+                        return false;
+                    }
+                } catch (NumberFormatException e2) {
+                    WakaTime.warnException(e2);
+                }
             }
+
+            String cliVersion = latestCliVersion();
+            WakaTime.log.debug("Latest wakatime-cli version: " + cliVersion);
+            if (output.trim().equals(cliVersion)) return false;
         } catch (Exception e) {
             WakaTime.warnException(e);
         }
@@ -126,29 +141,25 @@ public class Dependencies {
     }
 
     public static String latestCliVersion() {
-        if (cliVersion != null) return cliVersion;
         try {
             Response resp = getUrlAsString(githubReleasesUrl, ConfigFile.get("internal", "cli_version_last_modified", true), true);
-            if (resp == null) {
-                cliVersion = ConfigFile.get("internal", "cli_version", true).trim();
-                WakaTime.log.debug("Using cached wakatime-cli version from config: " + cliVersion);
-                return cliVersion;
-            }
+            if (resp == null) return "Unknown";
             Pattern p = Pattern.compile(".*\"tag_name\":\\s*\"([^\"]+)\",.*");
             Matcher m = p.matcher(resp.body);
             if (m.find()) {
-                cliVersion = m.group(1);
+                String cliVersion = m.group(1);
                 if (resp.lastModified != null) {
                     ConfigFile.set("internal", "cli_version_last_modified", true, resp.lastModified);
                     ConfigFile.set("internal", "cli_version", true, cliVersion);
                 }
+                BigInteger now = WakaTime.getCurrentTimestamp().toBigInteger();
+                ConfigFile.set("internal", "cli_version_last_accessed", true, now.toString());
                 return cliVersion;
             }
         } catch (Exception e) {
             WakaTime.log.warn(e);
         }
-        cliVersion = "Unknown";
-        return cliVersion;
+        return "Unknown";
     }
 
     public static String getCLILocation() {
@@ -231,7 +242,7 @@ public class Dependencies {
     }
 
     private static String getCLIDownloadUrl() {
-        return "https://github.com/wakatime/wakatime-cli/releases/download/" + latestCliVersion() + "/wakatime-cli-" + osname() + "-" + architecture() + ".zip";
+        return githubDownloadUrl + "/wakatime-cli-" + osname() + "-" + architecture() + ".zip";
     }
 
     public static boolean downloadFile(String url, String saveAs) {
