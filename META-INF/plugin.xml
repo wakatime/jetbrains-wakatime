@@ -5,6 +5,11 @@
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
+      <p>
+        <a href="https://plugins.jetbrains.com/plugin/7425-wakatime"><img alt="WakaTime in the JetBrains Marketplace" src="https://img.shields.io/jetbrains/plugin/v/7425-wakatime.svg?style=flat-square&color=167dff&label=marketplace"></a>
+        <a href="https://plugins.jetbrains.com/plugin/7425-wakatime"><img alt="WakaTime Installs" src="https://img.shields.io/jetbrains/plugin/d/7425-wakatime.svg?style=flat-square&color=167dff"></a>
+        <a href="https://wakatime.com/intellij-idea"><img alt="WakaTime Code Time" src="https://wakatime.com/badge/github/wakatime/jetbrains-wakatime.svg?style=flat-square&color=167dff"></a>
+      </p>
       Metrics, insights, and time tracking automatically generated from your programming activity.<br />
       <br />
       <b>Installation</b><br />
