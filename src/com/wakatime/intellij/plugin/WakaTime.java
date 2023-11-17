@@ -59,6 +59,7 @@ public class WakaTime implements ApplicationComponent {
     public static String IDE_VERSION;
     public static MessageBusConnection connection;
     public static Boolean DEBUG = false;
+    public static Boolean METRICS = false;
     public static Boolean DEBUG_CHECKED = false;
     public static Boolean STATUS_BAR = false;
     public static Boolean READY = false;
@@ -90,7 +91,7 @@ public class WakaTime implements ApplicationComponent {
         IDE_NAME = ApplicationNamesInfo.getInstance().getProductName();
         IDE_VERSION = ApplicationInfo.getInstance().getFullVersion();
 
-        setupDebugging();
+        setupConfigs();
         setLoggingLevel();
         setupStatusBar();
         checkCli();
@@ -474,6 +475,8 @@ public class WakaTime implements ApplicationComponent {
             cmds.add("--category");
             cmds.add("building");
         }
+        if (WakaTime.METRICS)
+            cmds.add("--metrics");
 
         String proxy = getBuiltinProxy();
         if (proxy != null) {
@@ -548,9 +551,11 @@ public class WakaTime implements ApplicationComponent {
         return project.isInitialized();
     }
 
-    public static void setupDebugging() {
+    public static void setupConfigs() {
         String debug = ConfigFile.get("settings", "debug", false);
         WakaTime.DEBUG = debug != null && debug.trim().equals("true");
+        String metrics = ConfigFile.get("settings", "metrics", false);
+        WakaTime.METRICS = metrics != null && metrics.trim().equals("true");
     }
 
     public static void setupStatusBar() {

@@ -88,7 +88,7 @@ public class Settings extends DialogWrapper {
         ConfigFile.set("settings", "proxy", false, proxy.getText());
         ConfigFile.set("settings", "debug", false, debug.isSelected() ? "true" : "false");
         ConfigFile.set("settings", "status_bar_enabled", false, statusBar.isSelected() ? "true" : "false");
-        WakaTime.setupDebugging();
+        WakaTime.setupConfigs();
         WakaTime.setupStatusBar();
         WakaTime.setLoggingLevel();
         super.doOKAction();
