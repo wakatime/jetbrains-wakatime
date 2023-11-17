@@ -32,6 +32,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.3.2 (2023-11-17)<br />
+++++++++++++++++++<br />
+<br />
+- Enable wakatime-cli metrics when settings.metrics ini config true.<br />
+<br />
+<br />
 14.3.1 (2023-11-04)<br />
 ++++++++++++++++++<br />
 <br />
