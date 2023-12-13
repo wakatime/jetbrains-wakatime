@@ -1,8 +1,8 @@
 # jetbrains-wakatime
 
-[![WakaTime in the JetBrains Marketplace](https://img.shields.io/jetbrains/plugin/v/7425-wakatime.png?style=flat-square&color=167dff&label=marketplace)](https://plugins.jetbrains.com/plugin/7425-wakatime)
-[![WakaTime Installs](https://img.shields.io/jetbrains/plugin/d/7425-wakatime.png?style=flat-square&color=167dff)](https://plugins.jetbrains.com/plugin/7425-wakatime)
-[![Coding time tracker](https://wakatime.com/badge/github/wakatime/jetbrains-wakatime.png?style=flat-square&color=167dff)](https://wakatime.com/intellij-idea)
+[![WakaTime in the JetBrains Marketplace](https://img.shields.io/jetbrains/plugin/v/7425-wakatime.svg?style=flat-square&color=167dff&label=marketplace)](https://plugins.jetbrains.com/plugin/7425-wakatime)
+[![WakaTime Installs](https://img.shields.io/jetbrains/plugin/d/7425-wakatime.svg?style=flat-square&color=167dff)](https://plugins.jetbrains.com/plugin/7425-wakatime)
+[![Coding time tracker](https://wakatime.com/badge/github/wakatime/jetbrains-wakatime.svg?style=flat-square&color=167dff)](https://wakatime.com/intellij-idea)
 
 [WakaTime][wakatime] is an open source Jetbrains plugin for metrics, insights, and time tracking automatically generated from your programming activity.
 
