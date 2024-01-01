@@ -88,7 +88,7 @@ public class WakaTime implements ApplicationComponent {
         //System.out.println("Initializing WakaTime plugin v" + VERSION + " (https://wakatime.com/)");
 
         // Set runtime constants
-        IDE_NAME = ApplicationNamesInfo.getInstance().getProductName();
+        IDE_NAME = ApplicationNamesInfo.getInstance().getFullProductName().replaceAll(" ", "").toLowerCase();
         IDE_VERSION = ApplicationInfo.getInstance().getFullVersion();
 
         setupConfigs();
