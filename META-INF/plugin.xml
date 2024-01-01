@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.3.8 (2024-01-01)<br />
+++++++++++++++++++<br />
+<br />
+- Fix IDE name in user agent string.<br />
+<br />
+<br />
 14.3.7 (2023-12-13)<br />
 ++++++++++++++++++<br />
 <br />
