@@ -426,7 +426,7 @@ public class Dependencies {
 
             } catch (MalformedURLException e) {
                 WakaTime.log.error("Proxy string must follow https://user:pass@host:port format: " + proxyConfig);
-                WakaTime.warnException(e);
+                WakaTime.errorException(e);
             }
         }
     }

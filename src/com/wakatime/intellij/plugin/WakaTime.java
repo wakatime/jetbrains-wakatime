@@ -741,6 +741,13 @@ public class WakaTime implements ApplicationComponent {
         log.warn(str);
     }
 
+    public static void errorException(Exception e) {
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        String str = e.getMessage() + "\n" + sw.toString();
+        log.error(str);
+    }
+
     @NotNull
     public String getComponentName() {
         return "WakaTime";
