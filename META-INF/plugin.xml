@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.3.10 (2024-01-21)<br />
+++++++++++++++++++<br />
+<br />
+- Fix support for socks proxies.<br />
+<br />
+<br />
 14.3.9 (2024-01-08)<br />
 ++++++++++++++++++<br />
 <br />
