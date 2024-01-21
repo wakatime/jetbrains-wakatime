@@ -23,6 +23,8 @@ import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.net.Authenticator;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.net.PasswordAuthentication;
@@ -406,7 +408,7 @@ public class Dependencies {
             originalProxyHost = System.getProperty("https.proxyHost");
             originalProxyPort = System.getProperty("https.proxyPort");
             try {
-                URL proxyUrl = new URL(proxyConfig);
+                URI proxyUrl = new URI(proxyConfig);
                 String userInfo = proxyUrl.getUserInfo();
                 if (userInfo != null) {
                     final String user = userInfo.split(":")[0];
@@ -424,7 +426,7 @@ public class Dependencies {
                     System.setProperty("https.proxyPort", Integer.toString(proxyUrl.getPort()));
                 }
 
-            } catch (MalformedURLException e) {
+            } catch (URISyntaxException e) {
                 WakaTime.log.error("Proxy string must follow https://user:pass@host:port format: " + proxyConfig);
                 WakaTime.errorException(e);
             }
