@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.3.11 (2024-02-03)<br />
+++++++++++++++++++<br />
+<br />
+- Prevent prompting for api key when using vault cmd. #274<br />
+<br />
+<br />
 14.3.10 (2024-01-21)<br />
 ++++++++++++++++++<br />
 <br />
