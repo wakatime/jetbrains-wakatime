@@ -21,6 +21,7 @@ public class ConfigFile {
     private static final String internalFileName = "wakatime-internal.cfg";
     private static String cachedHomeFolder = null;
     private static String _api_key = "";
+    private static boolean _usingVaultCmd = false;
 
     private static String getConfigFilePath(boolean internal) {
         if (ConfigFile.cachedHomeFolder == null) {
@@ -157,15 +158,29 @@ public class ConfigFile {
     }
 
     public static String getApiKey() {
+        if (ConfigFile._usingVaultCmd) {
+            return "";
+        }
         if (!ConfigFile._api_key.equals("")) {
             return ConfigFile._api_key;
         }
 
         String apiKey = get("settings", "api_key", false);
-        if (apiKey == null) apiKey = "";
+        if (apiKey == null) {
+            String vaultCmd = get("settings", "api_key_vault_cmd", false);
+            if (vaultCmd != null && !vaultCmd.trim().equals("")) {
+                ConfigFile._usingVaultCmd = true;
+                return "";
+            }
+            apiKey = "";
+        }
 
         ConfigFile._api_key = apiKey;
         return apiKey;
+    }
+
+    public static boolean usingVaultCmd() {
+        return ConfigFile._usingVaultCmd;
     }
 
     public static void setApiKey(String apiKey) {

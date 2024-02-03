@@ -193,7 +193,7 @@ public class WakaTime implements ApplicationComponent {
                 // prompt for apiKey if it does not already exist
                 Project project = getCurrentProject();
                 if (project == null) return;
-                if (ConfigFile.getApiKey().equals("")) {
+                if (ConfigFile.getApiKey().equals("") && !ConfigFile.usingVaultCmd()) {
                     Application app = ApplicationManager.getApplication();
                     if (app.isUnitTestMode() || !app.isDispatchThread()) return;
                     try {
@@ -668,11 +668,20 @@ public class WakaTime implements ApplicationComponent {
 
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             public void run() {
-                final String[] cmds = new String[]{Dependencies.getCLILocation(), "--today", "--key", ConfigFile.getApiKey()};
-                log.debug("Executing CLI: " + Arrays.toString(obfuscateKey(cmds)));
+                ArrayList<String> cmds = new ArrayList<String>();
+                cmds.add(Dependencies.getCLILocation());
+                cmds.add("--today");
+
+                String apiKey = ConfigFile.getApiKey();
+                if (!apiKey.equals("")) {
+                    cmds.add("--key");
+                    cmds.add(apiKey);
+                }
+
+                log.debug("Executing CLI: " + Arrays.toString(obfuscateKey(cmds.toArray(new String[cmds.size()]))));
 
                 try {
-                    Process proc = Runtime.getRuntime().exec(cmds);
+                    Process proc = Runtime.getRuntime().exec(cmds.toArray(new String[cmds.size()]));
                     BufferedReader stdout = new BufferedReader(new
                             InputStreamReader(proc.getInputStream()));
                     BufferedReader stderr = new BufferedReader(new
