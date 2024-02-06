@@ -62,19 +62,14 @@ If you’re using a proxy, try excluding `*.wakatime.com` from using your IDE pr
 ![jetbrains proxy settings](https://wakatime.com/static/img/ScreenShots/jetbrains-no-proxy-setting.png?v=1)
 
 Next, turn on debug mode from File -> WakaTime Settings. Then restart your IDE.
+Note: If the plugin wasn’t loaded, you won’t have a WakaTime Settings menu.
+In that case, check for error messages in your IDE’s `idea.log` file indicating why the plugin couldn’t load.
 
 ![wakatime settings menu](https://wakatime.com/static/img/ScreenShots/jetbrains-wakatime-menu.png?v=1)
 
-Now, look for WakaTime related messages in your `idea.log` file:
+Check your IDE’s `idea.log` file for WakaTime related messages:
 
 `Help` -> `Show Log` ( [Locating your idea.log file](https://intellij-support.jetbrains.com/hc/en-us/articles/207241085-Locating-IDE-log-files) )
-
-If the plugin was not loaded, you won't have a WakaTime Settings menu.
-In that case, add this line to your `~/.wakatime.cfg` file:
-
-    debug = true
-
-(`C:\Users\<user>\.wakatime.cfg` on Windows)
 
 For more general troubleshooting information, see [WakaTime CLI Troubleshooting](https://github.com/wakatime/wakatime-cli/blob/develop/TROUBLESHOOTING.md).
 
