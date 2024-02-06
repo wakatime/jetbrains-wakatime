@@ -62,6 +62,7 @@ If you’re using a proxy, try excluding `*.wakatime.com` from using your IDE pr
 ![jetbrains proxy settings](https://wakatime.com/static/img/ScreenShots/jetbrains-no-proxy-setting.png?v=1)
 
 Next, turn on debug mode from File -> WakaTime Settings. Then restart your IDE.
+
 Note: If the plugin wasn’t loaded, you won’t have a WakaTime Settings menu.
 In that case, check for error messages in your IDE’s `idea.log` file indicating why the plugin couldn’t load.
 
