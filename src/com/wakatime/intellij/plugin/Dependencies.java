@@ -118,6 +118,11 @@ public class Dependencies {
 
             if (p.exitValue() != 0) return true;
 
+            // disable updating wakatime-cli when it was built from source
+            if (output.trim().equals("<local-build>")) {
+                return false;
+            }
+
             String accessed = ConfigFile.get("internal", "cli_version_last_accessed", true);
             BigInteger now = WakaTime.getCurrentTimestamp().toBigInteger();
             if (accessed != null && accessed.trim().equals("true")) {
