@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.3.12 (2024-03-25)<br />
+++++++++++++++++++<br />
+<br />
+- Prevent updating wakatime-cli when built from source.<br />
+<br />
+<br />
 14.3.11 (2024-02-03)<br />
 ++++++++++++++++++<br />
 <br />
