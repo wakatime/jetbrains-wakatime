@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.3.13 (2024-03-30)<br />
+++++++++++++++++++<br />
+<br />
+- Prevent asking for api key after cancel button pressed. #279<br />
+<br />
+<br />
 14.3.12 (2024-03-25)<br />
 ++++++++++++++++++<br />
 <br />
