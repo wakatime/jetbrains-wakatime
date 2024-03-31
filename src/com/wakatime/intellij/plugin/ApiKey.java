@@ -67,6 +67,12 @@ public class ApiKey extends DialogWrapper {
         super.doOKAction();
     }
 
+    @Override
+    public void doCancelAction() {
+        WakaTime.cancelApiKey = true;
+        super.doCancelAction();
+    }
+
     public String promptForApiKey() {
         input.setText(ConfigFile.getApiKey());
         this.show();

@@ -67,6 +67,7 @@ public class WakaTime implements ApplicationComponent {
     public static BigDecimal lastTime = new BigDecimal(0);
     public static Boolean isBuilding = false;
     public static LineStats lineStats = new LineStats();
+    public static Boolean cancelApiKey = false;
 
     private final int queueTimeoutSeconds = 30;
     private static ConcurrentLinkedQueue<Heartbeat> heartbeatsQueue = new ConcurrentLinkedQueue<Heartbeat>();
@@ -188,6 +189,7 @@ public class WakaTime implements ApplicationComponent {
     }
 
     public static void checkApiKey() {
+        if (WakaTime.cancelApiKey) return;
         ApplicationManager.getApplication().invokeLater(new Runnable(){
             public void run() {
                 // prompt for apiKey if it does not already exist
