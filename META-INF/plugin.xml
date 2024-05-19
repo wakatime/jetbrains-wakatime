@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.3.14 (2024-05-19)<br />
+++++++++++++++++++<br />
+<br />
+- Ignore errors from deprecated logger. #283<br />
+<br />
+<br />
 14.3.13 (2024-03-30)<br />
 ++++++++++++++++++<br />
 <br />
