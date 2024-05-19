@@ -578,11 +578,15 @@ public class WakaTime implements ApplicationComponent {
     }
 
     public static void setLoggingLevel() {
-        if (WakaTime.DEBUG) {
-            log.setLevel(Level.DEBUG);
-            log.debug("Logging level set to DEBUG");
-        } else {
-            log.setLevel(Level.INFO);
+        try {
+            if (WakaTime.DEBUG) {
+                log.setLevel(Level.DEBUG);
+                log.debug("Logging level set to DEBUG");
+            } else {
+                log.setLevel(Level.INFO);
+            }
+        } catch(Exception e) {
+            System.out.println(e.getStackTrace());
         }
     }
 
