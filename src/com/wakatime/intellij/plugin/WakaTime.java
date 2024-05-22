@@ -585,7 +585,7 @@ public class WakaTime implements ApplicationComponent {
             } else {
                 log.setLevel(Level.INFO);
             }
-        } catch(Exception e) {
+        } catch(Throwable e) {
             System.out.println(e.getStackTrace());
         }
     }
