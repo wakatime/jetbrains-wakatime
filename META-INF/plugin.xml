@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com" require-restart="true">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>14.3.15</version>
+    <version>14.4.0</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
