@@ -28,7 +28,7 @@ public class CustomEditorMouseListener implements EditorMouseListener {
             if (!WakaTime.isProjectInitialized(project)) return;
             ApplicationManager.getApplication().invokeLater(new Runnable() {
                 public void run() {
-                    LineStats lineStats = WakaTime.getLineStats(document, editorMouseEvent.getEditor().getCaretModel().getOffset());
+                    LineStats lineStats = WakaTime.getLineStats(document, editorMouseEvent.getEditor(), editorMouseEvent.getEditor().getCaretModel().getOffset());
                     WakaTime.appendHeartbeat(file, project, false, lineStats);
                 }
             });

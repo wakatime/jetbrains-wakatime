@@ -21,9 +21,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorFactory;
+import com.intellij.openapi.editor.*;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -644,31 +642,62 @@ public class WakaTime implements ApplicationComponent {
         return project;
     }
 
-    public static LineStats getLineStats(Document document, int offset) {
+    public static LineStats getLineStats(Document document, Editor editor, int offset) {
         LineStats lineStats = new LineStats();
-        try {
-            lineStats.lineCount = document.getLineCount();
-            lineStats.lineNumber = document.getLineNumber(offset) + 1;
-            lineStats.cursorPosition = offset - document.getLineStartOffset(lineStats.lineNumber - 1) + 1;
-        } catch (Exception e) {
-            debugException(e);
-        }
-        VirtualFile file = WakaTime.getFile(document);
-        if (file != null) {
-            LineStats cached = WakaTime.lineStatsCache.get(file.getPath());
-            if (cached != null) {
-                if (lineStats.lineCount == null) lineStats.lineCount = cached.lineCount;
-                if (lineStats.lineNumber == null) lineStats.lineNumber = cached.lineNumber;
-                if (lineStats.cursorPosition == null) lineStats.cursorPosition = cached.cursorPosition;
+
+        if (document != null) {
+            try {
+                lineStats.lineCount = document.getLineCount();
+                lineStats.lineNumber = document.getLineNumber(offset) + 1;
+                lineStats.cursorPosition = offset - document.getLineStartOffset(lineStats.lineNumber - 1) + 1;
+            } catch (Exception e) {
+                debugException(e);
             }
-            WakaTime.lineStatsCache.put(file.getPath(), lineStats);
+            if (lineStats.isOK()) {
+                saveLineStats(document, lineStats);
+                return lineStats;
+            }
+
+            if (editor == null) {
+                Project project = WakaTime.getProject(document);
+                if (project != null && project.isInitialized()) {
+                    editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+                }
+            }
         }
+
+        if (editor != null) {
+            Caret caret = editor.getCaretModel().getPrimaryCaret();
+            LogicalPosition position = caret.getLogicalPosition();
+            lineStats.lineNumber = position.line + 1;
+            lineStats.cursorPosition = position.column + 1;
+            if (lineStats.isOK()) {
+                saveLineStats(document, lineStats);
+                return lineStats;
+            }
+        }
+
+        if (!lineStats.isOK() && document != null) {
+            VirtualFile file = WakaTime.getFile(document);
+            if (file != null) {
+                LineStats cached = WakaTime.lineStatsCache.get(file.getPath());
+                if (cached != null) return cached;
+            }
+        }
+
         return lineStats;
     }
 
     public static LineStats getLineStats(VirtualFile file) {
         if (file == null) return null;
         return WakaTime.lineStatsCache.get(file.getPath());
+    }
+
+    public static void saveLineStats(Document document, LineStats lineStats) {
+        if (!lineStats.isOK()) return;
+        VirtualFile file = WakaTime.getFile(document);
+        if (file == null) return;
+        WakaTime.lineStatsCache.put(file.getPath(), lineStats);
     }
 
     public static void openDashboardWebsite() {
