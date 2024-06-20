@@ -47,6 +47,8 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.*;
 
 public class WakaTime implements ApplicationComponent {
@@ -66,7 +68,7 @@ public class WakaTime implements ApplicationComponent {
     public static String lastFile = null;
     public static BigDecimal lastTime = new BigDecimal(0);
     public static Boolean isBuilding = false;
-    public static LineStats lineStats = new LineStats();
+    public static Map<String, LineStats> lineStatsCache = new HashMap<String, LineStats>();
     public static Boolean cancelApiKey = false;
 
     private final int queueTimeoutSeconds = 30;
@@ -228,13 +230,14 @@ public class WakaTime implements ApplicationComponent {
 
         if (!shouldLogFile(file)) return;
 
+        String filePath = file.getPath();
         final BigDecimal time = WakaTime.getCurrentTimestamp();
 
-        if (!isWrite && file.getPath().equals(WakaTime.lastFile) && !enoughTimePassed(time)) {
+        if (!isWrite && filePath.equals(WakaTime.lastFile) && !enoughTimePassed(time)) {
             return;
         }
 
-        WakaTime.lastFile = file.getPath();
+        WakaTime.lastFile = filePath;
         WakaTime.lastTime = time;
 
         final String projectName = project != null ? project.getName() : null;
@@ -243,7 +246,7 @@ public class WakaTime implements ApplicationComponent {
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             public void run() {
                 Heartbeat h = new Heartbeat();
-                h.entity = file.getPath();
+                h.entity = filePath;
                 h.timestamp = time;
                 h.isWrite = isWrite;
                 h.isUnsavedFile = !file.exists();
@@ -274,7 +277,8 @@ public class WakaTime implements ApplicationComponent {
                 VirtualFile file = WakaTime.getCurrentFile(project);
                 if (file == null) return;
                 Document document = WakaTime.getCurrentDocument(project);
-                WakaTime.appendHeartbeat(file, project, false, null);
+                LineStats lineStats = WakaTime.getLineStats(file);
+                WakaTime.appendHeartbeat(file, project, false, lineStats);
             }
         }, 10, TimeUnit.SECONDS);
     }
@@ -649,7 +653,22 @@ public class WakaTime implements ApplicationComponent {
         } catch (Exception e) {
             debugException(e);
         }
+        VirtualFile file = WakaTime.getFile(document);
+        if (file != null) {
+            LineStats cached = WakaTime.lineStatsCache.get(file.getPath());
+            if (cached != null) {
+                if (lineStats.lineCount == null) lineStats.lineCount = cached.lineCount;
+                if (lineStats.lineNumber == null) lineStats.lineNumber = cached.lineNumber;
+                if (lineStats.cursorPosition == null) lineStats.cursorPosition = cached.cursorPosition;
+            }
+            WakaTime.lineStatsCache.put(file.getPath(), lineStats);
+        }
         return lineStats;
+    }
+
+    public static LineStats getLineStats(VirtualFile file) {
+        if (file == null) return null;
+        return WakaTime.lineStatsCache.get(file.getPath());
     }
 
     public static void openDashboardWebsite() {

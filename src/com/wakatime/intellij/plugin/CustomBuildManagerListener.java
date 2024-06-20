@@ -30,7 +30,8 @@ public class CustomBuildManagerListener implements BuildManagerListener, Compila
                 VirtualFile file = WakaTime.getCurrentFile(project);
                 if (file == null) return;
                 WakaTime.isBuilding = true;
-                WakaTime.appendHeartbeat(file, project, false, null);
+                LineStats lineStats = WakaTime.getLineStats(file);
+                WakaTime.appendHeartbeat(file, project, false, lineStats);
             }
         });
     }
