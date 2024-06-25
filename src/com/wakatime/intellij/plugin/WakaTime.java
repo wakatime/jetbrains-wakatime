@@ -21,6 +21,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.diagnostic.LogLevel;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
@@ -38,7 +39,6 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.util.concurrency.AppExecutorUtil;
 import com.intellij.util.messages.MessageBusConnection;
 import com.intellij.util.net.HttpConfigurable;
-import org.apache.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -580,10 +580,10 @@ public class WakaTime implements ApplicationComponent {
     public static void setLoggingLevel() {
         try {
             if (WakaTime.DEBUG) {
-                log.setLevel(Level.DEBUG);
+                log.setLevel(LogLevel.DEBUG);
                 log.debug("Logging level set to DEBUG");
             } else {
-                log.setLevel(Level.INFO);
+                log.setLevel(LogLevel.INFO);
             }
         } catch(Throwable e) {
             System.out.println(e.getStackTrace());
