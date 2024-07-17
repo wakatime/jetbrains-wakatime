@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+14.4.1 (2024-07-17)<br />
+++++++++++++++++++<br />
+<br />
+- Keep heartbeats in queue until we have an IDE name detected.<br />
+<br />
+<br />
 14.4.0 (2024-06-20)<br />
 ++++++++++++++++++<br />
 <br />
