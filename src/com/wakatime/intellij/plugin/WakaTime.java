@@ -283,6 +283,7 @@ public class WakaTime implements ApplicationComponent {
 
     private static void processHeartbeatQueue() {
         if (!WakaTime.READY) return;
+        if (pluginString() == null) return;
 
         checkApiKey();
 
