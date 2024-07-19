@@ -258,11 +258,9 @@ public class WakaTime implements ApplicationComponent {
                 h.project = projectName;
                 h.language = language;
                 h.isBuilding = WakaTime.isBuilding;
-                if (lineStats != null) {
-                    h.lineCount = lineStats.lineCount;
-                    h.lineNumber = lineStats.lineNumber;
-                    h.cursorPosition = lineStats.cursorPosition;
-                }
+                h.lineCount = lineStats.lineCount;
+                h.lineNumber = lineStats.lineNumber;
+                h.cursorPosition = lineStats.cursorPosition;
 
                 heartbeatsQueue.add(h);
 
@@ -463,11 +461,11 @@ public class WakaTime implements ApplicationComponent {
             cmds.add("--lines-in-file");
             cmds.add(heartbeat.lineCount.toString());
         }
-        if (heartbeat.lineNumber != null && false) {
+        if (heartbeat.lineNumber != null) {
             cmds.add("--lineno");
             cmds.add(heartbeat.lineNumber.toString());
         }
-        if (heartbeat.cursorPosition != null && false) {
+        if (heartbeat.cursorPosition != null) {
             cmds.add("--cursorpos");
             cmds.add(heartbeat.cursorPosition.toString());
         }
