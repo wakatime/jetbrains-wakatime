@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+15.0.1 (2024-07-19)<br />
+++++++++++++++++++<br />
+<br />
+- Fix sending line stats.<br />
+<br />
+<br />
 15.0.0 (2024-07-19)<br />
 ++++++++++++++++++<br />
 <br />
