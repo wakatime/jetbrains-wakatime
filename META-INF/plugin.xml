@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://wakatime.com" require-restart="true">
     <id>com.wakatime.intellij.plugin</id>
     <name>WakaTime</name>
-    <version>14.4.0</version>
+    <version>14.4.1</version>
     <vendor email="support@wakatime.com" url="https://wakatime.com">WakaTime</vendor>
 
     <description><![CDATA[
@@ -27,6 +27,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+15.0.0 (2024-07-19)<br />
+++++++++++++++++++<br />
+<br />
+- Caret listener for improved user events coverage.<br />
+- Only send heartbeats with valid line stats.<br />
+<br />
+<br />
 14.4.1 (2024-07-17)<br />
 ++++++++++++++++++<br />
 <br />
