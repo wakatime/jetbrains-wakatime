@@ -15,6 +15,6 @@ public class LineStats {
     public Integer cursorPosition;
 
     public boolean isOK() {
-        return lineNumber != null && cursorPosition != null;
+        return lineCount != null && lineNumber != null && cursorPosition != null;
     }
 }

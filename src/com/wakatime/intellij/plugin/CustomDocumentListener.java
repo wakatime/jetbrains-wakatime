@@ -27,7 +27,7 @@ public class CustomDocumentListener implements BulkAwareDocumentListener.Simple 
             if (file == null) return;
             Project project = WakaTime.getProject(document);
             if (!WakaTime.isProjectInitialized(project)) return;
-            LineStats lineStats = WakaTime.getLineStats(document, null, documentEvent.getOffset());
+            LineStats lineStats = WakaTime.getLineStats(document);
             WakaTime.appendHeartbeat(file, project, false, lineStats);
         } catch(Exception e) {
             WakaTime.debugException(e);

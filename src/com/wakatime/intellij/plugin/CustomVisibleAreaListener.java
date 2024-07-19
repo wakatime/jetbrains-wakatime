@@ -30,8 +30,7 @@ public class CustomVisibleAreaListener implements VisibleAreaListener {
             Project project = visibleAreaEvent.getEditor().getProject();
             if (!WakaTime.isProjectInitialized(project)) return;
             Editor editor = visibleAreaEvent.getEditor();
-            int offset = editor.getCaretModel().getOffset();
-            LineStats lineStats = WakaTime.getLineStats(document, editor, offset);
+            LineStats lineStats = WakaTime.getLineStats(document, editor);
             WakaTime.appendHeartbeat(file, project, false, lineStats);
         } catch(Exception e) {
             WakaTime.debugException(e);

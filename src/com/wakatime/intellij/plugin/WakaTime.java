@@ -11,9 +11,11 @@ package com.wakatime.intellij.plugin;
 import com.intellij.AppTopics;
 //import com.intellij.compiler.server.BuildManagerListener;
 import com.intellij.ide.BrowserUtil;
+import com.intellij.ide.DataManager;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
@@ -148,6 +150,9 @@ public class WakaTime implements ApplicationComponent {
                 // scroll document
                 EditorFactory.getInstance().getEventMulticaster().addVisibleAreaListener(new CustomVisibleAreaListener(), disposable);
 
+                // caret moved
+                EditorFactory.getInstance().getEventMulticaster().addCaretListener(new CustomCaretListener(), disposable);
+
                 // compiling
                 // connection.subscribe(BuildManagerListener.TOPIC, new CustomBuildManagerListener());
                 // connection.subscribe(CompilerTopics.COMPILATION_STATUS, new CustomBuildManagerListener());
@@ -217,6 +222,8 @@ public class WakaTime implements ApplicationComponent {
 
     public static void appendHeartbeat(final VirtualFile file, final Project project, final boolean isWrite, @Nullable final LineStats lineStats) {
         checkDebug();
+
+        if (lineStats == null || !lineStats.isOK()) return;
 
         if (WakaTime.READY) {
             updateStatusBarText();
@@ -643,32 +650,41 @@ public class WakaTime implements ApplicationComponent {
         return project;
     }
 
-    public static LineStats getLineStats(Document document, Editor editor, int offset) {
-        LineStats lineStats = new LineStats();
-
-        if (document != null) {
-            try {
-                lineStats.lineCount = document.getLineCount();
-                lineStats.lineNumber = document.getLineNumber(offset) + 1;
-                lineStats.cursorPosition = offset - document.getLineStartOffset(lineStats.lineNumber - 1) + 1;
-            } catch (Exception e) {
-                debugException(e);
-            }
-            if (lineStats.isOK()) {
-                saveLineStats(document, lineStats);
-                return lineStats;
-            }
-
-            if (editor == null) {
-                Project project = WakaTime.getProject(document);
-                if (project != null && project.isInitialized()) {
-                    editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
-                }
+    public static LineStats getLineStats(@Nullable Document document, @Nullable Editor editor) {
+        if (editor == null && document != null) {
+            Project project = WakaTime.getProject(document);
+            if (project != null && project.isInitialized()) {
+                editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
             }
         }
 
         if (editor != null) {
-            Caret caret = editor.getCaretModel().getPrimaryCaret();
+            if (document == null) {
+                document = editor.getDocument();
+            }
+            for (Caret caret : editor.getCaretModel().getAllCarets()) {
+                LineStats lineStats = new LineStats();
+                if (document != null) {
+                    lineStats.lineCount = document.getLineCount();
+                }
+                LogicalPosition position = caret.getLogicalPosition();
+                lineStats.lineNumber = position.line + 1;
+                lineStats.cursorPosition = position.column + 1;
+                if (lineStats.isOK()) {
+                    saveLineStats(document, lineStats);
+                    return lineStats;
+                }
+            }
+        }
+
+        return WakaTime.getLineStats(document);
+    }
+
+    public static LineStats getLineStats(@Nullable Document document) {
+        if (document != null) {
+            LineStats lineStats = new LineStats();
+            lineStats.lineCount = document.getLineCount();
+            Caret caret = CommonDataKeys.CARET.getData(DataManager.getInstance().getDataContext());
             LogicalPosition position = caret.getLogicalPosition();
             lineStats.lineNumber = position.line + 1;
             lineStats.cursorPosition = position.column + 1;
@@ -678,26 +694,40 @@ public class WakaTime implements ApplicationComponent {
             }
         }
 
-        if (!lineStats.isOK() && document != null) {
-            VirtualFile file = WakaTime.getFile(document);
-            if (file != null) {
-                LineStats cached = WakaTime.lineStatsCache.get(file.getPath());
-                if (cached != null) return cached;
-            }
-        }
-
-        return lineStats;
+        return WakaTime.getLineStats(WakaTime.getFile(document));
     }
 
-    public static LineStats getLineStats(VirtualFile file) {
-        if (file == null) return null;
+    public static LineStats getLineStats(@Nullable VirtualFile file) {
+        Caret caret = CommonDataKeys.CARET.getData(DataManager.getInstance().getDataContext());
+        LogicalPosition position = caret.getLogicalPosition();
+        LineStats lineStats = new LineStats();
+        Editor editor = caret.getEditor();
+        if (editor != null) {
+            Document document = editor.getDocument();
+            if (document != null) {
+                lineStats.lineCount = document.getLineCount();
+            }
+        }
+        lineStats.lineNumber = position.line + 1;
+        lineStats.cursorPosition = position.column + 1;
+        if (lineStats.isOK()) {
+            saveLineStats(file, lineStats);
+            return lineStats;
+        }
+
+        if (file == null) return new LineStats();
+
         return WakaTime.lineStatsCache.get(file.getPath());
     }
 
     public static void saveLineStats(Document document, LineStats lineStats) {
-        if (!lineStats.isOK()) return;
         VirtualFile file = WakaTime.getFile(document);
+        saveLineStats(file, lineStats);
+    }
+
+    public static void saveLineStats(@Nullable VirtualFile file, LineStats lineStats) {
         if (file == null) return;
+        if (!lineStats.isOK()) return;
         WakaTime.lineStatsCache.put(file.getPath(), lineStats);
     }
 
