@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+15.0.2 (2024-07-19)<br />
+++++++++++++++++++<br />
+<br />
+- Remove usage of deprecated com.intellij.openapi.diagnostic.LogLevel.setLevel. #283<br />
+<br />
+<br />
 15.0.1 (2024-07-19)<br />
 ++++++++++++++++++<br />
 <br />
