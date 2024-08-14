@@ -22,7 +22,6 @@ import com.intellij.openapi.application.ApplicationManager;
 //import com.intellij.openapi.compiler.CompilerTopics;
 import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.components.ApplicationComponent;
-import com.intellij.openapi.diagnostic.LogLevel;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.extensions.PluginId;
@@ -586,6 +585,7 @@ public class WakaTime implements ApplicationComponent {
     }
 
     public static void setLoggingLevel() {
+        /*
         try {
             if (WakaTime.DEBUG) {
                 log.setLevel(LogLevel.DEBUG);
@@ -596,6 +596,7 @@ public class WakaTime implements ApplicationComponent {
         } catch(Throwable e) {
             System.out.println(e.getStackTrace());
         }
+        */
     }
 
     private static String getLanguage(final VirtualFile file) {
