@@ -19,8 +19,10 @@ import java.io.UnsupportedEncodingException;
 public class ConfigFile {
     private static final String fileName = ".wakatime.cfg";
     private static final String internalFileName = "wakatime-internal.cfg";
+    private static final String defaultDashboardUrl = "https://wakatime.com/dashboard";
     private static String cachedHomeFolder = null;
     private static String _api_key = "";
+    private static String _dashboard_url = "";
     private static boolean _usingVaultCmd = false;
 
     private static String getConfigFilePath(boolean internal) {
@@ -186,6 +188,28 @@ public class ConfigFile {
     public static void setApiKey(String apiKey) {
         set("settings", "api_key", false, apiKey);
         ConfigFile._api_key = apiKey;
+    }
+
+    public static String getDashboardUrl() {
+        if (!ConfigFile._dashboard_url.equals("")) {
+            return ConfigFile._dashboard_url;
+        }
+
+        String apiUrl = get("settings", "api_url", false);
+        if (apiUrl == null) {
+            ConfigFile._dashboard_url = ConfigFile.defaultDashboardUrl;
+        } else {
+            ConfigFile._dashboard_url = convertApiUrlToDashboardUrl(apiUrl);
+        }
+        return ConfigFile._dashboard_url;
+    }
+
+    private static String convertApiUrlToDashboardUrl(String apiUrl) {
+        int apiIndex = apiUrl.indexOf("/api");
+        if (apiIndex == -1) {
+            return defaultDashboardUrl;
+        }
+        return apiUrl.substring(0, apiIndex);
     }
 
     private static String removeNulls(String s) {

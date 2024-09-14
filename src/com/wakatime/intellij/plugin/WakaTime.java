@@ -731,7 +731,7 @@ public class WakaTime implements ApplicationComponent {
     }
 
     public static void openDashboardWebsite() {
-        BrowserUtil.browse("https://wakatime.com/dashboard");
+        BrowserUtil.browse(ConfigFile.getDashboardUrl());
     }
 
     private static String todayText = "initialized";
