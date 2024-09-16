@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+15.0.3 (2024-09-16)<br />
+++++++++++++++++++<br />
+<br />
+- Support dashboard linking to custom url using api_url config. #297<br />
+<br />
+<br />
 15.0.2 (2024-07-19)<br />
 ++++++++++++++++++<br />
 <br />
