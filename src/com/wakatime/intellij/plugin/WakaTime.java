@@ -224,6 +224,14 @@ public class WakaTime implements ApplicationComponent {
 
         if (lineStats == null || !lineStats.isOK()) return;
 
+        if (!shouldLogFile(file)) return;
+
+        String filePath = file.getPath();
+
+        if (filePath.contains("/var/cache/")) {
+            return;
+        }
+
         if (WakaTime.READY) {
             updateStatusBarText();
             if (project != null) {
@@ -232,11 +240,7 @@ public class WakaTime implements ApplicationComponent {
             }
         }
 
-        if (!shouldLogFile(file)) return;
-
-        String filePath = file.getPath();
         final BigDecimal time = WakaTime.getCurrentTimestamp();
-
         if (!isWrite && filePath.equals(WakaTime.lastFile) && !enoughTimePassed(time)) {
             return;
         }
