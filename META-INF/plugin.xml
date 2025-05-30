@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+15.0.4 (2025-05-30)<br />
+++++++++++++++++++<br />
+<br />
+- Ignore IDE cache files.<br />
+<br />
+<br />
 15.0.3 (2024-09-16)<br />
 ++++++++++++++++++<br />
 <br />
