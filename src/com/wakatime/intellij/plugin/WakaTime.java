@@ -32,6 +32,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Disposer;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
@@ -251,6 +252,20 @@ public class WakaTime implements ApplicationComponent {
         final String projectName = project != null ? project.getName() : null;
         final String language = WakaTime.getLanguage(file);
 
+        String localFile = null;
+        if (file.getFileSystem().getProtocol().equals("cwm")) {
+            try {
+                byte[] content = file.contentsToByteArray(true);
+                File tempFile = FileUtil.createTempFile("wakatime.", file.getName());
+                FileUtil.writeToFile(tempFile, content);
+                localFile = tempFile.getAbsolutePath();
+            } catch (IOException e) {
+                warnException(e);
+                return;
+            }
+        }
+        final String localFilePath = localFile;
+
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             public void run() {
                 Heartbeat h = new Heartbeat();
@@ -264,6 +279,10 @@ public class WakaTime implements ApplicationComponent {
                 h.lineCount = lineStats.lineCount;
                 h.lineNumber = lineStats.lineNumber;
                 h.cursorPosition = lineStats.cursorPosition;
+
+                if (localFilePath != null) {
+                    h.localFile = localFilePath;
+                }
 
                 heartbeatsQueue.add(h);
 
@@ -400,6 +419,11 @@ public class WakaTime implements ApplicationComponent {
                 h.append(jsonEscape(heartbeat.language));
                 h.append("\"");
             }
+            if (heartbeat.localFile != null) {
+                h.append(",\"local_file\":\"");
+                h.append(jsonEscape(heartbeat.localFile));
+                h.append("\"");
+            }
             h.append("}");
             if (!first)
                 json.append(",");
@@ -453,6 +477,10 @@ public class WakaTime implements ApplicationComponent {
         cmds.add(pluginString());
         cmds.add("--entity");
         cmds.add(heartbeat.entity);
+        if (heartbeat.localFile != null) {
+            cmds.add("--local-file");
+            cmds.add(heartbeat.localFile);
+        }
         cmds.add("--time");
         cmds.add(heartbeat.timestamp.toPlainString());
         String apiKey = ConfigFile.getApiKey();

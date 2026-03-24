@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 
 public class Heartbeat {
     public String entity;
+    public String localFile;
     public Integer lineCount;
     public Integer lineNumber;
     public Integer cursorPosition;
