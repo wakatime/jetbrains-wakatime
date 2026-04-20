@@ -64,13 +64,12 @@ public class Dependencies {
     public static String getResourcesLocation() {
         if (Dependencies.resourcesLocation != null) return Dependencies.resourcesLocation;
 
-        if (System.getenv("WAKATIME_HOME") != null && !System.getenv("WAKATIME_HOME").trim().isEmpty()) {
-            File resourcesFolder = new File(System.getenv("WAKATIME_HOME"));
-            if (resourcesFolder.exists()) {
-                Dependencies.resourcesLocation = resourcesFolder.getAbsolutePath();
-                WakaTime.log.debug("Using $WAKATIME_HOME for resources folder: " + Dependencies.resourcesLocation);
-                return Dependencies.resourcesLocation;
-            }
+        String wakatimeHome = System.getenv("WAKATIME_HOME");
+        if (wakatimeHome != null && !wakatimeHome.trim().isEmpty()) {
+            File resourcesFolder = new File(wakatimeHome.trim());
+            Dependencies.resourcesLocation = resourcesFolder.getAbsolutePath();
+            WakaTime.log.debug("Using $WAKATIME_HOME for resources folder: " + Dependencies.resourcesLocation);
+            return Dependencies.resourcesLocation;
         }
 
         if (isWindows()) {

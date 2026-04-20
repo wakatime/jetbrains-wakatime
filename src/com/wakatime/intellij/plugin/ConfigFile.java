@@ -27,16 +27,15 @@ public class ConfigFile {
 
     private static String getConfigFilePath(boolean internal) {
         if (ConfigFile.cachedHomeFolder == null) {
-            if (System.getenv("WAKATIME_HOME") != null && !System.getenv("WAKATIME_HOME").trim().isEmpty()) {
-                File folder = new File(System.getenv("WAKATIME_HOME"));
-                if (folder.exists()) {
-                    ConfigFile.cachedHomeFolder = folder.getAbsolutePath();
-                    WakaTime.log.debug("Using $WAKATIME_HOME for config folder: " + ConfigFile.cachedHomeFolder);
-                    if (internal) {
-                        return new File(new File(ConfigFile.cachedHomeFolder, ".wakatime"), internalFileName).getAbsolutePath();
-                    }
-                    return new File(ConfigFile.cachedHomeFolder, fileName).getAbsolutePath();
+            String wakatimeHome = System.getenv("WAKATIME_HOME");
+            if (wakatimeHome != null && !wakatimeHome.trim().isEmpty()) {
+                File folder = new File(wakatimeHome.trim());
+                ConfigFile.cachedHomeFolder = folder.getAbsolutePath();
+                WakaTime.log.debug("Using $WAKATIME_HOME for config folder: " + ConfigFile.cachedHomeFolder);
+                if (internal) {
+                    return new File(new File(ConfigFile.cachedHomeFolder, ".wakatime"), internalFileName).getAbsolutePath();
                 }
+                return new File(ConfigFile.cachedHomeFolder, fileName).getAbsolutePath();
             }
             ConfigFile.cachedHomeFolder = new File(System.getProperty("user.home")).getAbsolutePath();
             WakaTime.log.debug("Using $HOME for config folder: " + ConfigFile.cachedHomeFolder);
@@ -146,6 +145,10 @@ public class ConfigFile {
         }
 
         PrintWriter writer = null;
+        File parent = new File(file).getParentFile();
+        if (parent != null && !parent.exists()) {
+            parent.mkdirs();
+        }
         try {
             writer = new PrintWriter(file, "UTF-8");
         } catch (FileNotFoundException e) {
