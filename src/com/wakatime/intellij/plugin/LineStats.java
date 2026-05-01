@@ -18,4 +18,8 @@ public class LineStats {
     public boolean isOK() {
         return lineCount != null && lineNumber != null && cursorPosition != null;
     }
+
+    public boolean hasLineCount() {
+        return lineCount != null;
+    }
 }

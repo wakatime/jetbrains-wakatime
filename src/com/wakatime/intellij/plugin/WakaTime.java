@@ -224,8 +224,6 @@ public class WakaTime implements ApplicationComponent {
     public static void appendHeartbeat(final VirtualFile file, final Project project, final boolean isWrite, @Nullable final LineStats lineStats) {
         checkDebug();
 
-        if (lineStats == null || !lineStats.isOK()) return;
-
         if (!shouldLogFile(file)) return;
 
         String filePath = file.getPath();
@@ -278,9 +276,11 @@ public class WakaTime implements ApplicationComponent {
                 h.project = projectName;
                 h.language = language;
                 h.isBuilding = WakaTime.isBuilding;
-                h.lineCount = lineStats.lineCount;
-                h.lineNumber = lineStats.lineNumber;
-                h.cursorPosition = lineStats.cursorPosition;
+                if (lineStats != null) {
+                    h.lineCount = lineStats.lineCount;
+                    h.lineNumber = lineStats.lineNumber;
+                    h.cursorPosition = lineStats.cursorPosition;
+                }
                 h.humanLineChanges = humanLineChanges;
 
                 if (localFilePath != null) {
@@ -727,13 +727,13 @@ public class WakaTime implements ApplicationComponent {
             LineStats lineStats = new LineStats();
             lineStats.lineCount = document.getLineCount();
             Caret caret = CommonDataKeys.CARET.getData(DataManager.getInstance().getDataContext());
-            LogicalPosition position = caret.getLogicalPosition();
-            lineStats.lineNumber = position.line + 1;
-            lineStats.cursorPosition = position.column + 1;
-            if (lineStats.isOK()) {
-                saveLineStats(document, lineStats, true);
-                return lineStats;
+            if (caret != null) {
+                LogicalPosition position = caret.getLogicalPosition();
+                lineStats.lineNumber = position.line + 1;
+                lineStats.cursorPosition = position.column + 1;
             }
+            saveLineStats(document, lineStats, true);
+            return lineStats;
         }
 
         return WakaTime.getLineStats(WakaTime.getFile(document));
@@ -741,18 +741,30 @@ public class WakaTime implements ApplicationComponent {
 
     public static LineStats getLineStats(@Nullable VirtualFile file) {
         Caret caret = CommonDataKeys.CARET.getData(DataManager.getInstance().getDataContext());
-        LogicalPosition position = caret.getLogicalPosition();
         LineStats lineStats = new LineStats();
-        Editor editor = caret.getEditor();
-        if (editor != null) {
-            Document document = editor.getDocument();
+        if (file != null) {
+            Document document = FileDocumentManager.getInstance().getDocument(file);
             if (document != null) {
                 lineStats.lineCount = document.getLineCount();
             }
         }
-        lineStats.lineNumber = position.line + 1;
-        lineStats.cursorPosition = position.column + 1;
-        if (lineStats.isOK()) {
+
+        if (caret != null) {
+            LogicalPosition position = caret.getLogicalPosition();
+            lineStats.lineNumber = position.line + 1;
+            lineStats.cursorPosition = position.column + 1;
+            if (lineStats.lineCount == null) {
+                Editor editor = caret.getEditor();
+                if (editor != null) {
+                    Document document = editor.getDocument();
+                    if (document != null) {
+                        lineStats.lineCount = document.getLineCount();
+                    }
+                }
+            }
+        }
+
+        if (lineStats.hasLineCount()) {
             saveLineStats(file, lineStats, true);
             return lineStats;
         }
@@ -778,7 +790,7 @@ public class WakaTime implements ApplicationComponent {
 
     public static synchronized void saveLineStats(@Nullable VirtualFile file, LineStats lineStats, boolean updateLineChanges) {
         if (file == null) return;
-        if (!lineStats.isOK()) return;
+        if (lineStats == null || !lineStats.hasLineCount()) return;
         lineStats.updatedAt = System.currentTimeMillis();
         if (updateLineChanges) {
             updateLineChanges(file, lineStats);
@@ -808,9 +820,7 @@ public class WakaTime implements ApplicationComponent {
     }
 
     private static synchronized Integer popHumanLineChanges(@NotNull String filePath) {
-        Integer lineChanges = WakaTime.humanLineChanges.get(filePath);
-        WakaTime.humanLineChanges = new HashMap<String, Integer>();
-        return lineChanges;
+        return WakaTime.humanLineChanges.remove(filePath);
     }
 
     public static void openDashboardWebsite() {
