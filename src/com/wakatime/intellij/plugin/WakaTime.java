@@ -69,6 +69,7 @@ public class WakaTime implements ApplicationComponent {
     public static BigDecimal lastTime = new BigDecimal(0);
     public static Boolean isBuilding = false;
     public static Map<String, LineStats> lineStatsCache = new HashMap<String, LineStats>();
+    public static Map<String, Integer> humanLineChanges = new HashMap<String, Integer>();
     public static Boolean cancelApiKey = false;
 
     private final int queueTimeoutSeconds = 30;
@@ -265,6 +266,7 @@ public class WakaTime implements ApplicationComponent {
             }
         }
         final String localFilePath = localFile;
+        final Integer humanLineChanges = popHumanLineChanges(filePath);
 
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             public void run() {
@@ -279,6 +281,7 @@ public class WakaTime implements ApplicationComponent {
                 h.lineCount = lineStats.lineCount;
                 h.lineNumber = lineStats.lineNumber;
                 h.cursorPosition = lineStats.cursorPosition;
+                h.humanLineChanges = humanLineChanges;
 
                 if (localFilePath != null) {
                     h.localFile = localFilePath;
@@ -403,6 +406,10 @@ public class WakaTime implements ApplicationComponent {
                 h.append(",\"cursorpos\":");
                 h.append(heartbeat.cursorPosition);
             }
+            if (heartbeat.humanLineChanges != null && heartbeat.humanLineChanges != 0) {
+                h.append(",\"human_line_changes\":");
+                h.append(heartbeat.humanLineChanges);
+            }
             if (heartbeat.isUnsavedFile) {
                 h.append(",\"is_unsaved_entity\":true");
             }
@@ -499,6 +506,10 @@ public class WakaTime implements ApplicationComponent {
         if (heartbeat.cursorPosition != null) {
             cmds.add("--cursorpos");
             cmds.add(heartbeat.cursorPosition.toString());
+        }
+        if (heartbeat.humanLineChanges != null && heartbeat.humanLineChanges != 0) {
+            cmds.add("--human-line-changes");
+            cmds.add(heartbeat.humanLineChanges.toString());
         }
         if (heartbeat.project != null) {
             cmds.add("--alternate-project");
@@ -702,7 +713,7 @@ public class WakaTime implements ApplicationComponent {
                 lineStats.lineNumber = position.line + 1;
                 lineStats.cursorPosition = position.column + 1;
                 if (lineStats.isOK()) {
-                    saveLineStats(document, lineStats);
+                    saveLineStats(document, lineStats, true);
                     return lineStats;
                 }
             }
@@ -720,7 +731,7 @@ public class WakaTime implements ApplicationComponent {
             lineStats.lineNumber = position.line + 1;
             lineStats.cursorPosition = position.column + 1;
             if (lineStats.isOK()) {
-                saveLineStats(document, lineStats);
+                saveLineStats(document, lineStats, true);
                 return lineStats;
             }
         }
@@ -742,7 +753,7 @@ public class WakaTime implements ApplicationComponent {
         lineStats.lineNumber = position.line + 1;
         lineStats.cursorPosition = position.column + 1;
         if (lineStats.isOK()) {
-            saveLineStats(file, lineStats);
+            saveLineStats(file, lineStats, true);
             return lineStats;
         }
 
@@ -757,9 +768,49 @@ public class WakaTime implements ApplicationComponent {
     }
 
     public static void saveLineStats(@Nullable VirtualFile file, LineStats lineStats) {
+        saveLineStats(file, lineStats, false);
+    }
+
+    public static void saveLineStats(Document document, LineStats lineStats, boolean updateLineChanges) {
+        VirtualFile file = WakaTime.getFile(document);
+        saveLineStats(file, lineStats, updateLineChanges);
+    }
+
+    public static synchronized void saveLineStats(@Nullable VirtualFile file, LineStats lineStats, boolean updateLineChanges) {
         if (file == null) return;
         if (!lineStats.isOK()) return;
+        lineStats.updatedAt = System.currentTimeMillis();
+        if (updateLineChanges) {
+            updateLineChanges(file, lineStats);
+        }
         WakaTime.lineStatsCache.put(file.getPath(), lineStats);
+    }
+
+    private static synchronized void updateLineChanges(@NotNull VirtualFile file, @NotNull LineStats lineStats) {
+        String filePath = file.getPath();
+        long now = lineStats.updatedAt != null ? lineStats.updatedAt : System.currentTimeMillis();
+        LineStats previous = WakaTime.lineStatsCache.get(filePath);
+        if (previous == null || previous.lineCount == null) {
+            return;
+        }
+
+        int delta = lineStats.lineCount - previous.lineCount;
+
+        // prevent counting large copy/paste as human typed lines of code
+        if (delta > 50 && previous.updatedAt != null && Math.abs(now - previous.updatedAt) < 60000) {
+            delta = 0;
+        }
+
+        if (delta == 0) return;
+
+        Integer current = WakaTime.humanLineChanges.get(filePath);
+        WakaTime.humanLineChanges.put(filePath, (current != null ? current : 0) + delta);
+    }
+
+    private static synchronized Integer popHumanLineChanges(@NotNull String filePath) {
+        Integer lineChanges = WakaTime.humanLineChanges.get(filePath);
+        WakaTime.humanLineChanges = new HashMap<String, Integer>();
+        return lineChanges;
     }
 
     public static void openDashboardWebsite() {

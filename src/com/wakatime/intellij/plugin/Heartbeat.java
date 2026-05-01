@@ -16,6 +16,7 @@ public class Heartbeat {
     public Integer lineCount;
     public Integer lineNumber;
     public Integer cursorPosition;
+    public Integer humanLineChanges;
     public BigDecimal timestamp;
     public Boolean isWrite;
     public Boolean isUnsavedFile;
