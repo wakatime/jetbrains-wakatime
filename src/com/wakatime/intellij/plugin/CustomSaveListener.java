@@ -24,6 +24,7 @@ public class CustomSaveListener implements FileDocumentManagerListener {
             if (!WakaTime.isAppActive()) return;
             VirtualFile file = WakaTime.getFile(document);
             if (file == null) return;
+            WakaTime.markFileWithHumanTyping(file);
             Project project = WakaTime.getProject(document);
             if (!WakaTime.isProjectInitialized(project)) return;
             LineStats lineStats = new LineStats();

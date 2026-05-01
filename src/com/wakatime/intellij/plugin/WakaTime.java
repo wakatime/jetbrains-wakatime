@@ -70,6 +70,7 @@ public class WakaTime implements ApplicationComponent {
     public static Boolean isBuilding = false;
     public static Map<String, LineStats> lineStatsCache = new HashMap<String, LineStats>();
     public static Map<String, Integer> humanLineChanges = new HashMap<String, Integer>();
+    public static Map<String, Boolean> filesWithHumanTyping = new HashMap<String, Boolean>();
     public static Boolean cancelApiKey = false;
 
     private final int queueTimeoutSeconds = 30;
@@ -820,7 +821,14 @@ public class WakaTime implements ApplicationComponent {
     }
 
     private static synchronized Integer popHumanLineChanges(@NotNull String filePath) {
-        return WakaTime.humanLineChanges.remove(filePath);
+        Integer lineChanges = WakaTime.humanLineChanges.remove(filePath);
+        Boolean hasHumanTyping = WakaTime.filesWithHumanTyping.remove(filePath);
+        if (!Boolean.TRUE.equals(hasHumanTyping)) return 0;
+        return lineChanges;
+    }
+
+    public static synchronized void markFileWithHumanTyping(@NotNull VirtualFile file) {
+        WakaTime.filesWithHumanTyping.put(file.getPath(), true);
     }
 
     public static void openDashboardWebsite() {
