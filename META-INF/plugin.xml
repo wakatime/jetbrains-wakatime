@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+16.1.2 (2026-05-01)<br />
+++++++++++++++++++<br />
+<br />
+- Prevent attributing AI lines to Human by guarding for single character typing.<br />
+<br />
+<br />
 16.1.1 (2026-05-01)<br />
 ++++++++++++++++++<br />
 <br />
