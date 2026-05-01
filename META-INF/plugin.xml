@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+16.1.1 (2026-05-01)<br />
+++++++++++++++++++<br />
+<br />
+- Append heartbeats even without line stats. #309<br />
+<br />
+<br />
 16.1.0 (2026-05-01)<br />
 ++++++++++++++++++<br />
 <br />
