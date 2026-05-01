@@ -27,6 +27,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+16.1.0 (2026-05-01)<br />
+++++++++++++++++++<br />
+<br />
+- Track line changes additions and deletions counts. #317<br />
+<br />
+<br />
 16.0.1 (2026-04-20)<br />
 ++++++++++++++++++<br />
 <br />
