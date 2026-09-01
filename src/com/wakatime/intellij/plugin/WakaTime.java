@@ -648,8 +648,8 @@ public class WakaTime implements ApplicationComponent {
         if (type == null) return null;
 
         String language = type.getName();
-        // AUTO_DETECTED from the IntelliJ API means that it couldn't find the language, so we should just ignore what it says and let wakatime-cli figure it out
-        return "AUTO_DETECTED".equals(language) ? null : language;
+        // IntelliJ uses AUTO_DETECTED and UNKNOWN for unresolved file types, not languages, so let wakatime-cli detect the language.
+        return "AUTO_DETECTED".equals(language) || "UNKNOWN".equals(language) ? null : language;
     }
 
     @Nullable
