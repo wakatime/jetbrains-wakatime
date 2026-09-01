@@ -645,9 +645,11 @@ public class WakaTime implements ApplicationComponent {
 
     private static String getLanguage(final VirtualFile file) {
         FileType type = file.getFileType();
-        if (type != null)
-            return type.getName();
-        return null;
+        if (type == null) return null;
+
+        String language = type.getName();
+        // IntelliJ uses AUTO_DETECTED and UNKNOWN for unresolved file types, not languages, so let wakatime-cli detect the language.
+        return "AUTO_DETECTED".equals(language) || "UNKNOWN".equals(language) ? null : language;
     }
 
     @Nullable
